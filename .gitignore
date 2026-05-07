@@ -1,0 +1,29 @@
+# Raw export files — sensitive business data, never commit
+raw_exports/**/*.xlsx
+raw_exports/**/*.xls
+raw_exports/**/*.csv
+raw_exports/**/*.tsv
+
+# Keep the README in raw_exports so the folder structure is documented
+!raw_exports/README.md
+
+# Outputs folder — local working files, not for publishing
+outputs/
+
+# Context folder — reference files used by processor (too large / sensitive for repo)
+context/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Excel/LibreOffice lock files
+**/.~lock.*#
+~$*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
