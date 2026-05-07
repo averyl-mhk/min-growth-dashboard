@@ -651,10 +651,11 @@ function renderDetailView(idx) {
   const awRows = detail.awareness.map(r => {
     const rclass = r.roas ? rcClass(r.roas) : 'roas-na';
     const aclass = r.acos !== null ? acClass(r.acos) : 'roas-na';
+    const adLabel = r.adSubType ? `<span class="btype">${r.adType} ${r.adSubType}</span>` : `<span class="btype">${r.adType}</span>`;
     return `<tr>
       <td>${platIcon(r.platform)}<strong>${r.platform}</strong></td>
-      <td><span class="btype">${r.adType}</span> ${r.targeting || ''}</td>
-      <td style="color:var(--t3)">—</td>
+      <td>${adLabel}</td>
+      <td style="color:var(--t3)">${r.targeting || '—'}</td>
       <td class="r">${fLT(r.spend)}</td>
       <td class="r">${r.attRev ? fLT(r.attRev) : '—'}</td>
       <td class="r ${rclass}">${r.roas ? r.roas.toFixed(2) + '×' : '—'}</td>
@@ -686,9 +687,10 @@ function renderDetailView(idx) {
   const reRows = detail.retargeting.map(r => {
     const rclass = r.roas ? rcClass(r.roas) : 'roas-na';
     const aclass = r.acos !== null ? acClass(r.acos) : 'roas-na';
+    const adLabel = r.adSubType ? `<span class="btype">${r.adType} ${r.adSubType}</span>` : `<span class="btype">${r.adType}</span>`;
     return `<tr>
       <td>${platIcon(r.platform)}<strong>${r.platform}</strong></td>
-      <td><span class="btype">${r.adType}</span></td>
+      <td>${adLabel}</td>
       <td style="color:var(--t3)">${r.targeting || '—'}</td>
       <td class="r">${fLT(r.spend)}</td>
       <td class="r">${r.attRev ? fLT(r.attRev) : '—'}</td>
