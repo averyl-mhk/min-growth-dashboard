@@ -873,6 +873,21 @@ async function init() {
     if (!res.ok) throw new Error(`HTTP ${res.status} — could not load data file`);
     D = await res.json();
 
+    // No data yet — show a friendly waiting state
+    if (!D.months || D.months.length === 0) {
+      const ls = document.getElementById('loadingScreen');
+      ls.classList.add('error');
+      document.getElementById('loadMsg').innerHTML = `
+        <strong style="font-size:18px;color:#fff">Dashboard is ready</strong>
+        <pre style="color:rgba(255,255,255,.7)">No data loaded yet.
+
+Run the processor to populate it:
+  python processor.py --month 2026_03
+
+Then push data.json to GitHub and refresh this page.</pre>`;
+      return;
+    }
+
     // Set initial active month to the last one
     activeIdx = D.months.length - 1;
 
