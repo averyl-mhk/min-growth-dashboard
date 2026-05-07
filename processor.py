@@ -1,38 +1,15 @@
-"""
-GMD_DataProcessor_v1.py
-MIN Growth Marketing Dashboard — Raw Export Processor
+"""processor.py — MIN Growth Marketing Dashboard data processor.
 
-Reads raw platform exports for a given month and writes GMD_Dashboard_MIN_data.json.
-Every number in the JSON is derived mechanically from the source files — no manual editing.
-
-Usage:
-    python GMD_DataProcessor_v1.py --month 2026_03
-
-Requirements:
-    pip install pandas openpyxl
-
-Input files (place in raw_exports/YYYY_MM/):
-    Amazon_SP_Campaigns.xlsx    — SP campaign-level report from Amazon AMS
-    Amazon_SB_Campaigns.xlsx    — SB campaign-level report
-    Amazon_SD_Campaigns.xlsx    — SD campaign-level report
-    Amazon_SP_SearchTerms.xlsx  — SP search term report (for keyword classification)
-    Amazon_SB_SearchTerms.xlsx  — SB search term report
-    Meta_Campaigns.xlsx         — Meta Ads Manager campaign-level export
-    Flipkart_Campaigns.xlsx     — Flipkart Seller Hub campaign-level export
-    POS_Manual.xlsx             — Manual POS table (Platform | Total Sales)
-
-Reference files (in context/):
-    GMD_TargetingType_Reference.xlsx — Branded / Competition / Generic keyword lists
-
-Output:
-    outputs/GMD_Dashboard_MIN_data.json  (overwrites)
+Reads monthly raw exports from raw_exports/YYYY_MM/ and writes data.json.
+Run: python processor.py --month 2026_03
 """
 
 import argparse
 import json
-import os
 import sys
+from collections import Counter
 from datetime import datetime
+from fnmatch import fnmatch
 from pathlib import Path
 
 try:
@@ -40,517 +17,646 @@ try:
 except ImportError:
     sys.exit("Missing dependency: pip install pandas openpyxl")
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
 
-# ─── Paths ────────────────────────────────────────────────────────────────────
 
-SCRIPT_DIR   = Path(__file__).parent
-PROJECT_ROOT = SCRIPT_DIR.parent          # growth-marketing-dashboard/
-CONTEXT_DIR  = PROJECT_ROOT / "context"
-OUTPUT_FILE   = PROJECT_ROOT / "data.json"
+SCRIPT_DIR = Path(__file__).parent
+RAW_EXPORTS = SCRIPT_DIR / "raw_exports"
+CONTEXT_DIR = SCRIPT_DIR / "context"
+OUTPUT_FILE = SCRIPT_DIR / "data.json"
 TARGETING_REF = CONTEXT_DIR / "GMD_TargetingType_Reference.xlsx"
 
-
-# ─── Benchmarks (edit here if targets change) ────────────────────────────────
-
-BENCHMARKS = {
-    "prospectingCTR":   0.015,
-    "retargetingCTR":   0.02,
-    "salesCVR":         0.008,
+DEFAULT_BENCHMARKS = {
+    "prospectingCTR": 0.015,
+    "retargetingCTR": 0.02,
+    "salesCVR": 0.008,
     "amazonACOSTarget": 0.25,
     "roasHigh": 4,
-    "roasMid":  2,
+    "roasMid": 2,
     "acosGood": 0.25,
-    "acosMid":  0.50,
+    "acosMid": 0.50,
 }
 
+BENCHMARKS_NOTE = (
+    "Edit these directly in data.json to change thresholds. The processor NEVER "
+    "overwrites an existing benchmarks block — it only writes defaults if the key is absent."
+)
 
-# ─── Campaign categorisation ──────────────────────────────────────────────────
-#
-# Buckets are assigned by ad type (SP / SB / SD) and objective:
-#   Awareness   → Amazon SB (Sponsored Brands)
-#   Core Sales  → Amazon SP (Sponsored Products), Flipkart PLA, Meta Sales Traffic
-#   Retargeting → Amazon SD (Sponsored Display), Meta Remarketing, Flipkart PCA
-#
-# Keyword targeting type (Branded / Competition / Generic) is derived from the
-# search term reports using the reference file in context/.
+AMAZON_BUCKETS = {"SP": "Core Sales", "SB": "Awareness", "SB2": "Awareness", "SD": "Retargeting"}
+META_BUCKETS = {"Prospecting": "Awareness", "Remarketing": "Retargeting", "Sales Traffic": "Core Sales"}
+FLIPKART_BUCKETS = {"PLA": "Core Sales", "SP": "Core Sales", "SELLER_PCA": "Retargeting", "PCA": "Retargeting"}
 
-CAMPAIGN_BUCKET_RULES = {
-    # Amazon
-    "SP": "Core Sales",
-    "SB": "Awareness",
-    "SD": "Retargeting",
-    # Meta — determined by campaign name keywords below
-    # Flipkart
-    "PLA": "Core Sales",
-    "PCA": "Retargeting",
-}
-
-META_RETARGETING_KEYWORDS = ["remarketing", "retarget", "re-target", "catalogue"]
-META_AWARENESS_KEYWORDS   = ["prospecting", "awareness", "instream", "video"]
-# Anything else in Meta → Core Sales
+BUCKET_KEYS = {"Awareness": "awareness", "Core Sales": "coreSales", "Retargeting": "retargeting"}
 
 
-# ─── Column name maps ─────────────────────────────────────────────────────────
-#
-# TODO: Confirm exact column names once Akash's files arrive.
-# Update the values below to match the actual header row in each export.
-# Keys are the canonical names used in this script; values are what appears in the file.
+# ─── Small helpers ────────────────────────────────────────────────────────────
 
-AMAZON_COLS = {
-    # TODO: update these after inspecting the actual export
-    "campaign_name":  "Campaign Name",      # e.g. "SP | Cast Iron All | Auto"
-    "ad_type":        "Ad Type",            # SP / SB / SD
-    "targeting_type": "Targeting Type",     # Auto / Manual
-    "impressions":    "Impressions",
-    "clicks":         "Clicks",
-    "spend":          "Spend",              # in ₹
-    "attributed_rev": "14 Day Total Sales", # attributed revenue in ₹ — confirm exact name
-    "orders":         "14 Day Total Orders",
-    "acos":           "ACOS",               # decimal (0.25) or percent (25%) — check
-}
-
-META_COLS = {
-    # TODO: update these after inspecting the actual export
-    "campaign_name":  "Campaign name",
-    "objective":      "Objective",
-    "spend":          "Amount spent (INR)",
-    "attributed_rev": "Purchases conversion value",
-    "impressions":    "Impressions",
-    "clicks":         "Link clicks",
-    "ctr":            "CTR (link click-through rate)",
-}
-
-FLIPKART_COLS = {
-    # TODO: update these after inspecting the actual export
-    "campaign_name":  "Campaign Name",
-    "ad_type":        "Type",          # PLA / PCA
-    "targeting_type": "Targeting",     # Auto / Manual
-    "spend":          "Spend",
-    "attributed_rev": "Revenue",
-    "impressions":    "Impressions",
-    "clicks":         "Clicks",
-}
-
-POS_COLS = {
-    # Simple manual table: two columns
-    "platform": "Platform",    # Amazon / Shopify / Flipkart
-    "sales":    "Total Sales",
-}
+def to_float(val):
+    """Safe float. Returns None for NaN, '-', formula strings, or unparseable text."""
+    if val is None:
+        return None
+    try:
+        if pd.isna(val):
+            return None
+    except (TypeError, ValueError):
+        pass
+    if isinstance(val, str):
+        v = val.strip().replace(",", "")
+        if not v or v == "-" or v.startswith("="):
+            return None
+        try:
+            return float(v)
+        except ValueError:
+            return None
+    try:
+        return float(val)
+    except (TypeError, ValueError):
+        return None
 
 
-# ─── Keyword classification ───────────────────────────────────────────────────
+def safe_div(num, denom):
+    if denom and denom > 0:
+        return num / denom
+    return None
+
+
+def round_or_none(v, n=2):
+    return round(v, n) if v is not None else None
+
+
+def read_table(path: Path, **kwargs) -> pd.DataFrame:
+    if path.suffix.lower() == ".csv":
+        return pd.read_csv(path, **kwargs)
+    return pd.read_excel(path, **kwargs)
+
+
+# ─── File discovery (case-insensitive glob) ───────────────────────────────────
+
+def find_file(folder: Path, includes, excludes=()):
+    for p in sorted(folder.iterdir()):
+        if not p.is_file():
+            continue
+        name = p.name.lower()
+        if any(fnmatch(name, g.lower()) for g in excludes):
+            continue
+        if any(fnmatch(name, g.lower()) for g in includes):
+            return p
+    return None
+
+
+def find_amazon_campaigns(folder):
+    return find_file(folder, ["*mazon*"], ["*search*", "*targeting*"])
+
+
+def find_sp_search(folder):
+    return find_file(folder, ["*sponsored_products*", "*sp*search*"])
+
+
+def find_sb_search(folder):
+    return find_file(folder, ["*sponsored_brands*"])
+
+
+def find_sd_targeting(folder):
+    return find_file(folder, ["*sponsored_display*", "*sd*target*"])
+
+
+def find_meta(folder):
+    return find_file(folder, ["*eta*"], ["*mazon*", "*lipkart*"])
+
+
+def find_flipkart(folder):
+    return find_file(folder, ["*lipkart*"])
+
+
+def find_pos(folder):
+    return find_file(folder, ["*pos*"])
+
+
+# ─── Keyword classification (Amazon search terms) ─────────────────────────────
 
 def load_targeting_reference():
-    """
-    Load branded/competition keyword lists from the reference file.
-    Returns dict: { 'branded': [...], 'competition': [...] }
-    Anything not matching either list = Generic.
-    """
     if not TARGETING_REF.exists():
-        print(f"  WARNING: Targeting reference not found at {TARGETING_REF}")
-        print("  Keyword classification will be skipped — all search terms labelled Generic.")
         return {"branded": [], "competition": []}
-
     df = pd.read_excel(TARGETING_REF, header=0)
-    # Columns: Competition | Branded | Generic (Generic is just a rule, not a list)
     competition = [str(v).strip().lower() for v in df.iloc[:, 0].dropna() if str(v).strip()]
-    branded     = [str(v).strip().lower() for v in df.iloc[:, 1].dropna() if str(v).strip()]
-
-    # Remove the header row values if they snuck in
-    competition = [v for v in competition if v != "competition"]
-    branded     = [v for v in branded     if v not in ("branded", "generic")]
-
-    print(f"  Targeting reference loaded: {len(competition)} competition terms, {len(branded)} branded terms")
+    branded = [str(v).strip().lower() for v in df.iloc[:, 1].dropna() if str(v).strip()]
     return {"branded": branded, "competition": competition}
 
 
 def classify_search_term(term: str, ref: dict) -> str:
-    """
-    Classify a single Amazon search term as Branded / Competition / Generic.
-    Matching is case-insensitive substring check.
-    """
-    term_lower = term.lower()
+    t = str(term).lower()
     for kw in ref["branded"]:
-        if kw in term_lower:
+        if kw and kw in t:
             return "Branded"
     for kw in ref["competition"]:
-        if kw in term_lower:
+        if kw and kw in t:
             return "Competition"
     return "Generic"
 
 
+def compute_campaign_keyword_types(search_dfs, ref):
+    """Returns {campaign_name: dominant_keyword_type} based on spend share."""
+    classified = []
+    for df in search_dfs:
+        if df is None or df.empty:
+            continue
+        if not {"Campaign Name", "Customer Search Term", "Spend"}.issubset(df.columns):
+            continue
+        sub = df[["Campaign Name", "Customer Search Term", "Spend"]].copy()
+        sub["Spend"] = pd.to_numeric(sub["Spend"], errors="coerce").fillna(0)
+        sub = sub.dropna(subset=["Customer Search Term"])
+        sub["kw_type"] = sub["Customer Search Term"].apply(lambda t: classify_search_term(t, ref))
+        classified.append(sub)
+    if not classified:
+        return {}
+    combined = pd.concat(classified, ignore_index=True)
+    spend_by = combined.groupby(["Campaign Name", "kw_type"])["Spend"].sum().reset_index()
+    out = {}
+    for campaign, sub in spend_by.groupby("Campaign Name"):
+        out[campaign] = sub.loc[sub["Spend"].idxmax(), "kw_type"]
+    return out
+
+
 # ─── Platform loaders ─────────────────────────────────────────────────────────
 
-def load_amazon(folder: Path, ad_type: str, ref: dict) -> pd.DataFrame:
-    """
-    Load an Amazon campaign-level export (SP, SB, or SD).
-    Returns a cleaned DataFrame with canonical column names.
-    """
-    filename = f"Amazon_{ad_type}_Campaigns.xlsx"
-    filepath = folder / filename
-
-    if not filepath.exists():
-        print(f"  MISSING: {filename} — skipping {ad_type}")
-        return pd.DataFrame()
-
-    print(f"  Loading {filename}...")
-    df = pd.read_excel(filepath)
-
-    # TODO: validate that expected columns exist, print helpful error if not
-    # Once real files arrive, add: assert AMAZON_COLS['spend'] in df.columns, f"Column '{AMAZON_COLS['spend']}' not found. Available: {list(df.columns)}"
-
-    rename = {v: k for k, v in AMAZON_COLS.items() if v in df.columns}
-    df = df.rename(columns=rename)
-
-    # Normalise ACOS: convert percent to decimal if needed
-    if "acos" in df.columns:
-        if df["acos"].dropna().max() > 1:
-            df["acos"] = df["acos"] / 100
-
-    df["platform"]    = "Amazon"
-    df["bucket"]      = CAMPAIGN_BUCKET_RULES.get(ad_type, "Unknown")
-    df["source_file"] = filename
-
-    print(f"    {len(df)} rows loaded")
-    return df
+def _amazon_col(df, *candidates):
+    for c in candidates:
+        if c in df.columns:
+            return c
+    return None
 
 
-def load_meta(folder: Path) -> pd.DataFrame:
-    """Load Meta Ads Manager campaign-level export."""
-    filename = "Meta_Campaigns.xlsx"
-    filepath = folder / filename
+def load_amazon_campaigns(path: Path, kw_map: dict):
+    df = read_table(path)
+    spend_col = _amazon_col(df, "Total cost (converted)", "Total cost")
+    rev_col = _amazon_col(df, "Sales (converted)", "Sales")
 
-    if not filepath.exists():
-        print(f"  MISSING: {filename} — skipping Meta")
-        return pd.DataFrame()
+    rows = []
+    unknown_types = Counter()
+    for _, r in df.iterrows():
+        ad_type = str(r.get("Type", "") or "").strip().upper()
+        bucket = AMAZON_BUCKETS.get(ad_type)
+        if not bucket:
+            if ad_type:
+                unknown_types[ad_type] += 1
+            continue
+        targeting = str(r.get("Targeting", "") or "").strip()
+        sub_type = targeting.title() if targeting else None
+        campaign = str(r.get("Campaign name", "") or "").strip()
 
-    print(f"  Loading {filename}...")
-    df = pd.read_excel(filepath)
+        spend = to_float(r.get(spend_col)) if spend_col else None
+        att_rev = to_float(r.get(rev_col)) if rev_col else None
+        impressions = to_float(r.get("Impressions"))
+        clicks = to_float(r.get("Clicks"))
+        acos = to_float(r.get("ACOS"))
 
-    rename = {v: k for k, v in META_COLS.items() if v in df.columns}
-    df = df.rename(columns=rename)
+        rows.append({
+            "platform": "Amazon",
+            "ad_type": ad_type,
+            "ad_sub_type": sub_type,
+            "campaign_name": campaign,
+            "bucket": bucket,
+            "spend": spend or 0.0,
+            "att_rev": att_rev or 0.0,
+            "impressions": impressions or 0.0,
+            "clicks": clicks or 0.0,
+            "acos": acos,
+            "ctr": None,
+            "keyword_type": kw_map.get(campaign),
+            "source_file": path.name,
+        })
 
-    # Classify into bucket by campaign name
-    def meta_bucket(name):
-        name_lower = str(name).lower()
-        if any(kw in name_lower for kw in META_RETARGETING_KEYWORDS):
-            return "Retargeting"
-        if any(kw in name_lower for kw in META_AWARENESS_KEYWORDS):
-            return "Awareness"
-        return "Core Sales"
+    # If ACOS was exported as percent (any value > 1), normalize all to decimal
+    acos_vals = [r["acos"] for r in rows if r["acos"] is not None]
+    if acos_vals and max(acos_vals) > 1:
+        for r in rows:
+            if r["acos"] is not None:
+                r["acos"] = r["acos"] / 100
 
-    df["platform"]    = "Meta"
-    df["bucket"]      = df["campaign_name"].apply(meta_bucket) if "campaign_name" in df.columns else "Unknown"
-    df["source_file"] = filename
+    for r in rows:
+        if r["impressions"] > 0:
+            r["ctr"] = r["clicks"] / r["impressions"]
 
-    print(f"    {len(df)} rows loaded")
-    return df
+    if unknown_types:
+        print(f"  WARNING: Amazon rows skipped — unmapped Type values: {dict(unknown_types)}")
+        print(f"  Add these to AMAZON_BUCKETS in processor.py if they should be counted.")
 
-
-def load_flipkart(folder: Path) -> pd.DataFrame:
-    """Load Flipkart Seller Hub campaign-level export."""
-    filename = "Flipkart_Campaigns.xlsx"
-    filepath = folder / filename
-
-    if not filepath.exists():
-        print(f"  MISSING: {filename} — skipping Flipkart")
-        return pd.DataFrame()
-
-    print(f"  Loading {filename}...")
-    df = pd.read_excel(filepath)
-
-    rename = {v: k for k, v in FLIPKART_COLS.items() if v in df.columns}
-    df = df.rename(columns=rename)
-
-    df["platform"]    = "Flipkart"
-    df["bucket"]      = df["ad_type"].map(CAMPAIGN_BUCKET_RULES).fillna("Unknown") if "ad_type" in df.columns else "Unknown"
-    df["source_file"] = filename
-
-    print(f"    {len(df)} rows loaded")
-    return df
+    return rows
 
 
-def load_pos(folder: Path) -> dict:
-    """Load manual POS table. Returns dict: { 'Amazon': 0, 'Shopify': 0, 'Flipkart': 0, 'total': 0 }"""
-    filename = "POS_Manual.xlsx"
-    filepath = folder / filename
+def load_meta(path: Path):
+    # Row 0 is "Added, Added, ..." junk; row 1 is the real header
+    df = pd.read_excel(path, header=1)
+    df = df.loc[:, ~df.columns.duplicated()]
 
-    if not filepath.exists():
-        print(f"  MISSING: {filename} — POS will be null for this month")
+    rows = []
+    for _, r in df.iterrows():
+        keyword_type = str(r.get("Keyword Type", "") or "").strip()
+        bucket = META_BUCKETS.get(keyword_type)
+        if not bucket:
+            continue
+        targeting_type = str(r.get("Targeting Type", "") or "").strip() or None
+
+        rev = r.get("Revenue")
+        att_rev = 0.0 if (rev is None or pd.isna(rev)) else (to_float(rev) or 0.0)
+
+        rows.append({
+            "platform": "Meta",
+            "ad_type": targeting_type,
+            "ad_sub_type": keyword_type or None,
+            "campaign_name": str(r.get("Campaign name", "") or "").strip(),
+            "bucket": bucket,
+            "spend": to_float(r.get("Amount spent (INR)")) or 0.0,
+            "att_rev": att_rev,
+            "impressions": to_float(r.get("Impressions")) or 0.0,
+            "clicks": to_float(r.get("Link clicks")) or 0.0,
+            "acos": None,
+            "ctr": None,
+            "keyword_type": None,
+            "source_file": path.name,
+        })
+
+    for r in rows:
+        if r["impressions"] > 0:
+            r["ctr"] = r["clicks"] / r["impressions"]
+
+    return rows
+
+
+def load_flipkart(path: Path):
+    peek = read_table(path, header=None, nrows=2)
+    first = peek.iloc[0, 0]
+    is_junk = pd.isna(first) or (isinstance(first, str) and first.strip().lower() == "calculated")
+    header_row = 1 if is_junk else 0
+    df = read_table(path, header=header_row)
+
+    rows = []
+    for _, r in df.iterrows():
+        ct = str(r.get("campaign_type", "") or "").strip().upper()
+        bucket = FLIPKART_BUCKETS.get(ct)
+        if not bucket:
+            continue
+
+        rows.append({
+            "platform": "Flipkart",
+            "ad_type": ct or None,
+            "ad_sub_type": None,
+            "campaign_name": str(r.get("Campaign Name", "") or "").strip(),
+            "bucket": bucket,
+            "spend": to_float(r.get("Ad Spend")) or 0.0,
+            "att_rev": to_float(r.get("Total Revenue (Rs.)")) or 0.0,
+            "impressions": to_float(r.get("Views")) or 0.0,
+            "clicks": to_float(r.get("SUM(clicks)")) or 0.0,
+            "acos": None,
+            "ctr": None,
+            "keyword_type": None,
+            "source_file": path.name,
+        })
+
+    for r in rows:
+        if r["impressions"] > 0:
+            r["ctr"] = r["clicks"] / r["impressions"]
+
+    return rows
+
+
+def load_pos(path: Path):
+    df = pd.read_excel(path)
+    if df.shape[1] < 2:
         return None
-
-    print(f"  Loading {filename}...")
-    df = pd.read_excel(filepath)
-    rename = {v: k for k, v in POS_COLS.items() if v in df.columns}
-    df = df.rename(columns=rename)
+    name_col, sales_col = df.columns[0], df.columns[1]
 
     pos = {}
-    for _, row in df.iterrows():
-        pos[str(row["platform"]).strip()] = float(row["sales"])
+    for _, r in df.iterrows():
+        name = r[name_col]
+        if name is None or pd.isna(name):
+            continue
+        name = str(name).strip()
+        if not name:
+            continue
+        val = to_float(r[sales_col])
+        if val is None:
+            continue
+        pos[name] = val
 
+    if not pos:
+        return None
     pos["total"] = sum(pos.values())
-    print(f"    POS loaded: {pos}")
     return pos
 
 
-# ─── Aggregation helpers ──────────────────────────────────────────────────────
+# ─── Aggregation ──────────────────────────────────────────────────────────────
 
-def safe_div(num, denom, default=None):
-    try:
-        if denom and denom > 0:
-            return round(num / denom, 4)
-    except Exception:
-        pass
-    return default
+def agg_platforms(rows):
+    by_plat = {}
+    for r in rows:
+        by_plat.setdefault(r["platform"], []).append(r)
 
-
-def agg_platform_summary(all_df: pd.DataFrame) -> dict:
-    """
-    Aggregate spend, attRev, and ACOS by platform.
-    Returns dict matching the 'platforms' key structure in the JSON.
-    """
-    platforms = {}
-    platform_map = {
-        "Amazon": "Amazon AMS",
-        "Meta":   "Meta",
-        "Flipkart": "Flipkart",
-    }
-
-    for plat, label in platform_map.items():
-        sub = all_df[all_df["platform"] == plat] if not all_df.empty else pd.DataFrame()
-        if sub.empty:
-            platforms[label] = {"spend": 0, "attRev": 0, "acos": None, "pending": False}
+    out = {}
+    for plat, label in (("Amazon", "Amazon AMS"), ("Meta", "Meta"), ("Flipkart", "Flipkart")):
+        sub = by_plat.get(plat, [])
+        if not sub:
+            out[label] = {"spend": 0, "attRev": 0, "acos": None, "pending": True}
             continue
-
-        spend    = float(sub["spend"].sum())            if "spend"          in sub.columns else 0
-        att_rev  = float(sub["attributed_rev"].sum())   if "attributed_rev" in sub.columns else 0
-
-        # ACOS: only meaningful for Amazon
-        acos = None
-        if plat == "Amazon" and "acos" in sub.columns:
-            # weighted ACOS = total spend / total attributed revenue
-            acos = round(safe_div(spend, att_rev) or 0, 4) if att_rev > 0 else None
-
-        platforms[label] = {
-            "spend":   round(spend, 2),
-            "attRev":  round(att_rev, 2),
-            "acos":    acos,
+        spend = sum(r["spend"] for r in sub)
+        att_rev = sum(r["att_rev"] for r in sub)
+        acos = round(spend / att_rev, 4) if (plat == "Amazon" and att_rev > 0) else None
+        out[label] = {
+            "spend": round(spend, 2),
+            "attRev": round(att_rev, 2),
+            "acos": acos,
             "pending": False,
         }
 
-    # Google Ads — always pending until data is available
-    platforms["Google Ads"] = {"spend": 0, "attRev": 0, "acos": None, "pending": True}
-
-    return platforms
+    out["Google Ads"] = {"spend": 0, "attRev": 0, "acos": None, "pending": True}
+    return out
 
 
-def agg_channel_detail(all_df: pd.DataFrame) -> dict:
-    """
-    Build the channelDetail structure: awareness / coreSales / retargeting rows.
-    Each row = one campaign (or campaign group if deduplication is needed).
-    TODO: once real files arrive, decide whether to keep per-campaign rows or group by ad_type+targeting.
-    """
-    if all_df.empty:
-        return {}
+def _group_key(r):
+    if r["platform"] == "Amazon":
+        return ("Amazon", r["ad_type"], r["ad_sub_type"])
+    if r["platform"] == "Meta":
+        return ("Meta", r["ad_type"], r["ad_sub_type"])
+    if r["platform"] == "Flipkart":
+        return ("Flipkart", r["ad_type"], None)
+    return None
 
-    def make_rows(bucket: str) -> list:
-        sub = all_df[all_df["bucket"] == bucket].copy()
-        rows = []
-        for _, r in sub.iterrows():
-            spend     = float(r.get("spend", 0) or 0)
-            att_rev   = float(r.get("attributed_rev", 0) or 0) if r.get("attributed_rev") else None
-            roas      = safe_div(att_rev, spend) if att_rev else None
-            acos      = float(r.get("acos", 0)) if r.get("acos") else None
-            ctr       = float(r.get("ctr", 0))  if r.get("ctr")  else None
 
-            rows.append({
-                "platform":    str(r.get("platform", "")),
-                "adType":      str(r.get("ad_type", "")),
-                "adSubType":   str(r.get("targeting_type", "")) if r.get("targeting_type") else None,
-                "targeting":   str(r.get("keyword_type", ""))   if r.get("keyword_type")   else None,
-                "campaignName":str(r.get("campaign_name", "")),
-                "source":      str(r.get("source_file", "")),
-                "spend":       round(spend, 2),
-                "attRev":      round(att_rev, 2) if att_rev else None,
-                "roas":        round(roas, 2)    if roas    else None,
-                "acos":        round(acos, 4)    if acos    else None,
-                "ctr":         round(ctr, 4)     if ctr     else None,
-                "ctrDisplay":  None,   # will be formatted in dashboard JS
-                "ctrStatus":   "na",
-                "ctrCvr":      None,
-            })
-        return rows
+def _group_label(platform, t1, t2):
+    if platform == "Amazon":
+        return " ".join(x for x in (t1, t2) if x)
+    if platform == "Meta":
+        return " + ".join(x for x in (t1, t2) if x)
+    return t1 or platform
 
-    detail = {}
-    for bucket, key in [("Awareness", "awareness"), ("Core Sales", "coreSales"), ("Retargeting", "retargeting")]:
-        rows = make_rows(bucket)
-        sub = all_df[all_df["bucket"] == bucket]
-        total_spend  = float(sub["spend"].sum())           if "spend"          in sub.columns else 0
-        total_attrev = float(sub["attributed_rev"].sum())  if "attributed_rev" in sub.columns else 0
-        roas         = safe_div(total_attrev, total_spend)
-        acos         = safe_div(total_spend, total_attrev) if total_attrev else None
 
-        detail[key] = rows
+def agg_channel_detail(rows):
+    detail = {"awareness": [], "coreSales": [], "retargeting": []}
+
+    groups = {}
+    for r in rows:
+        k = _group_key(r)
+        if k is None:
+            continue
+        groups.setdefault((r["bucket"], k), []).append(r)
+
+    for (bucket, k), grows in groups.items():
+        platform, t1, t2 = k
+        spend = sum(r["spend"] for r in grows)
+        att_rev = sum(r["att_rev"] for r in grows)
+        impressions = sum(r["impressions"] for r in grows)
+        clicks = sum(r["clicks"] for r in grows)
+        roas = safe_div(att_rev, spend)
+        acos = safe_div(spend, att_rev) if platform == "Amazon" else None
+        ctr = safe_div(clicks, impressions)
+        ctr_display = f"{ctr * 100:.2f}%" if ctr is not None else None
+
+        targeting = None
+        if platform == "Amazon":
+            kw_types = [r.get("keyword_type") for r in grows if r.get("keyword_type")]
+            if kw_types:
+                targeting = Counter(kw_types).most_common(1)[0][0]
+
+        sources = sorted({r["source_file"] for r in grows})
+
+        row = {
+            "platform": platform,
+            "adType": t1,
+            "adSubType": t2,
+            "targeting": targeting,
+            "campaignGroup": _group_label(platform, t1, t2),
+            "spend": round(spend, 2),
+            "attRev": round(att_rev, 2),
+            "roas": round_or_none(roas, 2),
+            "acos": round_or_none(acos, 4),
+            "impressions": int(impressions),
+            "clicks": int(clicks),
+            "ctr": round_or_none(ctr, 4),
+            "ctrDisplay": ctr_display,
+            "ctrStatus": "na",
+            "ctrCvr": ctr_display,
+            "source": ", ".join(sources),
+        }
+        key = BUCKET_KEYS.get(bucket)
+        if key:
+            detail[key].append(row)
+
+    for key in detail:
+        detail[key].sort(key=lambda r: r["spend"], reverse=True)
+
+    for bucket, key in BUCKET_KEYS.items():
+        sub = [r for r in rows if r["bucket"] == bucket]
+        spend = sum(r["spend"] for r in sub)
+        att_rev = sum(r["att_rev"] for r in sub)
+        roas = safe_div(att_rev, spend)
+        amazon_present = any(r["platform"] == "Amazon" for r in sub)
+        acos = safe_div(spend, att_rev) if amazon_present else None
         detail[f"{key}Subtotal"] = {
-            "spend":  round(total_spend, 2),
-            "attRev": round(total_attrev, 2),
-            "roas":   round(roas, 2) if roas else None,
-            "acos":   round(acos, 4) if acos else None,
-            "note":   "",
+            "spend": round(spend, 2),
+            "attRev": round(att_rev, 2),
+            "roas": round_or_none(roas, 2),
+            "acos": round_or_none(acos, 4),
+            "note": "",
         }
 
     return detail
 
 
-def agg_top_bottom(all_df: pd.DataFrame, n: int = 5) -> tuple:
-    """
-    Returns (top_performers, needs_attention) — each a list of n campaign dicts.
-    Ranked by ROAS, minimum spend threshold applied.
-    """
-    if all_df.empty or "spend" not in all_df.columns or "attributed_rev" not in all_df.columns:
-        return [], []
+def agg_top_bottom(rows, n=5):
+    def roas_of(r):
+        return r["att_rev"] / r["spend"] if r["spend"] > 0 else 0
 
-    df = all_df.copy()
-    df["spend"]         = pd.to_numeric(df["spend"], errors="coerce").fillna(0)
-    df["attributed_rev"]= pd.to_numeric(df["attributed_rev"], errors="coerce").fillna(0)
-    df["roas"]          = df.apply(lambda r: safe_div(r["attributed_rev"], r["spend"]) or 0, axis=1)
-    df["acos"]          = pd.to_numeric(df.get("acos"), errors="coerce") if "acos" in df.columns else None
+    top_pool = [r for r in rows if r["spend"] >= 5000 and r["att_rev"] > 0]
+    top_pool.sort(key=roas_of, reverse=True)
 
-    # Top performers: min spend ₹5,000, any bucket, ranked by ROAS desc
-    top = (df[df["spend"] >= 5000]
-           .sort_values("roas", ascending=False)
-           .head(n))
+    bottom_pool = [r for r in rows if r["spend"] >= 10000 and r["bucket"] != "Awareness"]
+    bottom_pool.sort(key=roas_of)
 
-    # Needs attention: min spend ₹10,000, exclude awareness, ranked by ROAS asc
-    bottom = (df[(df["spend"] >= 10000) & (df["bucket"] != "Awareness")]
-              .sort_values("roas", ascending=True)
-              .head(n))
-
-    def row_to_dict(r, rank):
+    def to_out(r, rank):
         return {
-            "rank":         rank,
-            "platform":     str(r.get("platform", "")),
-            "campaignName": str(r.get("campaign_name", "")),
-            "campaignFull": str(r.get("campaign_name", "")),
-            "bucket":       str(r.get("bucket", "")),
-            "spend":        round(float(r.get("spend", 0)), 2),
-            "roas":         round(float(r.get("roas", 0)), 2),
-            "acos":         round(float(r["acos"]), 4) if r.get("acos") and not pd.isna(r["acos"]) else None,
-            "source":       str(r.get("source_file", "")),
+            "rank": rank,
+            "platform": r["platform"],
+            "campaignName": r["campaign_name"],
+            "campaignFull": r["campaign_name"],
+            "bucket": r["bucket"],
+            "spend": round(r["spend"], 2),
+            "roas": round(roas_of(r), 2),
+            "acos": round_or_none(r["acos"], 4) if r["platform"] == "Amazon" else None,
+            "source": r["source_file"],
         }
 
-    return (
-        [row_to_dict(r, i + 1) for i, (_, r) in enumerate(top.iterrows())],
-        [row_to_dict(r, i + 1) for i, (_, r) in enumerate(bottom.iterrows())],
-    )
+    top = [to_out(r, i + 1) for i, r in enumerate(top_pool[:n])]
+    bottom = [to_out(r, i + 1) for i, r in enumerate(bottom_pool[:n])]
+    return top, bottom
+
+
+def agg_bucket_summary(rows):
+    out = {}
+    for bucket, key in BUCKET_KEYS.items():
+        sub = [r for r in rows if r["bucket"] == bucket]
+        spend = sum(r["spend"] for r in sub)
+        att_rev = sum(r["att_rev"] for r in sub)
+        roas = safe_div(att_rev, spend) or 0
+        chans = {}
+        for r in sub:
+            chans[r["platform"]] = chans.get(r["platform"], 0) + r["spend"]
+        out[key] = {
+            "totalSpend": round(spend, 2),
+            "roas": round(roas, 2),
+            "channels": [{"platform": p, "spend": round(s, 2)} for p, s in chans.items()],
+        }
+    return out
 
 
 # ─── Main ─────────────────────────────────────────────────────────────────────
 
 def process_month(month_str: str):
-    """
-    Main entry point. Reads all files for the given month, builds the JSON, writes it out.
-    month_str format: YYYY_MM  e.g. "2026_03"
-    """
-    folder = PROJECT_ROOT / "raw_exports" / month_str
+    folder = RAW_EXPORTS / month_str
     if not folder.exists():
-        sys.exit(f"ERROR: Folder not found: {folder}\nCreate it and drop the export files in.")
+        sys.exit(f"ERROR: Folder not found: {folder}")
 
-    # Parse month label for display  e.g. "2026_03" → "Mar '26"
     year, month = month_str.split("_")
     month_label = datetime(int(year), int(month), 1).strftime("%b '%y")
 
-    print(f"\n{'='*60}")
-    print(f"Processing: {month_str}  →  {month_label}")
-    print(f"Folder: {folder}")
-    print(f"{'='*60}\n")
+    print(f"Processing {month_str} → {month_label}")
+    print(f"Folder: {folder}\n")
 
-    # 1. Load targeting reference
-    print("Loading targeting reference...")
+    missing = []
+    source_files = []
+
+    # Search term files (for Amazon keyword classification)
     ref = load_targeting_reference()
+    sp_path = find_sp_search(folder)
+    sb_path = find_sb_search(folder)
+    search_dfs = []
+    if sp_path:
+        search_dfs.append(pd.read_excel(sp_path))
+        source_files.append(sp_path.name)
+    if sb_path:
+        search_dfs.append(pd.read_excel(sb_path))
+        source_files.append(sb_path.name)
+    kw_map = compute_campaign_keyword_types(search_dfs, ref) if search_dfs else {}
 
-    # 2. Load all platform files
-    print("\nLoading platform exports...")
-    amazon_sp = load_amazon(folder, "SP", ref)
-    amazon_sb = load_amazon(folder, "SB", ref)
-    amazon_sd = load_amazon(folder, "SD", ref)
-    meta      = load_meta(folder)
-    flipkart  = load_flipkart(folder)
-    pos       = load_pos(folder)
+    # SD targeting (recorded in source files; not aggregated separately — SD totals come from the campaign report)
+    sd_path = find_sd_targeting(folder)
+    if sd_path:
+        source_files.append(sd_path.name)
 
-    # 3. Combine into one DataFrame
-    frames = [df for df in [amazon_sp, amazon_sb, amazon_sd, meta, flipkart] if not df.empty]
-    if not frames:
-        sys.exit("ERROR: No data files loaded. Check that files are in the folder and named correctly.")
+    all_rows = []
 
-    all_df = pd.concat(frames, ignore_index=True)
-    print(f"\nTotal rows across all platforms: {len(all_df)}")
+    amazon_path = find_amazon_campaigns(folder)
+    if amazon_path:
+        all_rows.extend(load_amazon_campaigns(amazon_path, kw_map))
+        source_files.append(amazon_path.name)
+    else:
+        missing.append("Amazon_Campaigns")
 
-    # 4. Aggregate
-    print("\nAggregating...")
-    platforms = agg_platform_summary(all_df)
-    total_spend  = sum(p["spend"]  for p in platforms.values() if not p.get("pending"))
-    total_attrev = sum(p["attRev"] for p in platforms.values() if not p.get("pending"))
+    meta_path = find_meta(folder)
+    if meta_path:
+        all_rows.extend(load_meta(meta_path))
+        source_files.append(meta_path.name)
+    else:
+        missing.append("Meta_Campaigns")
 
-    channel_detail = agg_channel_detail(all_df)
-    tops, bottoms  = agg_top_bottom(all_df)
+    flipkart_path = find_flipkart(folder)
+    if flipkart_path:
+        all_rows.extend(load_flipkart(flipkart_path))
+        source_files.append(flipkart_path.name)
+    else:
+        missing.append("Flipkart_Campaigns")
 
-    # 5. Load existing JSON to preserve other months
-    print("\nUpdating JSON...")
+    pos_path = find_pos(folder)
+    pos = load_pos(pos_path) if pos_path else None
+    if pos_path:
+        source_files.append(pos_path.name)
+    else:
+        missing.append("POS")
+
+    # When search term files are missing, set keyword_type to null on every Amazon row
+    if not search_dfs:
+        for r in all_rows:
+            if r["platform"] == "Amazon":
+                r["keyword_type"] = None
+
+    platforms = agg_platforms(all_rows)
+    total_spend = sum(p["spend"] for p in platforms.values() if not p.get("pending"))
+    total_att_rev = sum(p["attRev"] for p in platforms.values() if not p.get("pending"))
+    channel_detail = agg_channel_detail(all_rows)
+    top, bottom = agg_top_bottom(all_rows)
+    bucket_summary = agg_bucket_summary(all_rows)
+
     if OUTPUT_FILE.exists():
-        with open(OUTPUT_FILE) as f:
+        with open(OUTPUT_FILE, encoding="utf-8") as f:
             data = json.load(f)
     else:
-        data = {
-            "_meta": {}, "months": [], "notices": {}, "monthly": {},
-            "benchmarks": BENCHMARKS,
-            "channelDetail": {}, "topPerformers": {}, "needsAttention": {}, "bucketSummary": {},
-        }
+        data = {}
 
-    # 6. Add / overwrite this month
-    source_files = []
-    for df in frames:
-        if "source_file" in df.columns:
-            source_files.extend(df["source_file"].unique().tolist())
+    data.setdefault("_meta", {})
+    data.setdefault("months", [])
+    data.setdefault("notices", {})
+    data.setdefault("monthly", {})
+    data.setdefault("channelDetail", {})
+    data.setdefault("topPerformers", {})
+    data.setdefault("needsAttention", {})
+    data.setdefault("bucketSummary", {})
+    if "benchmarks" not in data:
+        data["benchmarks"] = DEFAULT_BENCHMARKS.copy()
+    data["_benchmarks_note"] = BENCHMARKS_NOTE
+
+    data["_meta"].update({
+        "dashboard": "MIN Growth Marketing Dashboard",
+        "marketingArm": "Meyer India (MIN)",
+        "lastUpdated": month_str,
+        "currency": "INR",
+        "generatedBy": "processor.py",
+        "sourceFiles": source_files,
+        "missing": missing,
+    })
 
     if month_label not in data["months"]:
         data["months"].append(month_label)
-        data["months"].sort()  # keep chronological
+        data["months"].sort(key=lambda m: datetime.strptime(m, "%b '%y"))
 
-    data["notices"][month_label] = f"{month_label} — Generated from raw platform exports on {datetime.today().strftime('%Y-%m-%d')}."
+    notice = f"{month_label} — Generated from raw exports on {datetime.today().strftime('%Y-%m-%d')}."
+    if missing:
+        notice += f" Missing: {', '.join(missing)}."
+    data["notices"][month_label] = notice
 
     data["monthly"][month_label] = {
-        "spend":     round(total_spend, 2),
-        "attRev":    round(total_attrev, 2),
-        "pos":       pos,
+        "spend": round(total_spend, 2),
+        "attRev": round(total_att_rev, 2),
+        "pos": pos,
         "platforms": platforms,
     }
+    data["channelDetail"][month_label] = channel_detail
+    data["topPerformers"][month_label] = top
+    data["needsAttention"][month_label] = bottom
+    data["bucketSummary"][month_label] = bucket_summary
 
-    data["channelDetail"][month_label]  = channel_detail
-    data["topPerformers"][month_label]  = tops
-    data["needsAttention"][month_label] = bottoms
-    data["bucketSummary"][month_label]  = {}  # TODO: populate once CTR/CVR range logic is confirmed
-
-    data["_meta"]["lastUpdated"] = month_str
-    data["_meta"]["generatedBy"] = "GMD_DataProcessor_v1.py"
-    data["_meta"]["sourceFiles"] = list(set(data["_meta"].get("sourceFiles", []) + source_files))
-
-    # 7. Write JSON
-    with open(OUTPUT_FILE, "w") as f:
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
-    print(f"\n✓ JSON written to: {OUTPUT_FILE}")
-    print(f"\nSummary for {month_label}:")
-    print(f"  Total spend:     ₹{total_spend:,.0f}")
-    print(f"  Total att. rev:  ₹{total_attrev:,.0f}")
-    print(f"  Overall ROAS:    {safe_div(total_attrev, total_spend):.2f}×" if total_spend else "  Overall ROAS: N/A")
-    if pos:
-        print(f"  Total POS:       ₹{pos.get('total', 0):,.0f}")
-    print(f"\n  Source files:    {source_files}")
-    print(f"\nNEXT STEPS:")
-    print(f"  1. Open GMD_Dashboard_MIN_data.json — verify numbers against your raw exports")
-    print(f"  2. Open GMD_Dashboard_MIN_v4.html   — check the dashboard looks right")
-    print(f"  3. If column names were wrong, update the _COLS dicts at the top of this script and re-run")
+    _print_summary(month_label, platforms, total_spend, total_att_rev, pos, missing, source_files)
+
+
+def _print_summary(month_label, platforms, total_spend, total_att_rev, pos, missing, source_files):
+    print(f"✓ {month_label} written to data.json")
+    plat_strs = []
+    for plat, label in (("Amazon", "Amazon AMS"), ("Flipkart", "Flipkart"), ("Meta", "Meta")):
+        p = platforms.get(label, {})
+        if p.get("pending"):
+            plat_strs.append(f"{plat} MISSING")
+        else:
+            plat_strs.append(f"{plat} ₹{p['spend'] / 100000:.1f}L spend")
+    print(f"  Platforms:    {' | '.join(plat_strs)}")
+    print(f"  Total spend:  ₹{total_spend:,.0f}")
+    print(f"  Total attRev: ₹{total_att_rev:,.0f}")
+    roas = safe_div(total_att_rev, total_spend)
+    print(f"  ROAS:         {roas:.2f}×" if roas else "  ROAS:         N/A")
+    print(f"  POS:          {'₹' + format(pos['total'], ',.0f') if pos else 'MISSING'}")
+    print(f"  Missing:      {', '.join(missing) if missing else 'none'}")
+    print(f"  Source files: {source_files}")
 
 
 if __name__ == "__main__":
