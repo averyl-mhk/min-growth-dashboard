@@ -17,6 +17,9 @@ try:
 except ImportError:
     sys.exit("Missing dependency: pip install pandas openpyxl")
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+
 
 SCRIPT_DIR = Path(__file__).parent
 RAW_EXPORTS = SCRIPT_DIR / "raw_exports"
@@ -40,7 +43,7 @@ BENCHMARKS_NOTE = (
     "overwrites an existing benchmarks block — it only writes defaults if the key is absent."
 )
 
-AMAZON_BUCKETS = {"SP": "Core Sales", "SB": "Awareness", "SD": "Retargeting"}
+AMAZON_BUCKETS = {"SP": "Core Sales", "SB": "Awareness", "SB2": "Awareness", "SD": "Retargeting"}
 META_BUCKETS = {"Prospecting": "Awareness", "Remarketing": "Retargeting", "Sales Traffic": "Core Sales"}
 FLIPKART_BUCKETS = {"PLA": "Core Sales", "SP": "Core Sales", "SELLER_PCA": "Retargeting", "PCA": "Retargeting"}
 
@@ -190,10 +193,13 @@ def load_amazon_campaigns(path: Path, kw_map: dict):
     rev_col = _amazon_col(df, "Sales (converted)", "Sales")
 
     rows = []
+    unknown_types = Counter()
     for _, r in df.iterrows():
         ad_type = str(r.get("Type", "") or "").strip().upper()
         bucket = AMAZON_BUCKETS.get(ad_type)
         if not bucket:
+            if ad_type:
+                unknown_types[ad_type] += 1
             continue
         targeting = str(r.get("Targeting", "") or "").strip()
         sub_type = targeting.title() if targeting else None
@@ -231,6 +237,10 @@ def load_amazon_campaigns(path: Path, kw_map: dict):
     for r in rows:
         if r["impressions"] > 0:
             r["ctr"] = r["clicks"] / r["impressions"]
+
+    if unknown_types:
+        print(f"  WARNING: Amazon rows skipped — unmapped Type values: {dict(unknown_types)}")
+        print(f"  Add these to AMAZON_BUCKETS in processor.py if they should be counted.")
 
     return rows
 
