@@ -476,51 +476,49 @@
         "totalSpend": 288359.33,
         "roas": 1.68,
         "channels": [
-          {
-            "platform": "Amazon",
-            "spend": 170500.87
-          },
-          {
-            "platform": "Meta",
-            "spend": 117858.46
-          }
-        ]
+          "Amazon SB",
+          "Amazon SB2",
+          "Meta Prospecting"
+        ],
+        "ctrRange": "0.00% – 4.60%",
+        "ctrStatus": "ok",
+        "ctrNote": "Avg 1.53% vs bench 1.5%",
+        "cvrDisplay": "n/a",
+        "cvrRange": "n/a",
+        "cvrStatus": "na",
+        "cvrNote": "Purchase data not loaded"
       },
       "coreSales": {
         "totalSpend": 1222088.84,
         "roas": 3.14,
         "channels": [
-          {
-            "platform": "Amazon",
-            "spend": 1155834.79
-          },
-          {
-            "platform": "Meta",
-            "spend": 24862.05
-          },
-          {
-            "platform": "Flipkart",
-            "spend": 41392.0
-          }
-        ]
+          "Amazon SP",
+          "Flipkart PLA",
+          "Meta Sales Traffic"
+        ],
+        "ctrRange": "0.00% – 6.52%",
+        "ctrStatus": "fail",
+        "ctrNote": "Avg 0.49% vs bench 1.5%",
+        "cvrDisplay": "n/a",
+        "cvrRange": "n/a",
+        "cvrStatus": "na",
+        "cvrNote": "Purchase data not loaded"
       },
       "retargeting": {
         "totalSpend": 90728.95,
         "roas": 1.75,
         "channels": [
-          {
-            "platform": "Amazon",
-            "spend": 64249.65
-          },
-          {
-            "platform": "Meta",
-            "spend": 25533.15
-          },
-          {
-            "platform": "Flipkart",
-            "spend": 946.15
-          }
-        ]
+          "Amazon SD",
+          "Flipkart SELLER_PCA",
+          "Meta Remarketing"
+        ],
+        "ctrRange": "0.11% – 6.71%",
+        "ctrStatus": "fail",
+        "ctrNote": "Avg 1.08% vs bench 2.0%",
+        "cvrDisplay": "n/a",
+        "cvrRange": "n/a",
+        "cvrStatus": "na",
+        "cvrNote": "Purchase data not loaded"
       }
     }
   },
