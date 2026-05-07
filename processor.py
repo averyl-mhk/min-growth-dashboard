@@ -491,20 +491,70 @@ def agg_top_bottom(rows, n=5):
     return top, bottom
 
 
-def agg_bucket_summary(rows):
+def _channel_label(r):
+    if r["platform"] == "Amazon":
+        return f"Amazon {r['ad_type']}" if r["ad_type"] else "Amazon"
+    if r["platform"] == "Meta":
+        return f"Meta {r['ad_sub_type']}" if r["ad_sub_type"] else "Meta"
+    if r["platform"] == "Flipkart":
+        return f"Flipkart {r['ad_type']}" if r["ad_type"] else "Flipkart"
+    return r["platform"]
+
+
+def agg_bucket_summary(rows, benchmarks):
+    """Bucket-level cards on the Channel Detail view.
+
+    Dashboard expects channels as a string array, plus CTR/CVR range/status/note
+    fields. CVR is left as 'n/a' because purchase counts aren't loaded.
+    """
+    bucket_ctr_benchmark = {
+        "Awareness": "prospectingCTR",
+        "Core Sales": "prospectingCTR",
+        "Retargeting": "retargetingCTR",
+    }
+
     out = {}
     for bucket, key in BUCKET_KEYS.items():
         sub = [r for r in rows if r["bucket"] == bucket]
         spend = sum(r["spend"] for r in sub)
         att_rev = sum(r["att_rev"] for r in sub)
         roas = safe_div(att_rev, spend) or 0
-        chans = {}
-        for r in sub:
-            chans[r["platform"]] = chans.get(r["platform"], 0) + r["spend"]
+
+        channels = sorted({_channel_label(r) for r in sub if r["spend"] > 0})
+
+        ctrs = [r["ctr"] for r in sub if r.get("ctr") is not None and r["impressions"] > 0]
+        total_imp = sum(r["impressions"] for r in sub)
+        total_clicks = sum(r["clicks"] for r in sub)
+
+        if ctrs and total_imp > 0:
+            ctr_min, ctr_max = min(ctrs), max(ctrs)
+            ctr_range = f"{ctr_min * 100:.2f}% – {ctr_max * 100:.2f}%"
+            avg_ctr = total_clicks / total_imp
+            bench = benchmarks.get(bucket_ctr_benchmark[bucket], 0)
+            ctr_status = "ok" if avg_ctr >= bench else "fail"
+            ctr_note = f"Avg {avg_ctr * 100:.2f}% vs bench {bench * 100:.1f}%"
+        else:
+            ctr_range = "—"
+            ctr_status = "na"
+            ctr_note = "No impressions"
+
+        # CVR requires purchase counts, which aren't loaded today.
+        cvr_display = "n/a"
+        cvr_range = "n/a"
+        cvr_status = "na"
+        cvr_note = "Purchase data not loaded"
+
         out[key] = {
             "totalSpend": round(spend, 2),
             "roas": round(roas, 2),
-            "channels": [{"platform": p, "spend": round(s, 2)} for p, s in chans.items()],
+            "channels": channels,
+            "ctrRange": ctr_range,
+            "ctrStatus": ctr_status,
+            "ctrNote": ctr_note,
+            "cvrDisplay": cvr_display,
+            "cvrRange": cvr_range,
+            "cvrStatus": cvr_status,
+            "cvrNote": cvr_note,
         }
     return out
 
@@ -579,18 +629,20 @@ def process_month(month_str: str):
             if r["platform"] == "Amazon":
                 r["keyword_type"] = None
 
-    platforms = agg_platforms(all_rows)
-    total_spend = sum(p["spend"] for p in platforms.values() if not p.get("pending"))
-    total_att_rev = sum(p["attRev"] for p in platforms.values() if not p.get("pending"))
-    channel_detail = agg_channel_detail(all_rows)
-    top, bottom = agg_top_bottom(all_rows)
-    bucket_summary = agg_bucket_summary(all_rows)
-
     if OUTPUT_FILE.exists():
         with open(OUTPUT_FILE, encoding="utf-8") as f:
             data = json.load(f)
     else:
         data = {}
+
+    active_benchmarks = data.get("benchmarks") or DEFAULT_BENCHMARKS
+
+    platforms = agg_platforms(all_rows)
+    total_spend = sum(p["spend"] for p in platforms.values() if not p.get("pending"))
+    total_att_rev = sum(p["attRev"] for p in platforms.values() if not p.get("pending"))
+    channel_detail = agg_channel_detail(all_rows)
+    top, bottom = agg_top_bottom(all_rows)
+    bucket_summary = agg_bucket_summary(all_rows, active_benchmarks)
 
     data.setdefault("_meta", {})
     data.setdefault("months", [])
