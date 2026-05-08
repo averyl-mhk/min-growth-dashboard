@@ -6,6 +6,9 @@
     "currency": "INR",
     "generatedBy": "processor.py",
     "sourceFiles": [
+      "Sponsored_Brands_Search_term_report.xlsx",
+      "Sponsored_Brands_Search_term_report.xlsx",
+      "Sponsored_Display_Targeting_report.xlsx",
       "Campaign_Amazon_FEB (2).xlsx",
       "Meta Feb'26 (2).xlsx",
       "Flipkart_Ads_FEB (2).xlsx",
@@ -18,7 +21,7 @@
     "Feb '26"
   ],
   "notices": {
-    "Feb '26": "Feb '26 — Generated from raw exports on 2026-05-07."
+    "Feb '26": "Feb '26 — Generated from raw exports on 2026-05-08."
   },
   "monthly": {
     "Feb '26": {
@@ -76,7 +79,7 @@
           "platform": "Amazon",
           "adType": "SB2",
           "adSubType": "Manual",
-          "targeting": null,
+          "targeting": "Generic",
           "campaignGroup": "SB2 Manual",
           "spend": 147305.16,
           "attRev": 343998.07,
@@ -148,7 +151,7 @@
           "platform": "Amazon",
           "adType": "SB",
           "adSubType": "Manual",
-          "targeting": null,
+          "targeting": "Branded",
           "campaignGroup": "SB Manual",
           "spend": 23195.71,
           "attRev": 140808.24,
