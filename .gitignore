@@ -12,6 +12,7 @@ outputs/
 
 # Derived Excel dumps from dump_excel.py (data.json is the source of truth)
 /data.xlsx
+/data_*.xlsx
 
 # Context folder — reference files used by processor (too large / sensitive for repo)
 context/

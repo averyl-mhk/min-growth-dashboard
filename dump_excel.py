@@ -87,10 +87,18 @@ def filter_month(data: dict, month: str) -> dict:
     return out
 
 
+def _sanitize_month(month: str) -> str:
+    """\"Feb '26\" → \"Feb_26\" — safe for filenames on Windows."""
+    return "".join(c if c.isalnum() else "_" for c in month).strip("_").replace("__", "_")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Flatten data.json into a multi-sheet Excel")
     parser.add_argument("--month", help="Only include this month, e.g. \"Feb '26\". Default: all months.")
-    parser.add_argument("--out", default="data.xlsx", help="Output filename (default: data.xlsx)")
+    parser.add_argument(
+        "--out",
+        help="Output filename. Default: data.xlsx for all months, data_<Month>.xlsx for a single month.",
+    )
     args = parser.parse_args()
 
     if not DATA_FILE.exists():
@@ -103,7 +111,13 @@ def main():
             sys.exit(f"ERROR: month '{args.month}' not in data.json. Available: {data.get('months', [])}")
         data = filter_month(data, args.month)
 
-    out_path = SCRIPT_DIR / args.out
+    if args.out:
+        out_name = args.out
+    elif args.month:
+        out_name = f"data_{_sanitize_month(args.month)}.xlsx"
+    else:
+        out_name = "data.xlsx"
+    out_path = SCRIPT_DIR / out_name
     with pd.ExcelWriter(out_path, engine="openpyxl") as writer:
         pd.DataFrame([data.get("_meta", {})]).to_excel(writer, sheet_name="_meta", index=False)
         flatten_monthly(data.get("monthly", {})).to_excel(writer, sheet_name="monthly", index=False)
