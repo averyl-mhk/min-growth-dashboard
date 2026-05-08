@@ -176,6 +176,15 @@ canvas{display:block}
 
 .no-detail-block{background:#F8FAFC;border:1px solid var(--border);border-radius:var(--r);padding:40px;text-align:center;color:var(--t3);margin-bottom:var(--gap)}
 
+.filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:var(--gap);flex-wrap:wrap}
+.filter-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--t3);margin-right:4px}
+.fpill{background:var(--card);border:1px solid var(--border);color:var(--t2);padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
+.fpill.active{background:var(--cyan);border-color:var(--cyan);color:#fff}
+.fpill.active .plat-icon{background:rgba(255,255,255,.25);color:#fff}
+.fpill:hover:not(.active){background:#F8FAFC;color:var(--t1)}
+.filter-summary{background:#F8FAFC;border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;margin-bottom:var(--gap);font-size:12px;color:var(--t2)}
+.filter-summary strong{color:var(--t1)}
+
 @media(max-width:1100px){.kpi-strip{grid-template-columns:2fr 1fr 1fr}.g2-1,.g2{grid-template-columns:1fr}.g3,.cat-logic-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:720px){.header,.page{padding-left:16px;padding-right:16px}.kpi-strip{grid-template-columns:1fr 1fr}.kcard.hero{grid-column:1/-1}.g3,.cat-logic-grid{grid-template-columns:1fr}.month-pills{gap:2px}.mpill{padding:5px 8px;font-size:11px}}
 </style>
@@ -307,7 +316,27 @@ canvas{display:block}
 // ─── Globals ───────────────────────────────────────────────────────────────
 let D = null; // The loaded JSON data
 let activeIdx = 0;
+let activePlatform = 'all'; // Channel Detail filter: 'all' | 'Amazon' | 'Meta' | 'Flipkart'
 let charts = {};
+
+// ─── Channel filter helpers ────────────────────────────────────────────────
+function filterByPlatform(rows) {
+  if (activePlatform === 'all' || !rows) return rows || [];
+  return rows.filter(r => r.platform === activePlatform);
+}
+function computeSubtotal(rows, fallback) {
+  if (activePlatform === 'all' && fallback) return fallback;
+  const spend = rows.reduce((s, r) => s + (r.spend || 0), 0);
+  const attRev = rows.reduce((s, r) => s + (r.attRev || 0), 0);
+  const roas = spend > 0 ? attRev / spend : 0;
+  const hasAmazon = rows.some(r => r.platform === 'Amazon');
+  const acos = hasAmazon && attRev > 0 ? spend / attRev : null;
+  return { spend, attRev, roas, acos, note: '' };
+}
+function onPlatformFilter(p) {
+  activePlatform = p;
+  renderDetailView(activeIdx);
+}
 
 // ─── Formatting helpers ────────────────────────────────────────────────────
 function fL(v) {
@@ -571,9 +600,17 @@ function renderDetailView(idx) {
 
   const ctrClass = status => status === 'ok' ? 'ctr-ok' : status === 'fail' ? 'ctr-fail' : 'ctr-na';
 
+  // Channel filter pills
+  const platformsInData = ['Amazon', 'Meta', 'Flipkart'];
+  const filterBar = `<div class="filter-bar">
+    <span class="filter-label">Channel</span>
+    <button class="fpill${activePlatform === 'all' ? ' active' : ''}" onclick="onPlatformFilter('all')">All Channels</button>
+    ${platformsInData.map(p => `<button class="fpill${activePlatform === p ? ' active' : ''}" onclick="onPlatformFilter('${p}')">${platIcon(p, true)} ${p}</button>`).join('')}
+  </div>`;
+
   // Bucket summary cards
   let bucketCards = '';
-  if (bSummary) {
+  if (bSummary && activePlatform === 'all') {
     const aw = bSummary.awareness;
     const sl = bSummary.coreSales;
     const re = bSummary.retargeting;
@@ -645,10 +682,18 @@ function renderDetailView(idx) {
         }).join(' &nbsp;·&nbsp; ')}</div>
       </div>
     </div>`;
+  } else if (activePlatform !== 'all') {
+    // Filtered view — replace bucket cards with a compact summary banner
+    const allFilteredRows = filterByPlatform([...(detail.awareness||[]), ...(detail.coreSales||[]), ...(detail.retargeting||[])]);
+    const filteredSpend = allFilteredRows.reduce((s, r) => s + (r.spend || 0), 0);
+    const filteredRev = allFilteredRows.reduce((s, r) => s + (r.attRev || 0), 0);
+    const filteredRoas = filteredSpend > 0 ? (filteredRev / filteredSpend).toFixed(2) + '×' : '—';
+    bucketCards = `<div class="filter-summary">Showing <strong>${activePlatform}</strong> only · ${allFilteredRows.length} row${allFilteredRows.length === 1 ? '' : 's'} · Spend ${fL(filteredSpend)} · Att. Rev ${fL(filteredRev)} · ROAS ${filteredRoas}</div>`;
   }
 
-  // Awareness table
-  const awRows = detail.awareness.map(r => {
+  // Awareness table — filter then map
+  const awFiltered = filterByPlatform(detail.awareness || []);
+  const awRows = awFiltered.map(r => {
     const rclass = r.roas ? rcClass(r.roas) : 'roas-na';
     const aclass = r.acos !== null ? acClass(r.acos) : 'roas-na';
     const adLabel = r.adSubType ? `<span class="btype">${r.adType} ${r.adSubType}</span>` : `<span class="btype">${r.adType}</span>`;
@@ -663,10 +708,11 @@ function renderDetailView(idx) {
       <td><span class="${ctrClass(r.ctrStatus)}">${r.ctrDisplay || '—'}</span></td>
     </tr>`;
   }).join('');
-  const awSub = detail.awarenessSubtotal;
+  const awSub = computeSubtotal(awFiltered, detail.awarenessSubtotal);
 
-  // Core sales table
-  const slRows = detail.coreSales.map(r => {
+  // Core sales table — filter then map
+  const slFiltered = filterByPlatform(detail.coreSales || []);
+  const slRows = slFiltered.map(r => {
     const rclass = r.roas ? rcClass(r.roas) : 'roas-na';
     const aclass = r.acos !== null ? acClass(r.acos) : 'roas-na';
     const adLabel = r.adSubType ? `<span class="btype">${r.adType} ${r.adSubType}</span>` : `<span class="btype">${r.adType}</span>`;
@@ -681,10 +727,11 @@ function renderDetailView(idx) {
       <td><span class="${ctrClass(r.ctrStatus)}">${r.ctrCvr || '—'}</span></td>
     </tr>`;
   }).join('');
-  const slSub = detail.coreSalesSubtotal;
+  const slSub = computeSubtotal(slFiltered, detail.coreSalesSubtotal);
 
-  // Retargeting table
-  const reRows = detail.retargeting.map(r => {
+  // Retargeting table — filter then map
+  const reFiltered = filterByPlatform(detail.retargeting || []);
+  const reRows = reFiltered.map(r => {
     const rclass = r.roas ? rcClass(r.roas) : 'roas-na';
     const aclass = r.acos !== null ? acClass(r.acos) : 'roas-na';
     const adLabel = r.adSubType ? `<span class="btype">${r.adType} ${r.adSubType}</span>` : `<span class="btype">${r.adType}</span>`;
@@ -699,13 +746,15 @@ function renderDetailView(idx) {
       <td><span class="${ctrClass(r.ctrStatus)}">${r.ctrCvr || '—'}</span></td>
     </tr>`;
   }).join('');
-  const reSub = detail.retargetingSubtotal;
+  const reSub = computeSubtotal(reFiltered, detail.retargetingSubtotal);
 
-  // Top / bottom tables
+  // Top / bottom tables — filter by platform too
+  const topsFiltered = filterByPlatform(tops || []);
+  const bottomsFiltered = filterByPlatform(bottoms || []);
   let topsHtml = '', bottomsHtml = '';
-  if (tops) {
-    topsHtml = tops.map(r => `<tr>
-      <td><span class="rank-num rank-top">${r.rank}</span></td>
+  if (topsFiltered.length) {
+    topsHtml = topsFiltered.map((r, i) => `<tr>
+      <td><span class="rank-num rank-top">${i + 1}</span></td>
       <td>${platIcon(r.platform)}<span class="camp-name" title="${r.campaignName}">${r.campaignName}</span></td>
       <td>${bucketTag(r.bucket)}</td>
       <td class="r">${fLT(r.spend)}</td>
@@ -713,9 +762,9 @@ function renderDetailView(idx) {
       <td class="r ${r.acos !== null ? acClass(r.acos) : 'roas-na'}">${r.acos !== null ? fPct(r.acos) : '—'}</td>
     </tr>`).join('');
   }
-  if (bottoms) {
-    bottomsHtml = bottoms.map(r => `<tr>
-      <td><span class="rank-num rank-bot">${r.rank}</span></td>
+  if (bottomsFiltered.length) {
+    bottomsHtml = bottomsFiltered.map((r, i) => `<tr>
+      <td><span class="rank-num rank-bot">${i + 1}</span></td>
       <td>${platIcon(r.platform)}<span class="camp-name" title="${r.campaignFull || r.campaignName}">${r.campaignName}</span></td>
       <td>${bucketTag(r.bucket)}</td>
       <td class="r">${fLT(r.spend)}</td>
@@ -725,6 +774,7 @@ function renderDetailView(idx) {
   }
 
   document.getElementById('detailContent').innerHTML = `
+    ${filterBar}
     ${bucketCards}
 
     <div class="sec-div"><span class="sec-badge awareness">🔆 Traffic &amp; Awareness</span><div class="sec-line"></div></div>
