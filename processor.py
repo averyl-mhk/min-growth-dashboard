@@ -7,7 +7,7 @@ Run: python processor.py --month 2026_03
 import argparse
 import json
 import sys
-from collections import Counter
+from collections import Counter, defaultdict
 from datetime import datetime
 from fnmatch import fnmatch
 from pathlib import Path
@@ -677,7 +677,7 @@ def agg_bucket_summary(rows, benchmarks):
 
 # ─── Main ─────────────────────────────────────────────────────────────────────
 
-def process_month(month_str: str):
+def process_month(month_str: str, export_brief_flag: bool = False):
     folder = RAW_EXPORTS / month_str
     if not folder.exists():
         sys.exit(f"ERROR: Folder not found: {folder}")
@@ -808,6 +808,9 @@ def process_month(month_str: str):
 
     _print_summary(month_label, platforms, total_spend, total_att_rev, pos, missing, source_files)
 
+    if export_brief_flag:
+        export_brief(month_str, month_label, data, all_rows, detail_rows, pos, missing, source_files, top, bottom)
+
 
 def _print_reconciliation(campaign_rows, detail_rows, fallback_campaigns):
     """Verify keyword-type-split rows reconcile to campaign-level totals per Amazon ad_type."""
@@ -873,8 +876,334 @@ def _print_summary(month_label, platforms, total_spend, total_att_rev, pos, miss
     print(f"  Source files: {source_files}")
 
 
+# ─── AI brief export ──────────────────────────────────────────────────────────
+
+def export_brief(month_str, month_label, data, all_rows, detail_rows, pos, missing, source_files, top, bottom):
+    """Write a formatted text brief to ai_brief_YYYY_MM.txt for pasting into Claude."""
+
+    lines = []
+
+    def h(title):
+        lines.append(f"\n{'=' * 60}")
+        lines.append(f"  {title}")
+        lines.append(f"{'=' * 60}")
+
+    def sub(title):
+        lines.append(f"\n  [{title}]")
+
+    # ── Header ──────────────────────────────────────────────────────────────────
+    lines.append("MIN GROWTH MARKETING DASHBOARD — AI ANALYSIS BRIEF")
+    lines.append(f"Month:     {month_label}")
+    lines.append(f"Generated: {datetime.today().strftime('%Y-%m-%d')}")
+    lines.append(f"Files:     {', '.join(source_files)}")
+    if missing:
+        lines.append(f"MISSING:   {', '.join(missing)}")
+    lines.append("")
+    lines.append("The system context (brand background, guiding principles, benchmarks)")
+    lines.append("is saved in this Project's instructions — do not re-paste it.")
+    lines.append("Analyse the data below and return recommendations as JSON (format at end).")
+
+    # ── POS ─────────────────────────────────────────────────────────────────────
+    h("POS — ACTUAL PLATFORM SALES")
+    if pos:
+        for k, v in pos.items():
+            if k != "total":
+                lines.append(f"  {k:<22} ₹{v:>12,.0f}")
+        lines.append(f"  {'TOTAL':<22} ₹{pos.get('total', 0):>12,.0f}")
+    else:
+        lines.append("  POS data not available this month.")
+
+    # ── MER ─────────────────────────────────────────────────────────────────────
+    h("MARKETING EFFICIENCY RATIO (MER = Total POS ÷ Total Spend)")
+    total_spend = sum(r["spend"] for r in all_rows)
+    total_att_rev = sum(r["att_rev"] for r in all_rows)
+
+    prior_months = [m for m in data.get("months", []) if m != month_label]
+    prior_label = prior_months[-1] if prior_months else None
+    prior_monthly = data.get("monthly", {}).get(prior_label) if prior_label else None
+
+    if pos and pos.get("total") and total_spend > 0:
+        mer = pos["total"] / total_spend
+        lines.append(f"  Total POS:    ₹{pos['total']:>12,.0f}")
+        lines.append(f"  Total Spend:  ₹{total_spend:>12,.0f}")
+        lines.append(f"  MER:          {mer:.2f}×")
+        if prior_monthly:
+            prior_pos_block = prior_monthly.get("pos") or {}
+            prior_total_pos = prior_pos_block.get("total") if prior_pos_block else None
+            prior_sp = prior_monthly.get("spend", 0)
+            if prior_total_pos and prior_sp > 0:
+                prior_mer = prior_total_pos / prior_sp
+                lines.append(f"  Prior MER ({prior_label}): {prior_mer:.2f}×  (Δ {mer - prior_mer:+.2f}×)")
+    else:
+        roas_proxy = total_att_rev / total_spend if total_spend > 0 else None
+        lines.append("  POS not available — using attributed revenue as proxy.")
+        lines.append(f"  Total attRev: ₹{total_att_rev:>12,.0f}")
+        lines.append(f"  Total Spend:  ₹{total_spend:>12,.0f}")
+        lines.append(f"  Proxy MER:    {roas_proxy:.2f}×" if roas_proxy else "  Proxy MER:   N/A")
+
+    if pos and pos.get("total"):
+        shopify_val = next((v for k, v in pos.items() if "shopify" in k.lower()), None)
+        if shopify_val:
+            pct = shopify_val / pos["total"] * 100
+            lines.append(f"  Shopify % of POS: {pct:.1f}%")
+            if prior_monthly and prior_monthly.get("pos"):
+                prior_pos_b = prior_monthly["pos"] or {}
+                prior_sh = next((v for k, v in prior_pos_b.items() if "shopify" in k.lower()), None)
+                prior_tot = prior_pos_b.get("total")
+                if prior_sh and prior_tot:
+                    prior_pct = prior_sh / prior_tot * 100
+                    lines.append(f"  Prior ({prior_label}) Shopify %: {prior_pct:.1f}%  (Δ {pct - prior_pct:+.1f}pp)")
+
+    # ── Platform summary ────────────────────────────────────────────────────────
+    h("PLATFORM SUMMARY")
+    lines.append(f"  {'Platform':<15} {'Spend':>12} {'AttRev':>12} {'ROAS':>8} {'ACOS':>8}")
+    lines.append(f"  {'-'*15} {'-'*12} {'-'*12} {'-'*8} {'-'*8}")
+    for plat, label in [("Amazon", "Amazon AMS"), ("Meta", "Meta"), ("Flipkart", "Flipkart")]:
+        sub_rows = [r for r in all_rows if r["platform"] == plat]
+        if not sub_rows:
+            lines.append(f"  {label:<15} {'MISSING':>12}")
+            continue
+        sp = sum(r["spend"] for r in sub_rows)
+        rev = sum(r["att_rev"] for r in sub_rows)
+        roas = rev / sp if sp > 0 else 0
+        acos = sp / rev if (plat == "Amazon" and rev > 0) else None
+        lines.append(
+            f"  {label:<15} ₹{sp:>10,.0f} ₹{rev:>10,.0f} {roas:>7.2f}× "
+            f"{'—':>8}" if acos is None else
+            f"  {label:<15} ₹{sp:>10,.0f} ₹{rev:>10,.0f} {roas:>7.2f}× {acos*100:>7.1f}%"
+        )
+    lines.append(f"  {'-'*15} {'-'*12} {'-'*12} {'-'*8} {'-'*8}")
+    overall_roas = total_att_rev / total_spend if total_spend > 0 else 0
+    lines.append(f"  {'TOTAL':<15} ₹{total_spend:>10,.0f} ₹{total_att_rev:>10,.0f} {overall_roas:>7.2f}×")
+
+    if prior_label and prior_monthly:
+        prior_sp = prior_monthly.get("spend", 0)
+        prior_rev = prior_monthly.get("attRev", 0)
+        prior_roas = prior_rev / prior_sp if prior_sp > 0 else 0
+        sp_delta = (total_spend - prior_sp) / prior_sp * 100 if prior_sp > 0 else None
+        rev_delta = (total_att_rev - prior_rev) / prior_rev * 100 if prior_rev > 0 else None
+        lines.append(f"\n  MoM vs {prior_label}:")
+        lines.append(f"    Spend:  ₹{prior_sp:>10,.0f} → ₹{total_spend:>10,.0f}  ({sp_delta:+.1f}%)" if sp_delta is not None else f"    Spend: N/A")
+        lines.append(f"    AttRev: ₹{prior_rev:>10,.0f} → ₹{total_att_rev:>10,.0f}  ({rev_delta:+.1f}%)" if rev_delta is not None else f"    AttRev: N/A")
+        lines.append(f"    ROAS:   {prior_roas:.2f}× → {overall_roas:.2f}×  (Δ {overall_roas - prior_roas:+.2f}×)")
+
+    # ── Bucket summary ──────────────────────────────────────────────────────────
+    h("BUCKET SUMMARY")
+    lines.append(f"  {'Bucket':<14} {'Spend':>12} {'AttRev':>12} {'ROAS':>8} {'AmazonACOS':>12}  Channels")
+    lines.append(f"  {'-'*14} {'-'*12} {'-'*12} {'-'*8} {'-'*12}  {'-'*30}")
+    for bucket in ["Awareness", "Core Sales", "Retargeting"]:
+        sub_rows = [r for r in all_rows if r["bucket"] == bucket]
+        sp = sum(r["spend"] for r in sub_rows)
+        rev = sum(r["att_rev"] for r in sub_rows)
+        roas = rev / sp if sp > 0 else 0
+        amz = [r for r in sub_rows if r["platform"] == "Amazon"]
+        amz_sp = sum(r["spend"] for r in amz)
+        amz_rev = sum(r["att_rev"] for r in amz)
+        acos_str = f"{amz_sp/amz_rev*100:.1f}%" if amz_rev > 0 else "—"
+        channels = ", ".join(sorted({r["platform"] for r in sub_rows if r["spend"] > 0}))
+        lines.append(f"  {bucket:<14} ₹{sp:>10,.0f} ₹{rev:>10,.0f} {roas:>7.2f}× {acos_str:>12}  {channels}")
+
+    # ── Amazon keyword type breakdown ───────────────────────────────────────────
+    h("AMAZON KEYWORD TYPE BREAKDOWN (from search term data)")
+    amz_detail = [r for r in detail_rows if r["platform"] == "Amazon" and r.get("keyword_type")]
+    if amz_detail:
+        total_amz_sp = sum(r["spend"] for r in amz_detail)
+        kw_agg = defaultdict(lambda: {"spend": 0.0, "rev": 0.0, "types": set()})
+        for r in amz_detail:
+            kw = r["keyword_type"]
+            kw_agg[kw]["spend"] += r["spend"]
+            kw_agg[kw]["rev"] += r["att_rev"]
+            kw_agg[kw]["types"].add(r["ad_type"])
+        lines.append(f"  {'KwType':<14} {'AdTypes':<10} {'Spend':>12} {'AttRev':>12} {'ROAS':>8} {'Spend%':>8}")
+        lines.append(f"  {'-'*14} {'-'*10} {'-'*12} {'-'*12} {'-'*8} {'-'*8}")
+        for kw in ["Branded", "Competition", "Generic"]:
+            if kw not in kw_agg:
+                continue
+            d = kw_agg[kw]
+            sp = d["spend"]
+            rev = d["rev"]
+            roas = rev / sp if sp > 0 else 0
+            pct = sp / total_amz_sp * 100 if total_amz_sp > 0 else 0
+            types = ",".join(sorted(d["types"]))
+            lines.append(f"  {kw:<14} {types:<10} ₹{sp:>10,.0f} ₹{rev:>10,.0f} {roas:>7.2f}× {pct:>7.1f}%")
+    else:
+        lines.append("  Search term files not available for this month — keyword type breakdown not possible.")
+
+    # ── Channel detail ──────────────────────────────────────────────────────────
+    h("CHANNEL DETAIL — ALL CAMPAIGN GROUPS")
+    hdr = f"  {'Platform':<10} {'AdType':<6} {'Sub':<8} {'KwType':<14} {'Spend':>10} {'AttRev':>10} {'ROAS':>7} {'ACOS':>8} {'Impressions':>12} {'Clicks':>8} {'CTR':>7}"
+    sep = f"  {'-'*10} {'-'*6} {'-'*8} {'-'*14} {'-'*10} {'-'*10} {'-'*7} {'-'*8} {'-'*12} {'-'*8} {'-'*7}"
+    lines.append(hdr)
+    lines.append(sep)
+
+    for bucket in ["Awareness", "Core Sales", "Retargeting"]:
+        bucket_rows = [r for r in detail_rows if r["bucket"] == bucket]
+        groups = {}
+        for r in bucket_rows:
+            k = _group_key(r)
+            if k:
+                groups.setdefault(k, []).append(r)
+        lines.append(f"\n  [{bucket.upper()}]")
+        sorted_groups = sorted(
+            groups.items(),
+            key=lambda x: _channel_sort_key({
+                "adType": x[0][1], "adSubType": x[0][2],
+                "targeting": x[0][3], "spend": sum(r["spend"] for r in x[1])
+            })
+        )
+        for k, grows in sorted_groups:
+            platform, t1, t2, kw = k
+            sp = sum(r["spend"] for r in grows)
+            rev = sum(r["att_rev"] for r in grows)
+            imp = sum(r["impressions"] for r in grows)
+            clk = sum(r["clicks"] for r in grows)
+            roas = rev / sp if sp > 0 else 0
+            acos = sp / rev if (platform == "Amazon" and rev > 0) else None
+            ctr = clk / imp if imp > 0 else None
+            lines.append(
+                f"  {platform:<10} {t1 or '—':<6} {t2 or '—':<8} {kw or '—':<14} "
+                f"₹{sp:>8,.0f} ₹{rev:>8,.0f} {roas:>6.2f}× "
+                f"{'—' if acos is None else f'{acos*100:.1f}%':>8} "
+                f"{int(imp):>12,} {int(clk):>8,} "
+                f"{'—' if ctr is None else f'{ctr*100:.2f}%':>7}"
+            )
+
+    # ── Top performers ──────────────────────────────────────────────────────────
+    h("TOP PERFORMERS (min ₹5,000 spend, ROAS descending)")
+    if top:
+        for r in top:
+            acos_str = f"{r['acos']*100:.1f}%" if r.get("acos") is not None else "—"
+            lines.append(f"  #{r['rank']} [{r['platform']}] [{r['bucket']}] ROAS {r['roas']:.2f}× | ACOS {acos_str} | Spend ₹{r['spend']:,.0f}")
+            lines.append(f"     {r['campaignName']}")
+    else:
+        lines.append("  No campaigns meet the minimum spend threshold.")
+
+    # ── Needs attention ─────────────────────────────────────────────────────────
+    h("NEEDS ATTENTION (min ₹10,000 spend, non-Awareness, ROAS ascending)")
+    if bottom:
+        for r in bottom:
+            acos_str = f"{r['acos']*100:.1f}%" if r.get("acos") is not None else "—"
+            lines.append(f"  #{r['rank']} [{r['platform']}] [{r['bucket']}] ROAS {r['roas']:.2f}× | ACOS {acos_str} | Spend ₹{r['spend']:,.0f}")
+            lines.append(f"     {r['campaignName']}")
+    else:
+        lines.append("  No campaigns meet the minimum spend threshold.")
+
+    # ── All Amazon campaigns ────────────────────────────────────────────────────
+    h("ALL AMAZON CAMPAIGNS (spend > ₹0, sorted by spend desc)")
+    amz_rows = sorted([r for r in all_rows if r["platform"] == "Amazon"], key=lambda r: -r["spend"])
+    lines.append(f"  {'AdType':<6} {'Sub':<8} {'Spend':>10} {'AttRev':>10} {'ROAS':>7} {'ACOS':>8} {'Impr':>10} {'Clicks':>7} {'CTR':>7}")
+    lines.append(f"  {'-'*6} {'-'*8} {'-'*10} {'-'*10} {'-'*7} {'-'*8} {'-'*10} {'-'*7} {'-'*7}")
+    for r in amz_rows:
+        sp, rev = r["spend"], r["att_rev"]
+        roas = rev / sp if sp > 0 else 0
+        acos = r["acos"]
+        ctr = r.get("ctr")
+        lines.append(
+            f"  {r['ad_type']:<6} {r.get('ad_sub_type') or '—':<8} "
+            f"₹{sp:>8,.0f} ₹{rev:>8,.0f} {roas:>6.2f}× "
+            f"{'—' if acos is None else f'{acos*100:.1f}%':>8} "
+            f"{int(r['impressions']):>10,} {int(r['clicks']):>7,} "
+            f"{'—' if ctr is None else f'{ctr*100:.2f}%':>7}"
+        )
+        lines.append(f"     {r['campaign_name']}")
+
+    # ── All Meta campaigns ──────────────────────────────────────────────────────
+    meta_rows = sorted([r for r in all_rows if r["platform"] == "Meta"], key=lambda r: -r["spend"])
+    if meta_rows:
+        h("ALL META CAMPAIGNS")
+        lines.append(f"  {'TargetingType':<16} {'KeywordType':<16} {'Spend':>10} {'AttRev':>10} {'ROAS':>7} {'Impr':>10} {'Clicks':>7} {'CTR':>7}")
+        lines.append(f"  {'-'*16} {'-'*16} {'-'*10} {'-'*10} {'-'*7} {'-'*10} {'-'*7} {'-'*7}")
+        for r in meta_rows:
+            sp, rev = r["spend"], r["att_rev"]
+            roas = rev / sp if sp > 0 else 0
+            ctr = r.get("ctr")
+            lines.append(
+                f"  {r.get('ad_type') or '—':<16} {r.get('ad_sub_type') or '—':<16} "
+                f"₹{sp:>8,.0f} ₹{rev:>8,.0f} {roas:>6.2f}× "
+                f"{int(r['impressions']):>10,} {int(r['clicks']):>7,} "
+                f"{'—' if ctr is None else f'{ctr*100:.2f}%':>7}"
+            )
+            lines.append(f"     {r['campaign_name']}")
+
+    # ── All Flipkart campaigns ──────────────────────────────────────────────────
+    fk_rows = sorted([r for r in all_rows if r["platform"] == "Flipkart"], key=lambda r: -r["spend"])
+    if fk_rows:
+        h("ALL FLIPKART CAMPAIGNS")
+        lines.append(f"  {'Type':<12} {'Bucket':<14} {'Spend':>10} {'AttRev':>10} {'ROAS':>7} {'Impr':>10} {'Clicks':>7} {'CTR':>7}")
+        lines.append(f"  {'-'*12} {'-'*14} {'-'*10} {'-'*10} {'-'*7} {'-'*10} {'-'*7} {'-'*7}")
+        for r in fk_rows:
+            sp, rev = r["spend"], r["att_rev"]
+            roas = rev / sp if sp > 0 else 0
+            ctr = r.get("ctr")
+            lines.append(
+                f"  {r.get('ad_type') or '—':<12} {r['bucket']:<14} "
+                f"₹{sp:>8,.0f} ₹{rev:>8,.0f} {roas:>6.2f}× "
+                f"{int(r['impressions']):>10,} {int(r['clicks']):>7,} "
+                f"{'—' if ctr is None else f'{ctr*100:.2f}%':>7}"
+            )
+            lines.append(f"     {r['campaign_name']}")
+
+    # ── Output format instructions ──────────────────────────────────────────────
+    h("YOUR OUTPUT — JSON ONLY, NO PROSE BEFORE OR AFTER")
+    lines.append("""
+Return ONLY a valid JSON object matching this schema exactly.
+
+{
+  "generatedDate": "YYYY-MM-DD",
+  "month": "<month label, e.g. Mar '26>",
+  "summary": "<2-3 sentences: what happened, overall health, most important signal>",
+  "counts": {
+    "critical": <int>,
+    "warnings": <int>,
+    "opportunities": <int>,
+    "insights": <int>
+  },
+  "recommendations": [
+    {
+      "n": <int 1–12>,
+      "priority": "<critical | warning | opportunity | insight>",
+      "title": "<one-line title naming the specific campaign or issue>",
+      "platform": "<Amazon | Meta | Flipkart | All>",
+      "bucket": "<Core Sales | Awareness | Retargeting | null>",
+      "whatDataShows": "<specific numbers from the data — cite exact campaign name and figures>",
+      "whyItMatters": "<brand equity / MER / organic share frame — not just this month's ROAS>",
+      "exactAction": "<direct instruction: which campaign, what change, by how much, what to do first>",
+      "watchNextMonth": "<what number should move, in which direction, by roughly how much>",
+      "keyMetrics": [
+        {"label": "<metric name>", "value": "<formatted value e.g. 84% or 0.6x or Rs 41,200>"}
+      ],
+      "estimatedImpact": "<optional one-liner e.g. Est. savings Rs 12-15K/mo — omit if not quantifiable>"
+    }
+  ],
+  "dataQualityFlags": [
+    "<any reporting artefact, zero-revenue anomaly, column mismatch, or attribution gap>"
+  ],
+  "strategicGap": "<one paragraph: the thing not visible in this month's data but implied by trends>"
+}
+
+After generating, save Claude's response to a .json file (e.g. recs_2026_03.json),
+then run: python ingest_recs.py --month 2026_03 --file recs_2026_03.json
+""")
+
+    brief_path = SCRIPT_DIR / f"ai_brief_{month_str}.txt"
+    with open(brief_path, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+
+    print(f"\n✓ AI brief written to ai_brief_{month_str}.txt")
+    print(f"  1. Open your MIN Dashboard Claude Project")
+    print(f"  2. Start a new chat and paste the full contents of that file")
+    print(f"  3. Save Claude's JSON response to e.g. recs_{month_str}.json")
+    print(f"  4. Run: python ingest_recs.py --month {month_str} --file recs_{month_str}.json")
+    return brief_path
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="MIN dashboard data processor")
     parser.add_argument("--month", required=True, help="Month folder name, e.g. 2026_03")
+    parser.add_argument(
+        "--export-brief",
+        action="store_true",
+        help="After processing, write ai_brief_YYYY_MM.txt for pasting into Claude"
+    )
     args = parser.parse_args()
-    process_month(args.month)
+    process_month(args.month, export_brief_flag=args.export_brief)

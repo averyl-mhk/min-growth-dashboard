@@ -187,6 +187,53 @@ canvas{display:block}
 
 @media(max-width:1100px){.kpi-strip{grid-template-columns:2fr 1fr 1fr}.g2-1,.g2{grid-template-columns:1fr}.g3,.cat-logic-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:720px){.header,.page{padding-left:16px;padding-right:16px}.kpi-strip{grid-template-columns:1fr 1fr}.kcard.hero{grid-column:1/-1}.g3,.cat-logic-grid{grid-template-columns:1fr}.month-pills{gap:2px}.mpill{padding:5px 8px;font-size:11px}}
+
+/* AI Recommendations tab */
+.view-tab.ai-active{color:#fff;border-bottom-color:#A78BFA}
+.ai-hero-card{background:linear-gradient(135deg,#1B2A4A 0%,#3B1F6A 100%);border-radius:var(--r);padding:20px 24px;margin-bottom:var(--gap);display:flex;align-items:flex-start;gap:18px;position:relative;overflow:hidden}
+.ai-hero-card::after{content:'AI';position:absolute;right:-6px;bottom:-20px;font-size:120px;font-weight:900;color:rgba(255,255,255,.04);line-height:1;pointer-events:none}
+.ai-hero-ico{width:40px;height:40px;border-radius:10px;background:rgba(167,139,250,.2);border:1px solid rgba(167,139,250,.3);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;color:#C4B5FD}
+.ai-hero-text h2{color:#fff;font-size:15px;font-weight:700;margin-bottom:4px}
+.ai-hero-text p{color:rgba(255,255,255,.6);font-size:12px;line-height:1.6;max-width:680px}
+.ai-hero-meta{margin-left:auto;text-align:right;flex-shrink:0}
+.ai-gen-date{font-size:10px;color:rgba(255,255,255,.35);margin-bottom:0}
+.ai-count-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--gap);margin-bottom:var(--gap)}
+.ai-count-card{background:var(--card);border-radius:var(--r);padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.ai-count-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--t2);margin-bottom:6px;display:flex;align-items:center;justify-content:space-between}
+.ai-count-num{font-size:26px;font-weight:800;letter-spacing:-1px;line-height:1}
+.ai-count-sub{font-size:10px;color:var(--t3);margin-top:3px}
+.ai-sec{display:flex;align-items:center;gap:10px;margin:18px 0 10px}
+.ai-sec-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--t2)}
+.ai-sec-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px}
+.ai-sec-line{flex:1;height:1px;background:var(--border)}
+.ai-rec-list{display:flex;flex-direction:column;gap:10px;margin-bottom:var(--gap)}
+.ai-rec{background:var(--card);border-radius:var(--r);padding:16px 18px;box-shadow:0 1px 3px rgba(0,0,0,.06);display:flex;align-items:flex-start;gap:14px;border-left:4px solid transparent}
+.ai-rec.crit{border-left-color:var(--red)}.ai-rec.warn{border-left-color:var(--amber)}.ai-rec.opp{border-left-color:var(--green)}.ai-rec.info{border-left-color:var(--cyan)}
+.ai-rec-ico{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.ai-rec-ico.crit{background:var(--red-bg);color:var(--red)}.ai-rec-ico.warn{background:var(--amber-bg);color:var(--amber)}.ai-rec-ico.opp{background:var(--green-bg);color:var(--green)}.ai-rec-ico.info{background:var(--cyan-bg);color:var(--cyan)}
+.ai-rec-body{flex:1;min-width:0}
+.ai-rec-head{display:flex;align-items:center;gap:7px;margin-bottom:5px;flex-wrap:wrap}
+.ai-rec-title{font-size:13px;font-weight:700;color:var(--t1)}
+.ai-pp{font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px}
+.ai-pp.amz{background:#FFF7ED;color:#C2410C;border:1px solid #FED7AA}.ai-pp.meta{background:#EFF6FF;color:#1D4ED8;border:1px solid #BFDBFE}.ai-pp.fk{background:#FFF1F2;color:#BE123C;border:1px solid #FECDD3}.ai-pp.all{background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-border)}
+.ai-bp{font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px}
+.ai-bp.aw{background:#FFFBEB;color:#92400E;border:1px solid #FDE68A}.ai-bp.cs{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}.ai-bp.rt{background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-border)}
+.ai-field{margin-bottom:6px}
+.ai-field-label{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--t3);margin-bottom:2px}
+.ai-field-text{font-size:12px;color:var(--t2);line-height:1.55}
+.ai-metrics{display:flex;gap:14px;flex-wrap:wrap;margin-top:4px}
+.ai-metric{font-size:11px;color:var(--t3)}.ai-metric strong{color:var(--t1);font-weight:700}
+.ai-impact{font-size:10px;color:var(--t3);margin-top:6px;font-style:italic}
+.ai-flags{background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:var(--r);padding:16px 18px;margin-bottom:var(--gap)}
+.ai-flags h3{font-size:12px;font-weight:700;color:#92400E;margin-bottom:8px}
+.ai-flags ul{padding-left:16px;font-size:12px;color:#92400E;line-height:1.7}
+.ai-gap{background:var(--purple-bg);border:1px solid var(--purple-border);border-radius:var(--r);padding:16px 18px;margin-bottom:var(--gap)}
+.ai-gap h3{font-size:12px;font-weight:700;color:var(--purple);margin-bottom:6px}
+.ai-gap p{font-size:12px;color:var(--purple);line-height:1.6;opacity:.85}
+.ai-empty{background:var(--card);border-radius:var(--r);padding:48px;text-align:center;color:var(--t3);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.ai-empty h3{font-size:14px;font-weight:700;color:var(--t2);margin-bottom:8px}
+.ai-empty p{font-size:12px;line-height:1.6;max-width:420px;margin:0 auto}
+.ai-empty code{background:#F3F4F6;padding:2px 6px;border-radius:4px;font-size:11px;color:var(--t1)}
 </style>
 </head>
 <body>
@@ -217,6 +264,7 @@ canvas{display:block}
 <div class="view-tabs">
   <button class="view-tab active" onclick="switchView('exec',this)">📊 &nbsp;Executive Overview</button>
   <button class="view-tab" onclick="switchView('detail',this)">🎯 &nbsp;Channel Detail</button>
+  <button class="view-tab" onclick="switchView('ai',this)" id="aiTab">✦ &nbsp;AI Recommendations</button>
 </div>
 
 <!-- ═══ EXECUTIVE VIEW ═══ -->
@@ -308,6 +356,12 @@ canvas{display:block}
     <span id="detailNotice"></span>
   </div>
   <div id="detailContent"></div>
+</div></div>
+
+<!-- ═══ AI RECOMMENDATIONS VIEW ═══ -->
+<div id="view-ai" style="display:none">
+<div class="page">
+  <div id="aiContent"></div>
 </div></div>
 
 </div><!-- /app -->
@@ -904,10 +958,9 @@ function onMonth(idx, btn) {
   updatePlatTable(idx);
   buildSpendDonut(idx);
   buildPosDonut(idx);
-  // Re-render detail view if it's visible
-  if (document.getElementById('view-detail').style.display !== 'none') {
-    renderDetailView(idx);
-  }
+  // Re-render detail/AI views if visible
+  if (document.getElementById('view-detail').style.display !== 'none') renderDetailView(idx);
+  if (document.getElementById('view-ai').style.display !== 'none') renderAIView(idx);
 }
 
 function switchView(view, btn) {
@@ -915,7 +968,137 @@ function switchView(view, btn) {
   btn.classList.add('active');
   document.getElementById('view-exec').style.display = view === 'exec' ? 'block' : 'none';
   document.getElementById('view-detail').style.display = view === 'detail' ? 'block' : 'none';
+  document.getElementById('view-ai').style.display = view === 'ai' ? 'block' : 'none';
   if (view === 'detail') renderDetailView(activeIdx);
+  if (view === 'ai') renderAIView(activeIdx);
+}
+
+// ─── AI Recommendations view ───────────────────────────────────────────────
+function renderAIView(idx) {
+  const container = document.getElementById('aiContent');
+  const m = D.months[idx];
+  const recs = D.aiRecommendations && D.aiRecommendations[m];
+
+  if (!recs || !recs.recommendations) {
+    container.innerHTML = `
+      <div class="ai-empty">
+        <h3>No recommendations yet for ${m}</h3>
+        <p>Run the processor with the <code>--export-brief</code> flag, paste the output into your Claude Project, then ingest the response:<br><br>
+          <code>python processor.py --month ... --export-brief</code><br>
+          <code>python ingest_recs.py --month ... --file recs.json</code>
+        </p>
+      </div>`;
+    return;
+  }
+
+  const PRIORITY_CONFIG = {
+    critical:    { cls: 'crit', ico: '⛔', label: 'Critical',    badgeCls: 'badge-crit', secLabel: 'Act now' },
+    warning:     { cls: 'warn', ico: '⚠',  label: 'Warnings',    badgeCls: 'badge-warn', secLabel: 'Review this week' },
+    opportunity: { cls: 'opp',  ico: '↑',  label: 'Opportunities', badgeCls: 'badge-opp', secLabel: 'Scale up' },
+    insight:     { cls: 'info', ico: 'i',  label: 'Insights',    badgeCls: 'badge-info', secLabel: 'Context' },
+  };
+
+  const PLAT_PILL = {
+    'Amazon':   'amz', 'Meta': 'meta', 'Flipkart': 'fk', 'All': 'all'
+  };
+  const BUCKET_PILL = {
+    'Core Sales': 'cs', 'Awareness': 'aw', 'Retargeting': 'rt'
+  };
+
+  function platPill(p) {
+    if (!p) return '';
+    return `<span class="ai-pp ${PLAT_PILL[p] || 'all'}">${p}</span>`;
+  }
+  function bpPill(b) {
+    if (!b) return '';
+    return `<span class="ai-bp ${BUCKET_PILL[b] || ''}">${b}</span>`;
+  }
+  function recCard(r) {
+    const cfg = PRIORITY_CONFIG[r.priority] || PRIORITY_CONFIG.insight;
+    const metrics = (r.keyMetrics || []).map(m =>
+      `<span class="ai-metric"><strong>${m.value}</strong> ${m.label}</span>`
+    ).join('');
+    const impact = r.estimatedImpact ? `<div class="ai-impact">${r.estimatedImpact}</div>` : '';
+    return `
+      <div class="ai-rec ${cfg.cls}">
+        <div class="ai-rec-ico ${cfg.cls}">${cfg.ico}</div>
+        <div class="ai-rec-body">
+          <div class="ai-rec-head">
+            <span class="ai-rec-title">${r.title}</span>
+            ${platPill(r.platform)}${bpPill(r.bucket)}
+          </div>
+          <div class="ai-field"><div class="ai-field-label">What the data shows</div><div class="ai-field-text">${r.whatDataShows || ''}</div></div>
+          <div class="ai-field"><div class="ai-field-label">Why it matters</div><div class="ai-field-text">${r.whyItMatters || ''}</div></div>
+          <div class="ai-field"><div class="ai-field-label">Exact action</div><div class="ai-field-text">${r.exactAction || ''}</div></div>
+          <div class="ai-field"><div class="ai-field-label">Watch next month</div><div class="ai-field-text">${r.watchNextMonth || ''}</div></div>
+          ${metrics ? `<div class="ai-metrics">${metrics}</div>` : ''}
+          ${impact}
+        </div>
+      </div>`;
+  }
+
+  const counts = recs.counts || {};
+  const countCards = ['critical','warning','opportunity','insight'].map(p => {
+    const cfg = PRIORITY_CONFIG[p];
+    const n = counts[p + 's'] ?? counts[p] ?? (recs.recommendations.filter(r => r.priority === p).length);
+    const colMap = { critical: 'var(--red)', warning: 'var(--amber)', opportunity: 'var(--green)', insight: 'var(--cyan)' };
+    return `<div class="ai-count-card">
+      <div class="ai-count-label">${cfg.label} <span style="font-size:16px">${cfg.ico}</span></div>
+      <div class="ai-count-num" style="color:${colMap[p]}">${n}</div>
+    </div>`;
+  }).join('');
+
+  // Group recommendations by priority order
+  const ORDER = ['critical','warning','opportunity','insight'];
+  const grouped = {};
+  ORDER.forEach(p => { grouped[p] = recs.recommendations.filter(r => r.priority === p); });
+
+  let sections = '';
+  ORDER.forEach(p => {
+    if (!grouped[p].length) return;
+    const cfg = PRIORITY_CONFIG[p];
+    const badgeColMap = {
+      critical: `background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)`,
+      warning:  `background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)`,
+      opportunity:`background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)`,
+      insight:  `background:var(--cyan-bg);color:var(--cyan);border:1px solid var(--cyan-border)`,
+    };
+    sections += `
+      <div class="ai-sec">
+        <span class="ai-sec-label">${cfg.label}</span>
+        <span class="ai-sec-badge" style="${badgeColMap[p]}">${cfg.secLabel}</span>
+        <div class="ai-sec-line"></div>
+      </div>
+      <div class="ai-rec-list">${grouped[p].map(recCard).join('')}</div>`;
+  });
+
+  const flags = recs.dataQualityFlags && recs.dataQualityFlags.length
+    ? `<div class="ai-flags">
+        <h3>⚑ Data quality flags</h3>
+        <ul>${recs.dataQualityFlags.map(f => `<li>${f}</li>`).join('')}</ul>
+       </div>` : '';
+
+  const gap = recs.strategicGap
+    ? `<div class="ai-gap">
+        <h3>✦ One thing we should be doing that we're not</h3>
+        <p>${recs.strategicGap}</p>
+       </div>` : '';
+
+  container.innerHTML = `
+    <div class="ai-hero-card">
+      <div class="ai-hero-ico">✦</div>
+      <div class="ai-hero-text">
+        <h2>${m} — AI Analysis</h2>
+        <p>${recs.summary || ''}</p>
+      </div>
+      <div class="ai-hero-meta">
+        <div class="ai-gen-date">Generated ${recs.generatedDate || ''}</div>
+      </div>
+    </div>
+    <div class="ai-count-strip">${countCards}</div>
+    ${sections}
+    ${flags}
+    ${gap}`;
 }
 
 // ─── Init: fetch JSON then boot dashboard ──────────────────────────────────
