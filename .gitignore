@@ -10,6 +10,9 @@ raw_exports/**/*.tsv
 # Outputs folder — local working files, not for publishing
 outputs/
 
+# Derived Excel dumps from dump_excel.py (data.json is the source of truth)
+/data.xlsx
+
 # Context folder — reference files used by processor (too large / sensitive for repo)
 context/
 
