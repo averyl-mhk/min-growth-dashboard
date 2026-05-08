@@ -57,7 +57,7 @@ BUCKET_KEYS = {"Awareness": "awareness", "Core Sales": "coreSales", "Retargeting
 # ─── Small helpers ────────────────────────────────────────────────────────────
 
 def to_float(val):
-    """Safe float. Returns None for NaN, '-', formula strings, or unparseable text."""
+    """Safe float. Handles currency-formatted strings (₹1,75,216.16), NaN, '-', formula strings."""
     if val is None:
         return None
     try:
@@ -66,11 +66,18 @@ def to_float(val):
     except (TypeError, ValueError):
         pass
     if isinstance(val, str):
-        v = val.strip().replace(",", "")
+        v = val.strip()
         if not v or v == "-" or v.startswith("="):
             return None
+        # Keep digits, decimal point, and a leading minus. Strip anything else
+        # (currency symbols, thousands separators, trailing whitespace, % signs).
+        negative = v.lstrip().startswith("-")
+        cleaned = "".join(c for c in v if c.isdigit() or c == ".")
+        if not cleaned:
+            return None
         try:
-            return float(v)
+            f = float(cleaned)
+            return -f if negative else f
         except ValueError:
             return None
     try:
@@ -246,7 +253,7 @@ def expand_amazon_by_keyword_type(rows, ratios):
         am = r.get("ad_sub_type") or "Manual"
         c_ratios = ratios.get(campaign, {}).get(am)
         if not c_ratios:
-            fallback.append((campaign, am, r["ad_type"]))
+            fallback.append((campaign, am, r["ad_type"], r["spend"]))
             new_r = dict(r)
             new_r["keyword_type"] = "Generic"
             expanded.append(new_r)
@@ -340,8 +347,12 @@ def load_amazon_campaigns(path: Path):
 
 
 def load_meta(path: Path):
-    # Row 0 is "Added, Added, ..." junk; row 1 is the real header
-    df = pd.read_excel(path, header=1)
+    # Some Meta exports have an "Added, Added, ..." junk row 0 with the real header on row 1;
+    # other exports have the real header on row 0. Detect by checking row 0 col 0.
+    peek = pd.read_excel(path, header=None, nrows=1)
+    first = peek.iloc[0, 0]
+    is_junk = isinstance(first, str) and first.strip().lower() == "added"
+    df = pd.read_excel(path, header=1 if is_junk else 0)
     df = df.loc[:, ~df.columns.duplicated()]
 
     rows = []
@@ -826,11 +837,20 @@ def _print_reconciliation(campaign_rows, detail_rows, fallback_campaigns):
         )
 
     if fallback_campaigns:
-        print(f"\n  Fallback (100% Generic) applied to {len(fallback_campaigns)} campaign(s):")
-        for campaign, am, ad_type in fallback_campaigns[:10]:
-            print(f"    - [{ad_type} {am}] {campaign}")
-        if len(fallback_campaigns) > 10:
-            print(f"    ... and {len(fallback_campaigns) - 10} more")
+        nonzero = [c for c in fallback_campaigns if c[3] > 0]
+        total_fb_spend = sum(c[3] for c in fallback_campaigns)
+        print(
+            f"\n  Fallback (100% Generic) applied to {len(fallback_campaigns)} campaign(s), "
+            f"total spend ₹{total_fb_spend:,.0f}"
+        )
+        if not nonzero:
+            print("    (all fallback campaigns have ₹0 spend — paused/inactive, no impact on totals)")
+        else:
+            print(f"    {len(nonzero)} fallback campaign(s) with non-zero spend:")
+            for campaign, am, ad_type, spend in sorted(nonzero, key=lambda c: -c[3])[:10]:
+                print(f"      - ₹{spend:>10,.0f} [{ad_type} {am}] {campaign}")
+            if len(nonzero) > 10:
+                print(f"      ... and {len(nonzero) - 10} more")
     print()
 
 
