@@ -110,11 +110,13 @@ def find_amazon_campaigns(folder):
 
 
 def find_sp_search(folder):
-    return find_file(folder, ["*sponsored_products*", "*sp*search*"])
+    # *sp*search* alone would match "Sponsored_Brands_Search..." since "sponsored" starts with "sp",
+    # so the SB and SD files must be explicitly excluded.
+    return find_file(folder, ["*sponsored_products*", "*sp*search*"], excludes=["*brands*", "*display*"])
 
 
 def find_sb_search(folder):
-    return find_file(folder, ["*sponsored_brands*"])
+    return find_file(folder, ["*sponsored_brands*", "*sb*search*"], excludes=["*products*", "*display*"])
 
 
 def find_sd_targeting(folder):
