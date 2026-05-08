@@ -124,11 +124,23 @@ def main():
         recs["generatedDate"] = datetime.today().strftime("%Y-%m-%d")
     recs["month"] = month_label
 
-    # Write
+    # Write to a temp file first, verify it's valid JSON, then replace
     data["aiRecommendations"][month_label] = recs
 
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+    tmp_file = OUTPUT_FILE.with_suffix(".tmp")
+    try:
+        with open(tmp_file, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+
+        # Verify the temp file round-trips cleanly before replacing
+        with open(tmp_file, encoding="utf-8") as f:
+            json.load(f)
+
+        tmp_file.replace(OUTPUT_FILE)
+
+    except Exception as e:
+        tmp_file.unlink(missing_ok=True)
+        sys.exit(f"ERROR: Failed to write data.json safely: {e}\n  Original file was not modified.")
 
     n_recs = len(recs.get("recommendations", []))
     n_flags = len(recs.get("dataQualityFlags", []))
