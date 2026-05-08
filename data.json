@@ -2163,6 +2163,334 @@
         "PotsandPans India_SPKeyword_Drona-AAM (Rs 1,600 spend, Rs 0 rev) and SP|Deal_4 Star_Keyword (Rs 2,744, Rs 0 rev) and AD_READY: B07XMQQHF1 (Rs 620, Rs 0 rev) — small-spend zero-conversion lines that should be re-checked: are these new launches still ramping, or stuck?"
       ],
       "strategicGap": "Google Ads is listed as 'pending, not yet active' — and that is now the single biggest gap in the funnel. Shopify share just doubled to 10.4% of POS, which means meaningful demand is being created upstream and is searching for Meyer on Google rather than going straight to Amazon. Without Google Search and Google Shopping live, every one of those 'Meyer kadhai' or 'Meyer cast iron tawa' Google searches that should land on meyer.in is either being lost to Amazon (lower margin), lost to a competitor running brand-conquest on Google (Stahl, Wonderchef regularly bid on rival brand terms), or lost entirely. The April priority — bigger than any single Amazon optimisation in this report — is to launch Google Branded Search (Rs 30-40K test budget, defensive only) and Google Shopping for the top 10 Shopify SKUs (Rs 50-60K test budget). If Shopify share holds above 9% in April with these live, MER should improve 0.3-0.5x within 60 days because Shopify revenue carries no platform commission. The second gap, smaller but real: there is no visible email or SMS retention layer feeding repeat purchase from the Shopify customer base — every new Shopify customer this month is currently a one-shot acquisition unless we capture them into a retention flow."
+    },
+    "Feb '26": {
+      "generatedDate": "2026-05-08",
+      "month": "Feb '26",
+      "summary": "February delivered the right kind of efficiency: spend fell 20.3% MoM but MER rose to 4.72× (from 4.65×) and Shopify share of POS nearly doubled to 11.3% (from 5.7%) — clear evidence organic demand is starting to compound. Attributed ROAS dipped to 2.80× because Meta Prospecting and several SD/SBV awareness lines are showing zero attributed revenue (mostly attribution lag, not failure). The most important signal is the Shopify lift; the most important risk is that ₹273K is going into branded SP Manual while several high-ROAS generic and Flipkart winners sit underfunded at ₹3K–₹17K.",
+      "counts": {
+        "critical": 2,
+        "warnings": 4,
+        "opportunities": 4,
+        "insights": 2
+      },
+      "recommendations": [
+        {
+          "n": 1,
+          "priority": "insight",
+          "title": "Shopify share of POS doubled to 11.3% — protect the momentum, do not redirect spend back to Amazon",
+          "platform": "All",
+          "bucket": null,
+          "whatDataShows": "Shopify POS rose to ₹853,000 / 11.3% of total POS in Feb '26, up from 5.7% in Apr '26 (+5.6pp). MER improved to 4.72× from 4.65× even though total spend fell 20.3% (₹2,009,406 → ₹1,601,177). Meta Sales Traffic 'Cookware Offer' ad sets returned 4.37× and 3.27× ROAS — these are Shopify-attributable conversions.",
+          "whyItMatters": "This is the clearest brand-equity signal in the file: spend went down, organic and DTC share went up, MER went up. Shopify orders are ~15% richer in margin and build the owned-customer base required to hit the 35–40% organic goal. If the team reads the headline ROAS drop (3.01× → 2.80×) and reflexively pulls Meta or generic spend, they will kill the engine that is producing the Shopify gain.",
+          "exactAction": "Hold Meta Sales Traffic budget at minimum ₹25,000/mo (Cookware Offer + Holi Offer) and route all new offer creative through Shopify-landing variants first. Do not move budget out of Meta or generic Amazon to chase February's ROAS dip. Brief the team that the Shopify lift is the headline number this month, not ROAS.",
+          "watchNextMonth": "Shopify % of POS should hold at 10%+ in Mar '26. If it falls below 8%, investigate whether Meta Sales Traffic creative is fatiguing. Branded organic search volume on Meyer.in should rise alongside it.",
+          "keyMetrics": [
+            {
+              "label": "Shopify % of POS",
+              "value": "11.3%"
+            },
+            {
+              "label": "MoM change",
+              "value": "+5.6pp"
+            },
+            {
+              "label": "MER",
+              "value": "4.72×"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "priority": "critical",
+          "title": "Flipkart 'Boost_Sales_CookingAndCookware' is the single most underfunded line in the portfolio",
+          "platform": "Flipkart",
+          "bucket": "Core Sales",
+          "whatDataShows": "Boost_Sales_CookingAndCookware spent ₹3,034 and returned ₹40,259 — ROAS 13.27×. Meanwhile PLA_Segmentation_FMoving_CPC_KT spent ₹10,982 at 0.98× ROAS (₹10,792 revenue) — 3.6× more spend for negative attributed return. TOP FSN_CPC_KT also returned 4.59× on only ₹4,762 spend.",
+          "whyItMatters": "Flipkart is the brand's secondary channel and currently only 3.6% of POS — but the structure of spend within Flipkart is upside-down. The team is funding the worst campaign 3.6× more than the best one. Reallocating within Flipkart improves channel MER without adding a rupee of new spend, and gives the team a clean win to present.",
+          "exactAction": "Pause PLA_Segmentation_FMoving_CPC_KT immediately. Take the freed ₹10,000–₹11,000/mo and split: ₹7,000 into Boost_Sales_CookingAndCookware (more than tripling it), ₹4,000 into TOP FSN_CPC_KT. Keep Pressure Cooker KT (8.18× on ₹1,137) at current level for one more month before scaling.",
+          "watchNextMonth": "Flipkart total revenue should rise from ₹132,952 toward ₹180,000–₹220,000 in Mar '26 with no incremental spend. Flipkart channel ROAS should move from 3.14× to 4.0×+.",
+          "keyMetrics": [
+            {
+              "label": "Boost_Sales ROAS",
+              "value": "13.27×"
+            },
+            {
+              "label": "PLA_Segmentation ROAS",
+              "value": "0.98×"
+            },
+            {
+              "label": "Spend to reallocate",
+              "value": "Rs 11,000"
+            }
+          ],
+          "estimatedImpact": "Est. +Rs 50-70K Flipkart revenue/mo at zero incremental spend"
+        },
+        {
+          "n": 3,
+          "priority": "warning",
+          "title": "Branded SP Manual at ₹273,299 is over-defending — cap it and redirect to underfunded generic",
+          "platform": "Amazon",
+          "bucket": "Core Sales",
+          "whatDataShows": "SP Manual Branded spent ₹273,299 in Feb '26 at 4.06× ROAS (₹1,110,197 revenue) — that is 19.6% of all Amazon AMS spend on a single keyword type that captures demand we already created. Total Branded spend across all ad types was ₹309,642 / 23.3% of Amazon spend, with 4.95× blended ROAS. Branded ACOS at 23–25% is acceptable, but the absolute rupees are excessive for a defensive layer.",
+          "whyItMatters": "Per the brand's guiding principles, branded incrementality is 15–30% — meaning ₹190K–₹230K of that ₹273K would have converted organically anyway. With Shopify share rising and organic momentum building, the branded line is now actively cannibalising organic credit and inflating attributed ROAS. Cutting branded down to a true defensive floor is the single fastest way to make MER trajectory honest.",
+          "exactAction": "Cap SP Manual Branded total spend at ₹150,000/mo (down from ₹273K). Do this by lowering bids on top-of-page placements for 'meyer cast iron tawa', 'meyer kadhai', 'circulon' branded heads — keep position 1 organic protection but stop competing with yourself for position 2–3. Reallocate the freed ₹120K: ₹70K into SP | Tasla | Generic KT (currently underfunded — see Rec 4), ₹30K into SP | cast iron frypan Skillit | KT, ₹20K into competition campaigns.",
+          "watchNextMonth": "Branded SP spend should drop to ~₹150K. Amazon organic POS (Total Amazon POS minus AttRev from branded campaigns) should hold or grow. If organic Amazon revenue falls more than ₹50K, the cuts went too deep — restore ₹40K. If it holds, cut another ₹30K in April.",
+          "keyMetrics": [
+            {
+              "label": "Current branded SP Manual spend",
+              "value": "Rs 273,299"
+            },
+            {
+              "label": "Target spend",
+              "value": "Rs 150,000"
+            },
+            {
+              "label": "Branded share of Amazon spend",
+              "value": "23.3%"
+            }
+          ],
+          "estimatedImpact": "Est. Rs 120K/mo redeployable to growth keywords"
+        },
+        {
+          "n": 4,
+          "priority": "opportunity",
+          "title": "SP | Tasla | Generic KT is a top-5 winner at ₹16,788 spend — triple it",
+          "platform": "Amazon",
+          "bucket": "Core Sales",
+          "whatDataShows": "SP | Tasla | Generic KT delivered 5.40× ROAS on ₹16,788 spend (₹90,697 revenue) with a healthy 0.51% CTR — this is the #4 top performer in the entire Amazon book. Tasla is a generic, recall-building keyword type, not branded. The campaign is reaching only 389,014 impressions versus 13.9M for SP All ASIN Auto, indicating impression share is far from saturated.",
+          "whyItMatters": "This is exactly the profile we want to fund: generic search where Meyer is winning the click and converting. Every additional impression here builds category recall ('tasla' → 'Meyer tasla' downstream). Underfunding 5×+ ROAS generic is the textbook example of optimising into a smaller box.",
+          "exactAction": "Raise SP | Tasla | Generic KT daily budget by 3× (target spend ₹50,000–₹55,000/mo). Increase top-of-search bid by 25%. Add 5–8 long-tail variants ('cast iron tasla 12 inch', 'tasla for cooking', 'hard anodised tasla') as exact-match before scaling broad bids further.",
+          "watchNextMonth": "Tasla campaign spend should reach ₹45,000+ in Mar '26. ROAS will likely compress to 3.5–4.0× as you push deeper into the auction — that is acceptable. Watch for organic 'meyer tasla' branded search volume rising in Apr '26 (60-day lag).",
+          "keyMetrics": [
+            {
+              "label": "Current ROAS",
+              "value": "5.40×"
+            },
+            {
+              "label": "Current spend",
+              "value": "Rs 16,788"
+            },
+            {
+              "label": "Target spend",
+              "value": "Rs 50,000+"
+            }
+          ],
+          "estimatedImpact": "Est. +Rs 130-160K Amazon revenue/mo at 3.5×+ ROAS"
+        },
+        {
+          "n": 5,
+          "priority": "warning",
+          "title": "SBV | Cast Iron Tawa Collection at ₹66,184 / 2.52× ROAS — creative is the bottleneck, not spend",
+          "platform": "Amazon",
+          "bucket": "Awareness",
+          "whatDataShows": "SBV | Cast Iron Tawa Collection | Page Visit spent ₹66,184 (largest single SBV line) at 2.52× ROAS, 0.32% CTR on 2.3M impressions. By comparison, SB | Cast Iron | KT (sister campaign, similar product) returned 6.07× on ₹23,196 spend with a 0.72% CTR — 2× higher click rate, 2.4× ROAS. The product and audience are essentially the same; the delta is creative quality.",
+          "whyItMatters": "SBV is the biggest awareness vehicle in the Amazon book and is the funnel feeder for branded search 60–90 days out. Low CTR on 2.3M impressions = the video creative isn't earning attention; this is a creative refresh problem, not a targeting or spend problem. Cutting it would be the wrong move (per principle 6); fixing it unlocks the SBV layer.",
+          "exactAction": "Do not cut SBV | Cast Iron Tawa Collection. Brief the creative team to ship 2 new 15-second SBV cuts by Mar 20: (1) recipe-driven hook (dosa/paratha first 2 seconds), (2) seasoning-vs-other-pan side-by-side. A/B test against current creative for 14 days. Hold spend at ₹65K. Only after CTR moves above 0.55% should bids be raised.",
+          "watchNextMonth": "SBV CTR on Cast Iron Tawa Collection should rise from 0.32% to 0.50%+ within 30 days of new creative. Branded 'meyer cast iron tawa' Amazon search volume should rise in Apr–May '26.",
+          "keyMetrics": [
+            {
+              "label": "Current CTR",
+              "value": "0.32%"
+            },
+            {
+              "label": "Sister SB CTR",
+              "value": "0.72%"
+            },
+            {
+              "label": "Spend at risk if creative fails",
+              "value": "Rs 66,184/mo"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "priority": "critical",
+          "title": "SD | Misc | Remarketing -Own PT and Four_Star_SD_Retargeting are dead weight — pause both",
+          "platform": "Amazon",
+          "bucket": "Retargeting",
+          "whatDataShows": "SD | Misc | Remarketing -Own PT | CVR spent ₹11,096 and returned ₹10,475 (0.94× ROAS, 0.31% CTR on 828K impressions). Four_Star_SD_Retargeting (2023-05-02 vintage) spent ₹11,806 and returned ₹17,486 (1.48× ROAS, 0.37% CTR on 843K impressions). Together: ₹22,902 spent, ₹27,961 returned. Retargeting benchmark is 3× ROAS minimum; these are below 1.5×.",
+          "whyItMatters": "Unlike awareness, retargeting failure cannot be defended by 'lag effects' — these are people who already viewed Meyer product pages and are not converting after seeing the ad again. Either the creative is stale (the 2023-05-02 timestamp suggests the latter) or the audience is exhausted. Spending on bad retargeting also dilutes blended retargeting ROAS, which the team uses for budgeting decisions.",
+          "exactAction": "Pause both campaigns this week. Build one replacement SD line: 'SD | Cast Iron + Anzen | Page Visit Remarketing' targeting page-visit-30-day audience, refreshed creative, ₹15K starting budget. Keep the rest of SD (SD VRM | Performing ASINs at 1.78×, SD | Cast Iron Frypan Skillit at 1.69× — under review but not paused).",
+          "watchNextMonth": "SD bucket ROAS should rise from 1.61× toward 2.0×+. Retargeting bucket aggregate ROAS should move from 1.75× toward 2.5×.",
+          "keyMetrics": [
+            {
+              "label": "Combined spend",
+              "value": "Rs 22,902"
+            },
+            {
+              "label": "Combined ROAS",
+              "value": "1.22×"
+            },
+            {
+              "label": "Vintage of one campaign",
+              "value": "May 2023"
+            }
+          ],
+          "estimatedImpact": "Est. savings Rs 22K/mo redeployable to fresh retargeting creative"
+        },
+        {
+          "n": 7,
+          "priority": "warning",
+          "title": "SP | SPA GIF'25 | High Converting ASINs at ₹39,010 / 1.51× ROAS — listing-quality problem, not bid problem",
+          "platform": "Amazon",
+          "bucket": "Core Sales",
+          "whatDataShows": "SP | SPA GIF'25 | High Converting ASINs -wise | Auto spent ₹39,010 at 1.51× ROAS, 42.3% ACOS-equivalent. CTR is 0.26% on 884K impressions — well below the 0.36–0.50% range of other Auto campaigns in the same portfolio. SP | SPA GIF'25 - Top Selling ASINs spent ₹59,276 at 1.74× ROAS with similar 0.28% CTR. Both are tagged 'high converting' but are not converting.",
+          "whyItMatters": "When a campaign labelled 'high converting ASINs' delivers low CTR AND low ROAS, the issue is upstream of the ad — the product detail pages have weakened (review velocity, price competitiveness, image quality, A+ content). No bid change fixes this. Throwing more budget at it would compound the loss.",
+          "exactAction": "Audit the 5 ASINs in this campaign's SPA GIF'25 cluster this week — pull current price vs. comp, review count vs. 90 days ago, image refresh date, A+ status. Lower SP | SPA GIF'25 | High Converting ASINs daily budget by 50% (target spend ₹20K) until listing fixes ship. Do NOT move money to bids; move it to listing improvements (new hero images, A+ refresh).",
+          "watchNextMonth": "Campaign CTR should rise from 0.26% to 0.40%+ once listing fixes land. ROAS should follow to 2.5×+ by Apr '26. If CTR does not move, the ASINs themselves are end-of-life.",
+          "keyMetrics": [
+            {
+              "label": "Current CTR",
+              "value": "0.26%"
+            },
+            {
+              "label": "Portfolio peer CTR",
+              "value": "0.36-0.50%"
+            },
+            {
+              "label": "Spend to halve",
+              "value": "Rs 39,010"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "priority": "warning",
+          "title": "Meta MOF Video Viewers (Remarketing) at ₹13,939 / 0× ROAS — pixel or audience definition is broken",
+          "platform": "Meta",
+          "bucket": "Retargeting",
+          "whatDataShows": "MOF Video Viewers (Media Mix, Remarketing) spent ₹13,939, returned ₹0 attributed revenue, with 539,106 impressions and 36,154 clicks (6.71% CTR — extremely high). Meanwhile sister remarketing campaign 'Catalog Sales - Remarketing - FB & IG' returned 4.77× on ₹11,594 spend. Both should report to the same Shopify pixel.",
+          "whyItMatters": "A 6.71% CTR with ₹0 attributed revenue is not low ROAS — it is a tracking failure. Either the audience definition (video viewers) is too high-funnel to convert in-window, or the Shopify Conversion API isn't passing the audience through. Either way, the team is flying blind on this ad set.",
+          "exactAction": "Do not pause yet. This week: (1) Verify Shopify Pixel + CAPI is firing on this ad set's UTM parameters. (2) Check Meta Events Manager for the 'Purchase' event match quality on MOF audience. (3) If pixel is healthy, the audience is too cold — rename 'MOF Video Viewers' to 'Video Viewers 75% — Lower Funnel' and rebuild on 75%-completion-only viewers, not all viewers. If still 0× after 14 days with verified pixel, pause.",
+          "watchNextMonth": "Either attributed ROAS rises above 2× (the campaign was just under-attributed), or it stays at 0× with a healthy pixel — at which point pause and reallocate to Catalog Remarketing (the proven 4.77× line).",
+          "keyMetrics": [
+            {
+              "label": "Spend",
+              "value": "Rs 13,939"
+            },
+            {
+              "label": "CTR",
+              "value": "6.71%"
+            },
+            {
+              "label": "Attributed revenue",
+              "value": "Rs 0"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "priority": "opportunity",
+          "title": "Meta Catalog Remarketing returns 4.77× — scale to ₹30K and clone for Sales Traffic",
+          "platform": "Meta",
+          "bucket": "Retargeting",
+          "whatDataShows": "🔥 Catalog Sales - Remarketing - FB & IG🔥 returned ₹55,272 on ₹11,594 spend (4.77× ROAS, 2.16% CTR). 'Cookware Offer' Sales Traffic returned 4.37× and 3.27× across two ad sets on combined ₹19,614. These are the only Meta lines reliably attributing revenue (Shopify-tracked).",
+          "whyItMatters": "Meta is currently 10.5% of total spend but only 3.1% of attributed revenue — and almost all of that revenue comes from these three ad sets. They are also the most direct driver of Shopify orders, which is the #1 strategic outcome. Scaling them is the most direct lever to push Shopify share past 12%.",
+          "exactAction": "Raise Catalog Remarketing daily budget from ₹11,594 to ₹25,000–₹30,000/mo (target ~2.5×). Clone the catalog setup as 'Catalog Sales — Prospecting' targeting interest stack (cookware enthusiasts + premium kitchenware buyers + competitor page fans), starting ₹15K. Brief Meta team that Sales Traffic 'Cookware Offer' should also rise to ₹20K combined.",
+          "watchNextMonth": "Meta-attributed revenue should rise from ₹137,235 to ₹250,000+ in Mar '26. Shopify POS should rise toward ₹1,000,000+. Catalog Remarketing ROAS may compress slightly to 3.5–4.0× as scale increases — still well above benchmark.",
+          "keyMetrics": [
+            {
+              "label": "Current ROAS",
+              "value": "4.77×"
+            },
+            {
+              "label": "Current spend",
+              "value": "Rs 11,594"
+            },
+            {
+              "label": "Target spend",
+              "value": "Rs 25-30K"
+            }
+          ],
+          "estimatedImpact": "Est. +Rs 80-100K Shopify revenue/mo"
+        },
+        {
+          "n": 10,
+          "priority": "opportunity",
+          "title": "Competition spend is only 6.4% of Amazon — underinvested in conquest",
+          "platform": "Amazon",
+          "bucket": "Core Sales",
+          "whatDataShows": "Competition keyword spend totals ₹84,414 / 6.4% of Amazon AMS spend at 2.08× blended ROAS. SP Auto Competition is the strongest line within this at 2.26× ROAS on ₹34,175. SBV Competition delivered 2.48× on ₹13,087. ACOS sits at 40–57% — moderate but acceptable for conquest. Branded gets 23.3% of spend; Generic gets 70.3%; Competition gets the leftover 6.4%.",
+          "whyItMatters": "Per principle 5, competition keywords are near-100% incremental — every conversion is a customer who would have bought Wonderchef, Stahl, or Bergner. With Meyer building Shopify and organic share, NOW is the right window to take share from competitors before their counter-moves arrive. 6.4% of spend on near-100%-incremental terms is structurally too low for a brand at Meyer's stage.",
+          "exactAction": "Lift competition spend to 12–15% of Amazon AMS (target ₹160K–₹190K/mo, up from ₹84K) over 60 days. Step 1 (this month): raise SP Auto Competition daily budget by 50% (₹34K → ₹52K). Step 2: build a new SP Manual campaign 'SP | Wonderchef Conquest | Manual' with 8–10 exact-match Wonderchef keywords (cast iron pan, kadhai, frypan variants), ₹15K starting budget. Pull funding from the freed branded budget in Rec 3.",
+          "watchNextMonth": "Competition spend should rise to ₹120K+ in Mar '26, ₹160K+ in Apr '26. Watch competition ACOS — if it stays under 70%, scale; if it pushes above 80%, the bids are too aggressive and need pulling back.",
+          "keyMetrics": [
+            {
+              "label": "Current competition share",
+              "value": "6.4%"
+            },
+            {
+              "label": "Target share",
+              "value": "12-15%"
+            },
+            {
+              "label": "Competition ROAS",
+              "value": "2.08×"
+            }
+          ]
+        },
+        {
+          "n": 11,
+          "priority": "opportunity",
+          "title": "Pilot Campaign at 14.26× ROAS and SP | Trivantage Cookware Set at 9.30× — promote both out of pilot scale",
+          "platform": "Amazon",
+          "bucket": "Core Sales",
+          "whatDataShows": "[Pilot] Campaign - 08/04/2025 17:32:47.261 returned ₹27,618 on ₹1,937 spend (14.26× ROAS, 0.58% CTR). SP | Trivantage Cookware Set | KT returned ₹15,119 on ₹1,626 spend (9.30× ROAS). SP | Cast iron All | Auto returned ₹62,793 on ₹6,976 (9.00× ROAS). All three are sub-₹10K spend with elite returns — they have proven the unit economics and are now bottlenecked by budget.",
+          "whyItMatters": "These are clean evidence of category-level product-market fit at the keyword level. Leaving them at pilot spend means missing demand that the brand has already qualified. Trivantage in particular is a premium SKU that drives AOV — incremental Trivantage units are worth ~30% more rupees than Cast Iron Tawa units.",
+          "exactAction": "Promote each campaign out of pilot status this week. New monthly budgets: [Pilot] Campaign → ₹15,000 (8× current); SP | Trivantage Cookware Set → ₹12,000 (7× current); SP | Cast iron All | Auto → ₹35,000 (5× current). Remove the [Pilot] tag and rename so the team treats them as core. Funding source: the freed budget from Recs 6 (SD pause) and 7 (SPA GIF'25 cut).",
+          "watchNextMonth": "Combined revenue from these three should rise from ₹105,530 to ₹350,000+ in Mar '26. ROAS will compress (probably 4–6× range) as budgets scale — still strong.",
+          "keyMetrics": [
+            {
+              "label": "Combined current spend",
+              "value": "Rs 10,539"
+            },
+            {
+              "label": "Combined current revenue",
+              "value": "Rs 105,530"
+            },
+            {
+              "label": "Combined target spend",
+              "value": "Rs 62,000"
+            }
+          ],
+          "estimatedImpact": "Est. +Rs 240-300K Amazon revenue/mo"
+        },
+        {
+          "n": 12,
+          "priority": "insight",
+          "title": "SBV | Generic at ₹128,574 spend / 1.93× ROAS — the awareness layer is working, leave it alone for now",
+          "platform": "Amazon",
+          "bucket": "Awareness",
+          "whatDataShows": "SBV Manual Generic spent ₹128,574 at 1.93× ROAS / 51.9% ACOS — the largest single awareness line in the Amazon book. CTR is 0.48% across 3.17M impressions and 15,093 clicks. Frequency is high because branded SP and SB lines downstream are returning 4.95× — meaning the awareness funnel is producing branded conversions on the same generic categories.",
+          "whyItMatters": "On a single-month attribution basis this looks like the worst awareness line. But: (1) the Shopify lift this month is partially driven by category awareness built through generic SBV in prior months; (2) MER rose despite this campaign's low attributed ROAS; (3) cutting it would tighten ROAS this month but compromise the Mar–May organic pipeline. This is exactly the awareness-cut trap.",
+          "exactAction": "Hold SBV Generic spend at ₹125,000–₹135,000/mo. Do NOT cut. The only intervention this month is creative rotation — ship 1 new SBV creative variant per top product category (Cast Iron, Kadhai, Frypan) by Mar 25. Frequency is not yet at fatigue (no single audience >5), so audience expansion is not required this month.",
+          "watchNextMonth": "Watch SBV Generic CTR — if it falls below 0.40%, creative fatigue is starting. Watch downstream branded SP search volume on the same categories — should hold or rise. Only revisit cutting this if MER falls in 2 consecutive months while this line scales.",
+          "keyMetrics": [
+            {
+              "label": "SBV Generic spend",
+              "value": "Rs 128,574"
+            },
+            {
+              "label": "Attributed ROAS",
+              "value": "1.93×"
+            },
+            {
+              "label": "Downstream branded ROAS",
+              "value": "4.95×"
+            }
+          ]
+        }
+      ],
+      "dataQualityFlags": [
+        "ACOS column in the all-Amazon-campaigns detail table is mathematically inconsistent with ROAS — e.g. SP | All ASIN | Auto shows ROAS 2.54× but ACOS 0.4% (true ACOS at that ROAS would be ~39%). The Bucket and Platform Summary tables show plausible ACOS values; verify which calculation the team is using before quoting ACOS to leadership.",
+        "Meta Prospecting campaigns (Carousel ₹45,336, Instream ₹28,000, Catalogue ₹24,973) all report ₹0 attributed revenue. This is the expected Meta attribution gap (Amazon purchases are not Meta-trackable; only Shopify is). Do NOT interpret these as failed campaigns — but do confirm the Shopify Conversion API is firing for the Catalog and Sales Traffic ad sets that DO show revenue.",
+        "Several Amazon SD/SP campaigns show meaningful spend but ₹0 attributed revenue (SD | Recommended ASIN ₹4,204; SD | Anzen | Page Visit ₹2,261; SP | Anzen Kadhai | KT ₹1,408; SP | Cast Iron Set | KT ₹577). Verify these are not affected by an attribution-window or report-export bug before adding negative keywords or pausing — particularly the Anzen cluster, which appears across multiple lines.",
+        "Flipkart impressions show as 0 across all campaigns despite click counts in the thousands — this is a known Flipkart Ads reporting artefact (impressions are often not exposed in CPC PLA exports). CTR cannot be calculated; rely on click and ROAS only.",
+        "Two Amazon SD campaigns from 2023 are still active (SD_Remarketing_highly_rated_Diwali2023-09-25, Four_Star_SD_Retargeting 2023-05-02, SD_contextual_PD23_highly_rated_defense_2023-07-08). The vintage of the campaign IDs suggests creative has not been refreshed in 18+ months."
+      ],
+      "strategicGap": "Google Ads is still pending and Meyer is leaving the highest-intent search demand layer completely unowned. Branded organic search on Google ('meyer cookware', 'circulon kettle', 'meyer cast iron tawa') is rising — visible indirectly through the Shopify share lift — but those searches currently route to Amazon listings via SEO, not to Meyer.in. Every branded Google search that lands on Amazon costs ~12–15% in margin (platform fee) and produces no owned-customer relationship; every one that lands on Meyer.in is the highest-margin sale Meyer can make. With ₹120K freed up from the branded SP cut (Rec 3), the highest-leverage move in the next 60 days is launching Google Search Ads on branded + high-intent generic terms with Shopify-only landing pages. This single action would likely add 3–5pp to Shopify share of POS and is the only real defence against competitors bidding on 'meyer' on Google before Meyer does. The wedding-and-summer-cooking window (Apr–Jun) is the right launch moment — building the search audience now produces returns through Q2.",
+      "month_pos_total": "Rs 7,553,000"
     }
   }
 }
