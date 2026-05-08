@@ -43,7 +43,11 @@ BENCHMARKS_NOTE = (
     "overwrites an existing benchmarks block — it only writes defaults if the key is absent."
 )
 
-AMAZON_BUCKETS = {"SP": "Core Sales", "SB": "Awareness", "SB2": "Awareness", "SD": "Retargeting"}
+AMAZON_BUCKETS = {"SP": "Core Sales", "SB": "Awareness", "SBV": "Awareness", "SD": "Retargeting"}
+# Campaign report Type values that get normalized into a canonical ad_type
+AMAZON_TYPE_NORMALIZE = {"SB2": "SBV"}  # SB2 (Sponsored Brands video) is treated as SBV
+SP_AUTO_TARGETS = {"loose-match", "close-match", "complements", "substitutes"}
+
 META_BUCKETS = {"Prospecting": "Awareness", "Remarketing": "Retargeting", "Sales Traffic": "Core Sales"}
 FLIPKART_BUCKETS = {"PLA": "Core Sales", "SP": "Core Sales", "SELLER_PCA": "Retargeting", "PCA": "Retargeting"}
 
@@ -157,27 +161,107 @@ def classify_search_term(term: str, ref: dict) -> str:
     return "Generic"
 
 
-def compute_campaign_keyword_types(search_dfs, ref):
-    """Returns {campaign_name: dominant_keyword_type} based on spend share."""
-    classified = []
-    for df in search_dfs:
-        if df is None or df.empty:
-            continue
+def _sp_auto_or_manual(targeting_value):
+    """SP search term Targeting → 'Auto' if value is one of Amazon's auto-targeting tokens, else 'Manual'."""
+    if targeting_value is None:
+        return "Manual"
+    try:
+        if pd.isna(targeting_value):
+            return "Manual"
+    except (TypeError, ValueError):
+        pass
+    return "Auto" if str(targeting_value).strip().lower() in SP_AUTO_TARGETS else "Manual"
+
+
+def compute_keyword_ratios(sp_df, sb_df, ref):
+    """Build per-campaign spend and revenue ratios per keyword type from search term reports.
+
+    Returns: {campaign_name: {auto_manual: {kw_type: (spend_ratio, rev_ratio)}}}
+    Ratios are normalized so they sum to 1.0 across kw_types within each
+    (campaign_name, auto_manual) bucket. Campaigns with zero search-term spend
+    are excluded — the caller falls back to 100% Generic for those.
+    """
+    sources = []
+    if sp_df is not None and not sp_df.empty:
+        sources.append((sp_df, "7 Day Total Sales (₹)", _sp_auto_or_manual))
+    if sb_df is not None and not sb_df.empty:
+        sources.append((sb_df, "14 Day Total Sales (₹)", lambda _: "Manual"))
+
+    ratios = {}
+    for df, sales_col, am_fn in sources:
         if not {"Campaign Name", "Customer Search Term", "Spend"}.issubset(df.columns):
             continue
-        sub = df[["Campaign Name", "Customer Search Term", "Spend"]].copy()
-        sub["Spend"] = pd.to_numeric(sub["Spend"], errors="coerce").fillna(0)
-        sub = sub.dropna(subset=["Customer Search Term"])
-        sub["kw_type"] = sub["Customer Search Term"].apply(lambda t: classify_search_term(t, ref))
-        classified.append(sub)
-    if not classified:
-        return {}
-    combined = pd.concat(classified, ignore_index=True)
-    spend_by = combined.groupby(["Campaign Name", "kw_type"])["Spend"].sum().reset_index()
-    out = {}
-    for campaign, sub in spend_by.groupby("Campaign Name"):
-        out[campaign] = sub.loc[sub["Spend"].idxmax(), "kw_type"]
-    return out
+        sub = df.copy()
+        sub["_campaign"] = sub["Campaign Name"].astype(str).str.strip()
+        sub["_kw"] = sub["Customer Search Term"].apply(
+            lambda t: classify_search_term(t, ref) if pd.notna(t) else "Generic"
+        )
+        targeting_series = sub["Targeting"] if "Targeting" in sub.columns else pd.Series([None] * len(sub))
+        sub["_am"] = targeting_series.apply(am_fn)
+        sub["_spend"] = pd.to_numeric(sub["Spend"], errors="coerce").fillna(0)
+        sub["_rev"] = (
+            pd.to_numeric(sub[sales_col], errors="coerce").fillna(0) if sales_col in sub.columns else 0
+        )
+
+        agg = sub.groupby(["_campaign", "_am", "_kw"]).agg(spend=("_spend", "sum"), rev=("_rev", "sum"))
+        for (campaign, am), grp in agg.groupby(level=[0, 1]):
+            total_spend = float(grp["spend"].sum())
+            total_rev = float(grp["rev"].sum())
+            if total_spend <= 0:
+                continue
+            kw_to_ratio = {}
+            for kw in grp.index.get_level_values("_kw"):
+                kw_spend = float(grp.loc[(campaign, am, kw), "spend"])
+                kw_rev = float(grp.loc[(campaign, am, kw), "rev"])
+                spend_ratio = kw_spend / total_spend
+                rev_ratio = (kw_rev / total_rev) if total_rev > 0 else spend_ratio
+                kw_to_ratio[kw] = (spend_ratio, rev_ratio)
+            ratios.setdefault(campaign, {})[am] = kw_to_ratio
+    return ratios
+
+
+def expand_amazon_by_keyword_type(rows, ratios):
+    """Split Amazon SP/SB/SBV campaign rows into per-keyword-type sub-rows.
+
+    Spend, revenue, impressions, and clicks are scaled by the search-term-derived
+    spend/revenue ratios, so per-campaign totals (and therefore platform/bucket
+    totals) reconcile exactly with the campaign report. Campaigns missing from
+    the search term reports get a single fallback row at 100% Generic.
+
+    SD rows pass through with keyword_type=None (renders as "—" in the dashboard).
+    Non-Amazon rows pass through unchanged.
+    """
+    splittable = {"SP", "SB", "SBV"}
+    expanded = []
+    fallback = []
+
+    for r in rows:
+        if r["platform"] != "Amazon" or r["ad_type"] not in splittable:
+            new_r = dict(r)
+            new_r.setdefault("keyword_type", None)
+            expanded.append(new_r)
+            continue
+
+        campaign = r["campaign_name"].strip()
+        am = r.get("ad_sub_type") or "Manual"
+        c_ratios = ratios.get(campaign, {}).get(am)
+        if not c_ratios:
+            fallback.append((campaign, am, r["ad_type"]))
+            new_r = dict(r)
+            new_r["keyword_type"] = "Generic"
+            expanded.append(new_r)
+            continue
+
+        for kw_type, (s_ratio, r_ratio) in c_ratios.items():
+            new_r = dict(r)
+            new_r["spend"] = r["spend"] * s_ratio
+            new_r["att_rev"] = r["att_rev"] * r_ratio
+            new_r["impressions"] = r["impressions"] * s_ratio
+            new_r["clicks"] = r["clicks"] * s_ratio
+            new_r["keyword_type"] = kw_type
+            expanded.append(new_r)
+
+    return expanded, fallback
 
 
 # ─── Platform loaders ─────────────────────────────────────────────────────────
@@ -189,7 +273,7 @@ def _amazon_col(df, *candidates):
     return None
 
 
-def load_amazon_campaigns(path: Path, kw_map: dict):
+def load_amazon_campaigns(path: Path):
     df = read_table(path)
     spend_col = _amazon_col(df, "Total cost (converted)", "Total cost")
     rev_col = _amazon_col(df, "Sales (converted)", "Sales")
@@ -197,14 +281,22 @@ def load_amazon_campaigns(path: Path, kw_map: dict):
     rows = []
     unknown_types = Counter()
     for _, r in df.iterrows():
-        ad_type = str(r.get("Type", "") or "").strip().upper()
+        raw_type = str(r.get("Type", "") or "").strip().upper()
+        ad_type = AMAZON_TYPE_NORMALIZE.get(raw_type, raw_type)
         bucket = AMAZON_BUCKETS.get(ad_type)
         if not bucket:
-            if ad_type:
-                unknown_types[ad_type] += 1
+            if raw_type:
+                unknown_types[raw_type] += 1
             continue
-        targeting = str(r.get("Targeting", "") or "").strip()
-        sub_type = targeting.title() if targeting else None
+        targeting = str(r.get("Targeting", "") or "").strip().upper()
+        if targeting == "AUTOMATIC":
+            sub_type = "Auto"
+        elif targeting == "MANUAL":
+            sub_type = "Manual"
+        elif ad_type in ("SB", "SBV"):
+            sub_type = "Manual"  # Sponsored Brands has no auto targeting
+        else:
+            sub_type = targeting.title() if targeting else None
         campaign = str(r.get("Campaign name", "") or "").strip()
 
         spend = to_float(r.get(spend_col)) if spend_col else None
@@ -225,7 +317,7 @@ def load_amazon_campaigns(path: Path, kw_map: dict):
             "clicks": clicks or 0.0,
             "acos": acos,
             "ctr": None,
-            "keyword_type": kw_map.get(campaign),
+            "keyword_type": None,
             "source_file": path.name,
         })
 
@@ -375,22 +467,39 @@ def agg_platforms(rows):
     return out
 
 
+AD_TYPE_ORDER = {"SP": 0, "SB": 1, "SBV": 2, "SD": 3}
+SUB_TYPE_ORDER = {"Auto": 0, "Manual": 1}
+KW_TYPE_ORDER = {"Branded": 0, "Competition": 1, "Generic": 2, None: 3}
+
+
 def _group_key(r):
+    """4-tuple group key. Amazon includes keyword_type; other platforms use None for that slot."""
+    kw = r.get("keyword_type") if r["platform"] == "Amazon" else None
     if r["platform"] == "Amazon":
-        return ("Amazon", r["ad_type"], r["ad_sub_type"])
+        return ("Amazon", r["ad_type"], r["ad_sub_type"], kw)
     if r["platform"] == "Meta":
-        return ("Meta", r["ad_type"], r["ad_sub_type"])
+        return ("Meta", r["ad_type"], r["ad_sub_type"], None)
     if r["platform"] == "Flipkart":
-        return ("Flipkart", r["ad_type"], None)
+        return ("Flipkart", r["ad_type"], None, None)
     return None
 
 
-def _group_label(platform, t1, t2):
+def _group_label(platform, t1, t2, kw):
     if platform == "Amazon":
-        return " ".join(x for x in (t1, t2) if x)
+        return " ".join(x for x in (t1, t2, kw) if x)
     if platform == "Meta":
         return " + ".join(x for x in (t1, t2) if x)
     return t1 or platform
+
+
+def _channel_sort_key(row):
+    """Spec ordering: ad_type → SP, SB, SBV, SD; auto_manual → Auto, Manual; kw_type → Branded, Competition, Generic, None."""
+    return (
+        AD_TYPE_ORDER.get(row.get("adType"), 99),
+        SUB_TYPE_ORDER.get(row.get("adSubType"), 99),
+        KW_TYPE_ORDER.get(row.get("targeting"), 99),
+        -row.get("spend", 0),  # spend desc within ties (e.g. Meta/Flipkart with no kw_type)
+    )
 
 
 def agg_channel_detail(rows):
@@ -404,7 +513,7 @@ def agg_channel_detail(rows):
         groups.setdefault((r["bucket"], k), []).append(r)
 
     for (bucket, k), grows in groups.items():
-        platform, t1, t2 = k
+        platform, t1, t2, kw = k
         spend = sum(r["spend"] for r in grows)
         att_rev = sum(r["att_rev"] for r in grows)
         impressions = sum(r["impressions"] for r in grows)
@@ -414,20 +523,14 @@ def agg_channel_detail(rows):
         ctr = safe_div(clicks, impressions)
         ctr_display = f"{ctr * 100:.2f}%" if ctr is not None else None
 
-        targeting = None
-        if platform == "Amazon":
-            kw_types = [r.get("keyword_type") for r in grows if r.get("keyword_type")]
-            if kw_types:
-                targeting = Counter(kw_types).most_common(1)[0][0]
-
         sources = sorted({r["source_file"] for r in grows})
 
         row = {
             "platform": platform,
             "adType": t1,
             "adSubType": t2,
-            "targeting": targeting,
-            "campaignGroup": _group_label(platform, t1, t2),
+            "targeting": kw,
+            "campaignGroup": _group_label(platform, t1, t2, kw),
             "spend": round(spend, 2),
             "attRev": round(att_rev, 2),
             "roas": round_or_none(roas, 2),
@@ -440,12 +543,12 @@ def agg_channel_detail(rows):
             "ctrCvr": ctr_display,
             "source": ", ".join(sources),
         }
-        key = BUCKET_KEYS.get(bucket)
-        if key:
-            detail[key].append(row)
+        bkey = BUCKET_KEYS.get(bucket)
+        if bkey:
+            detail[bkey].append(row)
 
     for key in detail:
-        detail[key].sort(key=lambda r: r["spend"], reverse=True)
+        detail[key].sort(key=_channel_sort_key)
 
     for bucket, key in BUCKET_KEYS.items():
         sub = [r for r in rows if r["bucket"] == bucket]
@@ -577,18 +680,17 @@ def process_month(month_str: str):
     missing = []
     source_files = []
 
-    # Search term files (for Amazon keyword classification)
+    # Search term files — used to derive per-keyword-type spend/revenue ratios per campaign.
     ref = load_targeting_reference()
     sp_path = find_sp_search(folder)
     sb_path = find_sb_search(folder)
-    search_dfs = []
+    sp_df = pd.read_excel(sp_path) if sp_path else None
+    sb_df = pd.read_excel(sb_path) if sb_path else None
     if sp_path:
-        search_dfs.append(pd.read_excel(sp_path))
         source_files.append(sp_path.name)
     if sb_path:
-        search_dfs.append(pd.read_excel(sb_path))
         source_files.append(sb_path.name)
-    kw_map = compute_campaign_keyword_types(search_dfs, ref) if search_dfs else {}
+    keyword_ratios = compute_keyword_ratios(sp_df, sb_df, ref)
 
     # SD targeting (recorded in source files; not aggregated separately — SD totals come from the campaign report)
     sd_path = find_sd_targeting(folder)
@@ -599,7 +701,7 @@ def process_month(month_str: str):
 
     amazon_path = find_amazon_campaigns(folder)
     if amazon_path:
-        all_rows.extend(load_amazon_campaigns(amazon_path, kw_map))
+        all_rows.extend(load_amazon_campaigns(amazon_path))
         source_files.append(amazon_path.name)
     else:
         missing.append("Amazon_Campaigns")
@@ -625,12 +727,6 @@ def process_month(month_str: str):
     else:
         missing.append("POS")
 
-    # When search term files are missing, set keyword_type to null on every Amazon row
-    if not search_dfs:
-        for r in all_rows:
-            if r["platform"] == "Amazon":
-                r["keyword_type"] = None
-
     if OUTPUT_FILE.exists():
         with open(OUTPUT_FILE, encoding="utf-8") as f:
             data = json.load(f)
@@ -639,12 +735,20 @@ def process_month(month_str: str):
 
     active_benchmarks = data.get("benchmarks") or DEFAULT_BENCHMARKS
 
+    # Expand Amazon SP/SB/SBV campaigns into per-keyword-type rows for the channel detail
+    # view only. Spend/revenue stay rebased to campaign-report totals via the search-term
+    # ratios, so platform/bucket/monthly totals reconcile exactly. Top performers and
+    # bucket summary still operate on the original campaign-level rows.
+    detail_rows, fallback_campaigns = expand_amazon_by_keyword_type(all_rows, keyword_ratios)
+
     platforms = agg_platforms(all_rows)
     total_spend = sum(p["spend"] for p in platforms.values() if not p.get("pending"))
     total_att_rev = sum(p["attRev"] for p in platforms.values() if not p.get("pending"))
-    channel_detail = agg_channel_detail(all_rows)
+    channel_detail = agg_channel_detail(detail_rows)
     top, bottom = agg_top_bottom(all_rows)
     bucket_summary = agg_bucket_summary(all_rows, active_benchmarks)
+
+    _print_reconciliation(all_rows, detail_rows, fallback_campaigns)
 
     data.setdefault("_meta", {})
     data.setdefault("months", [])
@@ -692,6 +796,42 @@ def process_month(month_str: str):
         json.dump(data, f, indent=2, ensure_ascii=False)
 
     _print_summary(month_label, platforms, total_spend, total_att_rev, pos, missing, source_files)
+
+
+def _print_reconciliation(campaign_rows, detail_rows, fallback_campaigns):
+    """Verify keyword-type-split rows reconcile to campaign-level totals per Amazon ad_type."""
+    amazon_campaign = [r for r in campaign_rows if r["platform"] == "Amazon"]
+    amazon_detail = [r for r in detail_rows if r["platform"] == "Amazon"]
+    if not amazon_campaign:
+        return
+
+    print("\nReconciliation (campaign report ↔ channel detail):")
+    by_type_campaign = {}
+    by_type_detail = {}
+    for r in amazon_campaign:
+        by_type_campaign.setdefault(r["ad_type"], [0.0, 0.0])
+        by_type_campaign[r["ad_type"]][0] += r["spend"]
+        by_type_campaign[r["ad_type"]][1] += r["att_rev"]
+    for r in amazon_detail:
+        by_type_detail.setdefault(r["ad_type"], [0.0, 0.0])
+        by_type_detail[r["ad_type"]][0] += r["spend"]
+        by_type_detail[r["ad_type"]][1] += r["att_rev"]
+
+    for ad_type in sorted(by_type_campaign, key=lambda t: AD_TYPE_ORDER.get(t, 99)):
+        cs, cr = by_type_campaign[ad_type]
+        ds, dr = by_type_detail.get(ad_type, [0, 0])
+        print(
+            f"  {ad_type:4s} spend ₹{cs:>12,.2f} → ₹{ds:>12,.2f} (Δ₹{ds - cs:+.2f})  "
+            f"rev ₹{cr:>12,.2f} → ₹{dr:>12,.2f} (Δ₹{dr - cr:+.2f})"
+        )
+
+    if fallback_campaigns:
+        print(f"\n  Fallback (100% Generic) applied to {len(fallback_campaigns)} campaign(s):")
+        for campaign, am, ad_type in fallback_campaigns[:10]:
+            print(f"    - [{ad_type} {am}] {campaign}")
+        if len(fallback_campaigns) > 10:
+            print(f"    ... and {len(fallback_campaigns) - 10} more")
+    print()
 
 
 def _print_summary(month_label, platforms, total_spend, total_att_rev, pos, missing, source_files):
