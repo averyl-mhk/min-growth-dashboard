@@ -234,6 +234,36 @@ canvas{display:block}
 .ai-empty h3{font-size:14px;font-weight:700;color:var(--t2);margin-bottom:8px}
 .ai-empty p{font-size:12px;line-height:1.6;max-width:420px;margin:0 auto}
 .ai-empty code{background:#F3F4F6;padding:2px 6px;border-radius:4px;font-size:11px;color:var(--t1)}
+/* AI: follow-up scorecard */
+.ai-fu{display:flex;flex-direction:column;gap:8px;margin-bottom:var(--gap)}
+.ai-fu-item{background:var(--card);border-radius:var(--r);padding:12px 16px;box-shadow:0 1px 3px rgba(0,0,0,.06);border-left:4px solid var(--border)}
+.ai-fu-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.ai-fu-title{font-size:12px;font-weight:700;color:var(--t1)}
+.ai-fu-verdict{font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;white-space:nowrap;flex-shrink:0}
+.ai-fu-verdict.ok{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.ai-fu-verdict.mid{background:var(--amber-bg);color:#92400E;border:1px solid var(--amber-border)}
+.ai-fu-verdict.bad{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.ai-fu-verdict.na{background:#F3F4F6;color:var(--t3);border:1px solid var(--border)}
+.ai-fu-row{display:flex;gap:8px;font-size:11px;line-height:1.5;margin-top:2px}
+.ai-fu-k{font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);font-size:9px;flex-shrink:0;width:56px;padding-top:1px}
+.ai-fu-v{color:var(--t2)}
+/* AI: month-on-month trends */
+.ai-mom{display:flex;flex-direction:column;gap:8px;margin-bottom:var(--gap)}
+.ai-mom-item{background:var(--card);border-radius:var(--r);padding:12px 16px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.ai-mom-head{display:flex;align-items:center;gap:7px;margin-bottom:4px;flex-wrap:wrap}
+.ai-mom-name{font-size:12px;font-weight:700;color:var(--t1)}
+.ai-mom-basis{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--t3)}
+.ai-mom-flag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;margin-left:auto}
+.ai-mom-flag.ok{background:var(--green-bg);color:var(--green);border:1px solid var(--green-border)}
+.ai-mom-flag.bad{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.ai-mom-flag.na{background:#F3F4F6;color:var(--t3);border:1px solid var(--border)}
+.ai-mom-trend{font-size:12px;color:var(--t2);line-height:1.55;font-variant-numeric:tabular-nums}
+/* AI: glossary */
+.ai-gloss{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:var(--gap)}
+.ai-gloss h3{font-size:12px;font-weight:700;color:var(--t2);margin-bottom:8px}
+.ai-gloss dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:12px;line-height:1.5}
+.ai-gloss dt{font-weight:700;color:var(--t1)}
+.ai-gloss dd{color:var(--t2)}
 </style>
 </head>
 <body>
@@ -1165,6 +1195,63 @@ function renderAIView(idx) {
         <p>${recs.strategicGap}</p>
        </div>` : '';
 
+  // Follow-up scorecard (STEP 0) — evaluation of last month's recommendations
+  const verdictCls = v => {
+    const s = (v || '').toLowerCase();
+    if (s.startsWith('worked')) return 'ok';
+    if (s.startsWith('partial')) return 'mid';
+    if (s.startsWith('did not') || s.startsWith("didn't")) return 'bad';
+    return 'na'; // Not actioned / Can't confirm
+  };
+  const followUp = (recs.followUp && recs.followUp.length)
+    ? `<div class="ai-sec">
+        <span class="ai-sec-label">Follow-up — did last month's advice work?</span>
+        <span class="ai-sec-badge" style="background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-border)">Scorecard</span>
+        <div class="ai-sec-line"></div>
+       </div>
+       <div class="ai-fu">${recs.followUp.map(f => `
+         <div class="ai-fu-item">
+           <div class="ai-fu-head">
+             <span class="ai-fu-title">${f.priorTitle || ''}</span>
+             <span class="ai-fu-verdict ${verdictCls(f.verdict)}">${f.verdict || '—'}</span>
+           </div>
+           <div class="ai-fu-row"><span class="ai-fu-k">Actioned</span><span class="ai-fu-v">${f.actioned || '—'}</span></div>
+           <div class="ai-fu-row"><span class="ai-fu-k">Result</span><span class="ai-fu-v">${f.didItWork || '—'}</span></div>
+         </div>`).join('')}</div>`
+    : '';
+
+  // Month-on-month campaign trends
+  const momCls = fl => {
+    const s = (fl || '').toUpperCase();
+    if (s.includes('ALARM')) return 'bad';
+    if (s.includes('SCALE')) return 'ok';
+    return 'na';
+  };
+  const mom = (recs.monthOnMonth && recs.monthOnMonth.length)
+    ? `<div class="ai-sec">
+        <span class="ai-sec-label">Month-on-month campaign trends</span>
+        <div class="ai-sec-line"></div>
+       </div>
+       <div class="ai-mom">${recs.monthOnMonth.map(x => `
+         <div class="ai-mom-item">
+           <div class="ai-mom-head">
+             ${platPill(x.platform)}
+             <span class="ai-mom-name">${x.campaign || ''}</span>
+             ${x.basis ? `<span class="ai-mom-basis">${x.basis}</span>` : ''}
+             ${x.flag ? `<span class="ai-mom-flag ${momCls(x.flag)}">${x.flag}</span>` : ''}
+           </div>
+           <div class="ai-mom-trend">${x.trend || ''}</div>
+         </div>`).join('')}</div>`
+    : '';
+
+  // Glossary
+  const glossary = (recs.glossary && recs.glossary.length)
+    ? `<div class="ai-gloss">
+        <h3>Glossary</h3>
+        <dl>${recs.glossary.map(g => `<dt>${g.term || ''}</dt><dd>${g.definition || ''}</dd>`).join('')}</dl>
+       </div>`
+    : '';
+
   container.innerHTML = `
     <div class="ai-hero-card">
       <div class="ai-hero-ico">✦</div>
@@ -1177,9 +1264,12 @@ function renderAIView(idx) {
       </div>
     </div>
     <div class="ai-count-strip">${countCards}</div>
+    ${followUp}
     ${sections}
+    ${mom}
     ${flags}
-    ${gap}`;
+    ${gap}
+    ${glossary}`;
 }
 
 // ─── Init: fetch JSON then boot dashboard ──────────────────────────────────
