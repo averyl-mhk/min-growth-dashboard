@@ -757,8 +757,13 @@ function renderDetailView(idx) {
 
   const ctrClass = status => status === 'ok' ? 'ctr-ok' : status === 'fail' ? 'ctr-fail' : 'ctr-na';
 
-  // Channel filter pills
-  const platformsInData = ['Amazon', 'Meta', 'Flipkart'];
+  // Channel filter pills — derive from the platforms actually present this month
+  const PLATFORM_ORDER = ['Amazon', 'Meta', 'Google Ads', 'Flipkart'];
+  const presentPlatforms = new Set(
+    [...(detail.awareness || []), ...(detail.coreSales || []), ...(detail.retargeting || [])].map(r => r.platform)
+  );
+  const platformsInData = PLATFORM_ORDER.filter(p => presentPlatforms.has(p));
+  const hasGoogle = presentPlatforms.has('Google Ads');
   const filterBar = `<div class="filter-bar">
     <span class="filter-label">Channel</span>
     <button class="fpill${activePlatform === 'all' ? ' active' : ''}" onclick="onPlatformFilter('all')">All Channels</button>
@@ -947,6 +952,14 @@ function renderDetailView(idx) {
         <div class="ai-mom-trend">${x.trend || ''}</div>
       </div>`).join('')}</div>` : '';
 
+  // Google Ads status block — only shown for months where Google has no data (pre-May '26)
+  const googlePending = hasGoogle ? '' : `
+    <div class="sec-div" style="margin-top:20px"><span class="sec-badge pending">Google Ads — Not Active</span><div class="sec-line"></div></div>
+    <div class="pending-block">
+      <h3>⏳ Google Ads not running in ${m}</h3>
+      <p>Google Ads was paused during this period and went live in May 2026. Once live, Google campaigns appear directly in the channel tables above.</p>
+    </div>`;
+
   document.getElementById('detailContent').innerHTML = `
     ${filterBar}
     ${bucketCards}
@@ -1038,11 +1051,7 @@ function renderDetailView(idx) {
 
     ${momSection}
 
-    <div class="sec-div" style="margin-top:20px"><span class="sec-badge pending">Google Ads — Pending</span><div class="sec-line"></div></div>
-    <div class="pending-block">
-      <h3>⏳ Google Ads data not available for Jan–Feb '26</h3>
-      <p>Export access being set up by the MIN team. Historical data in Nov &amp; Dec '25 files.<br>Expected: Search Branded · Search Non-Branded · Shopping · Performance Max</p>
-    </div>
+    ${googlePending}
 
     <div class="sec-div" style="margin-top:8px"><span class="sec-badge paid">How Campaigns Are Categorised</span><div class="sec-line"></div></div>
     <div class="cat-logic">
