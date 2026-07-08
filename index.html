@@ -264,7 +264,7 @@ canvas{display:block}
 <div class="view-tabs">
   <button class="view-tab active" onclick="switchView('exec',this)">📊 &nbsp;Executive Overview</button>
   <button class="view-tab" onclick="switchView('detail',this)">🎯 &nbsp;Channel Detail</button>
-  <button class="view-tab" onclick="switchView('ai',this)" id="aiTab">✦ &nbsp;AI Recommendations</button>
+  <button class="view-tab" onclick="switchView('ai',this)" id="aiTab">✦ &nbsp;AI Recs</button>
 </div>
 
 <!-- ═══ EXECUTIVE VIEW ═══ -->
@@ -372,6 +372,7 @@ let D = null; // The loaded JSON data
 let activeIdx = 0;
 let activePlatform = 'all'; // Channel Detail filter: 'all' | 'Amazon' | 'Meta' | 'Flipkart'
 let charts = {};
+let ytdActive = false;
 
 // ─── Channel filter helpers ────────────────────────────────────────────────
 function filterByPlatform(rows) {
@@ -442,21 +443,78 @@ function bucketTag(bucket) {
 // ─── Chart helpers ─────────────────────────────────────────────────────────
 function dc(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
 
+// ─── YTD aggregation ────────────────────────────────────────────────────────
+function computeYTD() {
+  const months = D.months;
+  const totalSpend  = months.reduce((s, m) => s + (D.monthly[m].spend   || 0), 0);
+  const totalAttRev = months.reduce((s, m) => s + (D.monthly[m].attRev  || 0), 0);
+
+  // POS — only include months that have POS data
+  const posMonths = months.filter(m => D.monthly[m].pos && D.monthly[m].pos.total);
+  let pos = null;
+  if (posMonths.length > 0) {
+    const keys = new Set();
+    posMonths.forEach(m => Object.keys(D.monthly[m].pos).filter(k => k !== 'total').forEach(k => keys.add(k)));
+    pos = {};
+    keys.forEach(k => { pos[k] = posMonths.reduce((s, m) => s + (D.monthly[m].pos[k] || 0), 0); });
+    pos.total = posMonths.reduce((s, m) => s + D.monthly[m].pos.total, 0);
+  }
+
+  // Platforms — sum non-pending months; flag pending only if ALL months were pending
+  const platforms = {};
+  ['Amazon AMS', 'Meta', 'Flipkart', 'Google Ads'].forEach(p => {
+    let sp = 0, rev = 0, hasNonPending = false, hasPending = false;
+    months.forEach(m => {
+      const pd = D.monthly[m].platforms[p];
+      if (!pd) return;
+      if (pd.pending) { hasPending = true; return; }
+      sp += pd.spend || 0; rev += pd.attRev || 0; hasNonPending = true;
+    });
+    platforms[p] = {
+      spend: sp, attRev: rev,
+      acos: p === 'Amazon AMS' && rev > 0 ? sp / rev : null,
+      pending: !hasNonPending && hasPending,
+    };
+  });
+
+  return { spend: totalSpend, attRev: totalAttRev, pos, platforms };
+}
+
 // ─── Month pills ───────────────────────────────────────────────────────────
 function buildMonthPills() {
   const container = document.getElementById('monthPills');
   container.innerHTML = D.months.map((m, i) =>
-    `<button class="mpill${i === activeIdx ? ' active' : ''}" onclick="onMonth(${i},this)">${m}</button>`
-  ).join('');
+    `<button class="mpill${i === activeIdx && !ytdActive ? ' active' : ''}" onclick="onMonth(${i},this)">${m}</button>`
+  ).join('') + `<button class="mpill${ytdActive ? ' active' : ''}" onclick="onYTD(this)" style="font-weight:800;letter-spacing:.3px">YTD</button>`;
+}
+
+function onYTD(btn) {
+  ytdActive = true;
+  document.querySelectorAll('.mpill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  updateKPI(activeIdx);
+  updatePlatTable(activeIdx);
+  buildSpendDonut(activeIdx);
+  buildPosDonut(activeIdx);
+  if (document.getElementById('view-detail').style.display !== 'none') renderDetailView(activeIdx);
+  if (document.getElementById('view-ai').style.display    !== 'none') renderAIView(activeIdx);
 }
 
 // ─── Executive view ────────────────────────────────────────────────────────
 function updateKPI(idx) {
-  const m = D.months[idx];
-  const d = D.monthly[m];
-  const prev = idx > 0 ? D.monthly[D.months[idx - 1]] : null;
+  const isYTD = ytdActive;
+  const d     = isYTD ? computeYTD() : D.monthly[D.months[idx]];
+  const m     = isYTD ? 'YTD' : D.months[idx];
+  const prev  = (!isYTD && idx > 0) ? D.monthly[D.months[idx - 1]] : null;
 
-  document.getElementById('noticeText').innerHTML = `<strong>${m}</strong> — ${D.notices[m] || ''}`;
+  if (isYTD) {
+    const posCount = D.months.filter(mo => D.monthly[mo].pos).length;
+    document.getElementById('noticeText').innerHTML =
+      `<strong>Year to Date — ${D.months[0]} to ${D.months[D.months.length - 1]}</strong> · ${D.months.length} months combined.` +
+      (posCount < D.months.length ? ` POS available for ${posCount} of ${D.months.length} months — MER covers those months only.` : '');
+  } else {
+    document.getElementById('noticeText').innerHTML = `<strong>${m}</strong> — ${D.notices[m] || ''}`;
+  }
   document.getElementById('lastUpdated').textContent = `Data as of ${D._meta.lastUpdated}`;
 
   // MER
@@ -471,7 +529,7 @@ function updateKPI(idx) {
     set('kv-mer', 'N/A');
     document.getElementById('kv-mer').className = 'kval';
     document.getElementById('kd-mer').innerHTML = '';
-    set('kna-mer', 'POS data not available for this month');
+    set('kna-mer', isYTD ? 'No POS data across any month' : 'POS data not available for this month');
   }
 
   // Spend / POS / Att.Rev / ROAS
@@ -484,7 +542,7 @@ function updateKPI(idx) {
     document.getElementById('posWarn').style.display = 'none';
   } else {
     set('kv-pos', '—');
-    document.getElementById('kd-pos').innerHTML = '<div class="kdelta flat" style="font-size:10px">POS pending</div>';
+    document.getElementById('kd-pos').innerHTML = `<div class="kdelta flat" style="font-size:10px">${isYTD ? 'No POS data' : 'POS pending'}</div>`;
     document.getElementById('posWarn').style.display = 'flex';
   }
 
@@ -498,12 +556,13 @@ function updateKPI(idx) {
   // POS donut visibility
   document.getElementById('posDonutCard').style.display = d.pos ? '' : 'none';
   document.getElementById('noPosCard').style.display = d.pos ? 'none' : '';
-  set('platTableTitle', `Platform Summary — ${m}`);
+  set('platTableTitle', isYTD
+    ? `Platform Summary — YTD (${D.months[0]}–${D.months[D.months.length - 1]})`
+    : `Platform Summary — ${m}`);
 }
 
 function updatePlatTable(idx) {
-  const m = D.months[idx];
-  const d = D.monthly[m];
+  const d = ytdActive ? computeYTD() : D.monthly[D.months[idx]];
   const order = ['Amazon AMS', 'Meta', 'Flipkart', 'Google Ads'];
   const posMap = d.pos ? { 'Amazon AMS': d.pos.Amazon, 'Meta': d.pos.Shopify, 'Flipkart': d.pos.Flipkart, 'Google Ads': null } : null;
 
@@ -576,8 +635,9 @@ function buildTrend() {
 
 function buildPosDonut(idx) {
   dc('cPosDonut');
-  const m = D.months[idx];
-  const pos = D.monthly[m].pos;
+  const isYTD = ytdActive;
+  const pos = isYTD ? computeYTD().pos : D.monthly[D.months[idx]].pos;
+  const mLabel = isYTD ? `YTD (${D.months[0]}–${D.months[D.months.length-1]})` : D.months[idx];
   if (!pos) return;
 
   const channels = Object.entries(pos).filter(([k]) => k !== 'total');
@@ -586,7 +646,7 @@ function buildPosDonut(idx) {
   const values = channels.map(([, v]) => v / 100000);
   const totalL = pos.total / 100000;
 
-  document.getElementById('posDonutSub').innerHTML = `Where total sales are coming from · ${m} &nbsp;·&nbsp; <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#EA580C;vertical-align:middle"></span> Warm palette`;
+  document.getElementById('posDonutSub').innerHTML = `Where total sales are coming from · ${mLabel} &nbsp;·&nbsp; <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#EA580C;vertical-align:middle"></span> Warm palette`;
   document.getElementById('posLegend').innerHTML = labels.map((l, i) =>
     `<div class="dl-row"><div class="dl-dot" style="background:${colors[l] || '#888'}"></div><div class="dl-label">${l}</div><div class="dl-val">₹${values[i].toFixed(1)}L</div><div class="dl-pct">${(values[i] / totalL * 100).toFixed(1)}%</div></div>`
   ).join('') + `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:11px;color:var(--t2)"><strong>Total POS</strong> &nbsp;₹${totalL.toFixed(1)}L</div>`;
@@ -603,8 +663,10 @@ function buildPosDonut(idx) {
 
 function buildSpendDonut(idx) {
   dc('cSpendDonut');
-  const m = D.months[idx];
-  const pd = D.monthly[m].platforms;
+  const isYTD = ytdActive;
+  const src  = isYTD ? computeYTD() : D.monthly[D.months[idx]];
+  const pd   = src.platforms;
+  const mLabel = isYTD ? `YTD (${D.months[0]}–${D.months[D.months.length-1]})` : D.months[idx];
   const clr = { 'Amazon AMS': '#1D4ED8', 'Meta': '#6D28D9', 'Flipkart': '#BE185D', 'Google Ads': '#94A3B8' };
   const labels = [], data = [], colors = [];
   ['Amazon AMS', 'Meta', 'Flipkart', 'Google Ads'].forEach(p => {
@@ -614,7 +676,7 @@ function buildSpendDonut(idx) {
     colors.push(clr[p]);
   });
 
-  document.getElementById('spendDonutSub').textContent = `Absolute spend in ₹ · ${m}${pd['Google Ads']?.pending ? ' · Google excl.' : ''}`;
+  document.getElementById('spendDonutSub').textContent = `Absolute spend in ₹ · ${mLabel}${pd['Google Ads']?.pending ? ' · Google excl.' : ''}`;
   const total = data.reduce((a, b) => a + b, 0);
   document.getElementById('spendLegend').innerHTML = labels.map((l, i) =>
     `<div class="dl-row"><div class="dl-dot" style="background:${colors[i]}"></div><div class="dl-label">${l}</div><div class="dl-val">₹${data[i].toFixed(1)}L</div><div class="dl-pct">${(data[i] / total * 100).toFixed(1)}%</div></div>`
@@ -641,6 +703,16 @@ function renderDetailView(idx) {
 
   const noticeEl = document.getElementById('detailNotice');
   noticeEl.innerHTML = `Campaign detail for <strong>${m}</strong> sourced from raw platform exports. Benchmarks: <strong>Prospecting CTR ≥ ${(bmarks.prospectingCTR * 100).toFixed(1)}%</strong> · <strong>Retargeting CTR ≥ ${(bmarks.retargetingCTR * 100).toFixed(1)}%</strong> · <strong>Sales CVR ≥ ${(bmarks.salesCVR * 100).toFixed(1)}%</strong>. Amazon uses <strong>ACOS</strong> as primary efficiency metric (&lt;${(bmarks.amazonACOSTarget * 100).toFixed(0)}% target).`;
+
+  if (ytdActive) {
+    document.getElementById('detailContent').innerHTML = `
+      <div class="no-detail-block">
+        <div style="font-size:32px;margin-bottom:12px">📅</div>
+        <div style="font-size:14px;font-weight:700;color:var(--t2);margin-bottom:6px">Campaign detail is per-month</div>
+        <div style="font-size:12px">YTD view shows aggregated totals only. Select a specific month above to see channel-level campaign breakdowns.</div>
+      </div>`;
+    return;
+  }
 
   if (!detail) {
     document.getElementById('detailContent').innerHTML = `
@@ -952,6 +1024,7 @@ function renderDetailView(idx) {
 // ─── Event handlers ────────────────────────────────────────────────────────
 function onMonth(idx, btn) {
   activeIdx = idx;
+  ytdActive = false;
   document.querySelectorAll('.mpill').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
   updateKPI(idx);
@@ -976,6 +1049,14 @@ function switchView(view, btn) {
 // ─── AI Recommendations view ───────────────────────────────────────────────
 function renderAIView(idx) {
   const container = document.getElementById('aiContent');
+  if (ytdActive) {
+    container.innerHTML = `
+      <div class="ai-empty">
+        <h3>AI Recs are per-month</h3>
+        <p>YTD view shows aggregated totals. Select a specific month above to see AI recommendations for that month's campaigns.</p>
+      </div>`;
+    return;
+  }
   const m = D.months[idx];
   const recs = D.aiRecommendations && D.aiRecommendations[m];
 

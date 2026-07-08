@@ -50,6 +50,14 @@ SP_AUTO_TARGETS = {"loose-match", "close-match", "complements", "substitutes"}
 
 META_BUCKETS = {"Prospecting": "Awareness", "Remarketing": "Retargeting", "Sales Traffic": "Core Sales"}
 FLIPKART_BUCKETS = {"PLA": "Core Sales", "SP": "Core Sales", "SELLER_PCA": "Retargeting", "PCA": "Retargeting"}
+# Google Ads keyword types differ from Meta's. Mapping confirmed with the marketing team:
+# Prospecting → Core Sales, Branded/Non Branded/Display → Awareness.
+GOOGLE_BUCKETS = {
+    "Prospecting": "Core Sales",
+    "Branded": "Awareness",
+    "Non Branded": "Awareness",
+    "Display": "Awareness",
+}
 
 BUCKET_KEYS = {"Awareness": "awareness", "Core Sales": "coreSales", "Retargeting": "retargeting"}
 
@@ -117,7 +125,15 @@ def find_file(folder: Path, includes, excludes=()):
 
 
 def find_amazon_campaigns(folder):
-    return find_file(folder, ["*mazon*"], ["*search*", "*targeting*"])
+    # "*mazon*" catches the conventionally named files (e.g. "Campaign Amazon Mar.csv").
+    # Some exports drop the platform from the name (e.g. "Campaign May Dashboard.csv"),
+    # so "*campaign*" is added as a fallback. Other platforms' files are excluded so the
+    # fallback never grabs a Flipkart/Meta/Google/POS/search/targeting export by mistake.
+    return find_file(
+        folder,
+        ["*mazon*", "*campaign*"],
+        ["*search*", "*targeting*", "*sponsored*", "*lipkart*", "*eta*", "*google*", "*pos*"],
+    )
 
 
 def find_sp_search(folder):
@@ -135,7 +151,11 @@ def find_sd_targeting(folder):
 
 
 def find_meta(folder):
-    return find_file(folder, ["*eta*"], ["*mazon*", "*lipkart*"])
+    return find_file(folder, ["*eta*"], ["*mazon*", "*lipkart*", "*google*"])
+
+
+def find_google_ads(folder):
+    return find_file(folder, ["*google*"])
 
 
 def find_flipkart(folder):
@@ -346,6 +366,82 @@ def load_amazon_campaigns(path: Path):
     return rows
 
 
+def load_amazon_from_search_terms(sp_df, sb_df, sd_path: Path | None):
+    """Reconstruct campaign-level Amazon rows from search term / targeting reports.
+
+    Fallback for months where the Amazon campaign report is not available.
+    SP → ad_type SP, bucket Core Sales.
+    SB → ad_type SB, bucket Awareness.
+    SD → ad_type SD, bucket Retargeting.
+    Returns rows in the same format as load_amazon_campaigns().
+    """
+    rows = []
+
+    def _agg(df, ad_type, bucket, sub_type_fn, sales_col_candidates, src):
+        if df is None or df.empty:
+            return
+        if not {"Campaign Name", "Spend"}.issubset(df.columns):
+            return
+        w = df.copy()
+        w["_c"] = w["Campaign Name"].astype(str).str.strip()
+        t_col = "Targeting" if "Targeting" in w.columns else None
+        if t_col:
+            w["_am"] = w[t_col].apply(sub_type_fn).fillna("")
+        else:
+            fallback_val = sub_type_fn(None)
+            w["_am"] = "" if fallback_val is None else str(fallback_val)
+        w["_spend"] = pd.to_numeric(w["Spend"], errors="coerce").fillna(0)
+        sc = next((c for c in sales_col_candidates if c in w.columns), None)
+        w["_rev"] = pd.to_numeric(w[sc], errors="coerce").fillna(0) if sc else 0.0
+        w["_imp"] = pd.to_numeric(w["Impressions"], errors="coerce").fillna(0) if "Impressions" in w.columns else 0.0
+        w["_clk"] = pd.to_numeric(w["Clicks"], errors="coerce").fillna(0) if "Clicks" in w.columns else 0.0
+        grouped = w.groupby(["_c", "_am"]).agg(
+            spend=("_spend", "sum"), rev=("_rev", "sum"),
+            imp=("_imp", "sum"), clk=("_clk", "sum"),
+        ).reset_index()
+        for _, g in grouped.iterrows():
+            sp, rev = float(g["spend"]), float(g["rev"])
+            imp, clk = float(g["imp"]), float(g["clk"])
+            am = g["_am"] if g["_am"] else None
+            rows.append({
+                "platform": "Amazon",
+                "ad_type": ad_type,
+                "ad_sub_type": am,
+                "campaign_name": g["_c"],
+                "bucket": bucket,
+                "spend": sp,
+                "att_rev": rev,
+                "impressions": imp,
+                "clicks": clk,
+                "acos": sp / rev if rev > 0 else None,
+                "ctr": clk / imp if imp > 0 else None,
+                "keyword_type": None,
+                "source_file": src,
+            })
+
+    _agg(sp_df, "SP", "Core Sales", _sp_auto_or_manual, ["7 Day Total Sales (₹)"],
+         "SP_search_terms_fallback")
+    _agg(sb_df, "SB", "Awareness", lambda _: "Manual", ["14 Day Total Sales (₹)"],
+         "SB_search_terms_fallback")
+
+    if sd_path and sd_path.exists():
+        try:
+            sd_df_local = pd.read_excel(sd_path)
+            _agg(sd_df_local, "SD", "Retargeting", lambda _: None,
+                 ["14 Day Total Sales (₹)"], sd_path.name)
+        except Exception as e:
+            print(f"  WARNING: SD targeting read failed in Amazon fallback: {e}")
+
+    # Normalize ACOS: if any > 1, they were exported as percent
+    acos_vals = [r["acos"] for r in rows if r["acos"] is not None]
+    if acos_vals and max(acos_vals) > 1:
+        for r in rows:
+            if r["acos"] is not None:
+                r["acos"] /= 100
+
+    return rows
+
+
 def load_meta(path: Path):
     # Some Meta exports have an "Added, Added, ..." junk row 0 with the real header on row 1;
     # other exports have the real header on row 0. Detect by checking row 0 col 0.
@@ -385,6 +481,68 @@ def load_meta(path: Path):
     for r in rows:
         if r["impressions"] > 0:
             r["ctr"] = r["clicks"] / r["impressions"]
+
+    return rows
+
+
+def load_google_ads(path: Path):
+    # Google Ads exports carry 2 preamble rows ("Campaign report", date range) before the
+    # real header. Locate the header row by the "Targeting Type" marker rather than assuming
+    # a fixed offset.
+    peek = pd.read_excel(path, header=None, nrows=10)
+    header_row = 0
+    for i in range(len(peek)):
+        if str(peek.iloc[i, 0]).strip() == "Targeting Type":
+            header_row = i
+            break
+    df = pd.read_excel(path, header=header_row)
+    df = df.loc[:, ~df.columns.duplicated()]
+
+    rows = []
+    unknown = Counter()
+    for _, r in df.iterrows():
+        kw_type = str(r.get("Keyword Type", "") or "").strip()
+        bucket = GOOGLE_BUCKETS.get(kw_type)
+        if not bucket:
+            if kw_type and kw_type.lower() != "nan":
+                unknown[kw_type] += 1
+            continue
+        targeting_type = str(r.get("Targeting Type", "") or "").strip() or None
+
+        camp_raw = r.get("Campaign")
+        if camp_raw is None or (isinstance(camp_raw, float) and pd.isna(camp_raw)):
+            campaign = ""
+        else:
+            campaign = str(camp_raw).strip()
+            if campaign.lower() == "nan":
+                campaign = ""
+        if not campaign:
+            # Some rows export without a campaign name; build a readable fallback.
+            campaign = " | ".join(x for x in (targeting_type, kw_type) if x) or "Google Ads"
+
+        rows.append({
+            "platform": "Google Ads",
+            "ad_type": targeting_type,
+            "ad_sub_type": kw_type or None,
+            "campaign_name": campaign,
+            "bucket": bucket,
+            "spend": to_float(r.get("Cost")) or 0.0,
+            "att_rev": to_float(r.get("Revenue")) or 0.0,
+            "impressions": to_float(r.get("Impr.")) or 0.0,
+            "clicks": to_float(r.get("Interactions")) or 0.0,
+            "acos": None,
+            "ctr": None,
+            "keyword_type": None,
+            "source_file": path.name,
+        })
+
+    for r in rows:
+        if r["impressions"] > 0:
+            r["ctr"] = r["clicks"] / r["impressions"]
+
+    if unknown:
+        print(f"  WARNING: Google Ads rows skipped — unmapped Keyword Type values: {dict(unknown)}")
+        print(f"  Add these to GOOGLE_BUCKETS in processor.py if they should be counted.")
 
     return rows
 
@@ -459,7 +617,7 @@ def agg_platforms(rows):
         by_plat.setdefault(r["platform"], []).append(r)
 
     out = {}
-    for plat, label in (("Amazon", "Amazon AMS"), ("Meta", "Meta"), ("Flipkart", "Flipkart")):
+    for plat, label in (("Amazon", "Amazon AMS"), ("Meta", "Meta"), ("Google Ads", "Google Ads"), ("Flipkart", "Flipkart")):
         sub = by_plat.get(plat, [])
         if not sub:
             out[label] = {"spend": 0, "attRev": 0, "acos": None, "pending": True}
@@ -474,7 +632,6 @@ def agg_platforms(rows):
             "pending": False,
         }
 
-    out["Google Ads"] = {"spend": 0, "attRev": 0, "acos": None, "pending": True}
     return out
 
 
@@ -490,6 +647,8 @@ def _group_key(r):
         return ("Amazon", r["ad_type"], r["ad_sub_type"], kw)
     if r["platform"] == "Meta":
         return ("Meta", r["ad_type"], r["ad_sub_type"], None)
+    if r["platform"] == "Google Ads":
+        return ("Google Ads", r["ad_type"], r["ad_sub_type"], None)
     if r["platform"] == "Flipkart":
         return ("Flipkart", r["ad_type"], None, None)
     return None
@@ -498,7 +657,7 @@ def _group_key(r):
 def _group_label(platform, t1, t2, kw):
     if platform == "Amazon":
         return " ".join(x for x in (t1, t2, kw) if x)
-    if platform == "Meta":
+    if platform in ("Meta", "Google Ads"):
         return " + ".join(x for x in (t1, t2) if x)
     return t1 or platform
 
@@ -612,6 +771,8 @@ def _channel_label(r):
         return f"Amazon {r['ad_type']}" if r["ad_type"] else "Amazon"
     if r["platform"] == "Meta":
         return f"Meta {r['ad_sub_type']}" if r["ad_sub_type"] else "Meta"
+    if r["platform"] == "Google Ads":
+        return f"Google {r['ad_sub_type']}" if r["ad_sub_type"] else "Google Ads"
     if r["platform"] == "Flipkart":
         return f"Flipkart {r['ad_type']}" if r["ad_type"] else "Flipkart"
     return r["platform"]
@@ -709,13 +870,32 @@ def process_month(month_str: str, export_brief_flag: bool = False):
         source_files.append(sd_path.name)
 
     all_rows = []
+    amazon_fallback = False
 
     amazon_path = find_amazon_campaigns(folder)
     if amazon_path:
         all_rows.extend(load_amazon_campaigns(amazon_path))
         source_files.append(amazon_path.name)
     else:
-        missing.append("Amazon_Campaigns")
+        # Attempt to reconstruct Amazon spend/revenue from search term / targeting reports
+        if sp_path or sb_path or sd_path:
+            print("  NOTE: Amazon campaign report not found — reconstructing from search term / targeting reports.")
+            fb_rows = load_amazon_from_search_terms(sp_df, sb_df, sd_path)
+            if fb_rows:
+                # Stamp with real file names
+                for r in fb_rows:
+                    if r["ad_type"] == "SP" and sp_path:
+                        r["source_file"] = sp_path.name
+                    elif r["ad_type"] == "SB" and sb_path:
+                        r["source_file"] = sb_path.name
+                all_rows.extend(fb_rows)
+                amazon_fallback = True
+                fb_spend = sum(r["spend"] for r in fb_rows)
+                print(f"  Amazon fallback: {len(fb_rows)} campaign rows, ₹{fb_spend:,.0f} total spend")
+            else:
+                missing.append("Amazon_Campaigns")
+        else:
+            missing.append("Amazon_Campaigns")
 
     meta_path = find_meta(folder)
     if meta_path:
@@ -723,6 +903,13 @@ def process_month(month_str: str, export_brief_flag: bool = False):
         source_files.append(meta_path.name)
     else:
         missing.append("Meta_Campaigns")
+
+    google_path = find_google_ads(folder)
+    if google_path:
+        all_rows.extend(load_google_ads(google_path))
+        source_files.append(google_path.name)
+    else:
+        missing.append("Google_Ads")
 
     flipkart_path = find_flipkart(folder)
     if flipkart_path:
@@ -781,6 +968,7 @@ def process_month(month_str: str, export_brief_flag: bool = False):
         "generatedBy": "processor.py",
         "sourceFiles": source_files,
         "missing": missing,
+        "amazonFallback": amazon_fallback,
     })
 
     if month_label not in data["months"]:
@@ -788,6 +976,8 @@ def process_month(month_str: str, export_brief_flag: bool = False):
         data["months"].sort(key=lambda m: datetime.strptime(m, "%b '%y"))
 
     notice = f"{month_label} — Generated from raw exports on {datetime.today().strftime('%Y-%m-%d')}."
+    if amazon_fallback:
+        notice += " Amazon spend/revenue derived from search term reports (campaign file not available)."
     if missing:
         notice += f" Missing: {', '.join(missing)}."
     data["notices"][month_label] = notice
@@ -806,7 +996,8 @@ def process_month(month_str: str, export_brief_flag: bool = False):
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
-    _print_summary(month_label, platforms, total_spend, total_att_rev, pos, missing, source_files)
+    _print_summary(month_label, platforms, total_spend, total_att_rev, pos, missing, source_files, amazon_fallback)
+    _print_pos_dtc_check(pos, total_spend)
 
     if export_brief_flag:
         export_brief(month_str, month_label, data, all_rows, detail_rows, pos, missing, source_files, top, bottom)
@@ -857,10 +1048,10 @@ def _print_reconciliation(campaign_rows, detail_rows, fallback_campaigns):
     print()
 
 
-def _print_summary(month_label, platforms, total_spend, total_att_rev, pos, missing, source_files):
+def _print_summary(month_label, platforms, total_spend, total_att_rev, pos, missing, source_files, amazon_fallback=False):
     print(f"✓ {month_label} written to data.json")
     plat_strs = []
-    for plat, label in (("Amazon", "Amazon AMS"), ("Flipkart", "Flipkart"), ("Meta", "Meta")):
+    for plat, label in (("Amazon", "Amazon AMS"), ("Flipkart", "Flipkart"), ("Meta", "Meta"), ("Google Ads", "Google Ads")):
         p = platforms.get(label, {})
         if p.get("pending"):
             plat_strs.append(f"{plat} MISSING")
@@ -872,14 +1063,62 @@ def _print_summary(month_label, platforms, total_spend, total_att_rev, pos, miss
     roas = safe_div(total_att_rev, total_spend)
     print(f"  ROAS:         {roas:.2f}×" if roas else "  ROAS:         N/A")
     print(f"  POS:          {'₹' + format(pos['total'], ',.0f') if pos else 'MISSING'}")
+    if amazon_fallback:
+        print("  NOTE:         Amazon spend/revenue reconstructed from search term reports (no campaign file)")
     print(f"  Missing:      {', '.join(missing) if missing else 'none'}")
     print(f"  Source files: {source_files}")
+
+
+def _print_pos_dtc_check(pos, total_spend):
+    """POS / DTC sanity check, printed on every run.
+
+    POS is the sales figure for the DTC (direct-to-consumer) channel. When the POS
+    file is present we surface the DTC sales line and the Marketing Efficiency Ratio
+    (MER = total POS sales / total ad spend). When it is absent we flag it as pending
+    so a missing POS is never silently skipped.
+
+    The DTC line is matched case-insensitively on 'shopify', 'dtc', or 'd2c'. If no
+    such row exists, total POS is used as the DTC proxy and a note is printed.
+    """
+    print("\nPOS / DTC check:")
+    if not pos:
+        print("  POS (DTC sales channel): NOT YET PROVIDED — pending.")
+        print("  Drop the POS file into the month folder and re-run to compute MER.")
+        return
+
+    total_pos = pos.get("total", 0.0)
+    dtc_keys = [
+        k for k in pos
+        if k != "total" and any(tok in k.lower() for tok in ("shopify", "dtc", "d2c"))
+    ]
+
+    for k, v in pos.items():
+        if k == "total":
+            continue
+        tag = "  ← DTC" if k in dtc_keys else ""
+        print(f"  {k:<22} ₹{v:>12,.0f}{tag}")
+    print(f"  {'TOTAL POS':<22} ₹{total_pos:>12,.0f}")
+
+    if dtc_keys:
+        dtc_sales = sum(pos[k] for k in dtc_keys)
+        dtc_share = dtc_sales / total_pos * 100 if total_pos > 0 else 0
+        print(f"  {'DTC sales':<22} ₹{dtc_sales:>12,.0f}  ({dtc_share:.1f}% of POS)")
+    else:
+        print("  DTC line not identified (no Shopify/DTC row) — using TOTAL POS as DTC proxy.")
+
+    if total_spend > 0 and total_pos > 0:
+        print(f"  MER (total POS ÷ spend): {total_pos / total_spend:.2f}×")
+    else:
+        print("  MER: N/A (need both POS sales and spend > 0).")
 
 
 # ─── AI brief export ──────────────────────────────────────────────────────────
 
 def export_brief(month_str, month_label, data, all_rows, detail_rows, pos, missing, source_files, top, bottom):
-    """Write a formatted text brief to ai_brief_YYYY_MM.txt for pasting into Claude."""
+    """Write a formatted text brief to ai_brief_YYYY_MM.txt for pasting into Claude.
+
+    Covers Amazon, Meta, Google Ads, and Flipkart across all sections.
+    """
 
     lines = []
 
@@ -958,7 +1197,7 @@ def export_brief(month_str, month_label, data, all_rows, detail_rows, pos, missi
     h("PLATFORM SUMMARY")
     lines.append(f"  {'Platform':<15} {'Spend':>12} {'AttRev':>12} {'ROAS':>8} {'ACOS':>8}")
     lines.append(f"  {'-'*15} {'-'*12} {'-'*12} {'-'*8} {'-'*8}")
-    for plat, label in [("Amazon", "Amazon AMS"), ("Meta", "Meta"), ("Flipkart", "Flipkart")]:
+    for plat, label in [("Amazon", "Amazon AMS"), ("Meta", "Meta"), ("Google Ads", "Google Ads"), ("Flipkart", "Flipkart")]:
         sub_rows = [r for r in all_rows if r["platform"] == plat]
         if not sub_rows:
             lines.append(f"  {label:<15} {'MISSING':>12}")
@@ -1125,6 +1364,24 @@ def export_brief(month_str, month_label, data, all_rows, detail_rows, pos, missi
             )
             lines.append(f"     {r['campaign_name']}")
 
+    # ── All Google Ads campaigns ────────────────────────────────────────────────
+    google_rows = sorted([r for r in all_rows if r["platform"] == "Google Ads"], key=lambda r: -r["spend"])
+    if google_rows:
+        h("ALL GOOGLE ADS CAMPAIGNS")
+        lines.append(f"  {'TargetingType':<16} {'KeywordType':<14} {'Bucket':<12} {'Spend':>10} {'AttRev':>10} {'ROAS':>7} {'Impr':>10} {'Clicks':>7} {'CTR':>7}")
+        lines.append(f"  {'-'*16} {'-'*14} {'-'*12} {'-'*10} {'-'*10} {'-'*7} {'-'*10} {'-'*7} {'-'*7}")
+        for r in google_rows:
+            sp, rev = r["spend"], r["att_rev"]
+            roas = rev / sp if sp > 0 else 0
+            ctr = r.get("ctr")
+            lines.append(
+                f"  {r.get('ad_type') or '—':<16} {r.get('ad_sub_type') or '—':<14} {r['bucket']:<12} "
+                f"₹{sp:>8,.0f} ₹{rev:>8,.0f} {roas:>6.2f}× "
+                f"{int(r['impressions']):>10,} {int(r['clicks']):>7,} "
+                f"{'—' if ctr is None else f'{ctr*100:.2f}%':>7}"
+            )
+            lines.append(f"     {r['campaign_name']}")
+
     # ── All Flipkart campaigns ──────────────────────────────────────────────────
     fk_rows = sorted([r for r in all_rows if r["platform"] == "Flipkart"], key=lambda r: -r["spend"])
     if fk_rows:
@@ -1160,19 +1417,19 @@ Return ONLY a valid JSON object matching this schema exactly.
   },
   "recommendations": [
     {
-      "n": <int 1–12>,
+      "n": <int 1-12>,
       "priority": "<critical | warning | opportunity | insight>",
       "title": "<one-line title naming the specific campaign or issue>",
-      "platform": "<Amazon | Meta | Flipkart | All>",
+      "platform": "<Amazon | Meta | Google Ads | Flipkart | All>",
       "bucket": "<Core Sales | Awareness | Retargeting | null>",
-      "whatDataShows": "<specific numbers from the data — cite exact campaign name and figures>",
-      "whyItMatters": "<brand equity / MER / organic share frame — not just this month's ROAS>",
+      "whatDataShows": "<specific numbers from the data - cite exact campaign name and figures>",
+      "whyItMatters": "<brand equity / MER / organic share frame - not just this month's ROAS>",
       "exactAction": "<direct instruction: which campaign, what change, by how much, what to do first>",
       "watchNextMonth": "<what number should move, in which direction, by roughly how much>",
       "keyMetrics": [
         {"label": "<metric name>", "value": "<formatted value e.g. 84% or 0.6x or Rs 41,200>"}
       ],
-      "estimatedImpact": "<optional one-liner e.g. Est. savings Rs 12-15K/mo — omit if not quantifiable>"
+      "estimatedImpact": "<optional one-liner e.g. Est. savings Rs 12-15K/mo - omit if not quantifiable>"
     }
   ],
   "dataQualityFlags": [
