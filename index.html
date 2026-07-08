@@ -258,6 +258,7 @@ canvas{display:block}
 .ai-mom-flag.bad{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
 .ai-mom-flag.na{background:#F3F4F6;color:var(--t3);border:1px solid var(--border)}
 .ai-mom-trend{font-size:12px;color:var(--t2);line-height:1.55;font-variant-numeric:tabular-nums}
+.mom-note{font-size:11px;color:var(--t3);margin:0 0 10px;line-height:1.5}
 /* AI: glossary */
 .ai-gloss{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:var(--gap)}
 .ai-gloss h3{font-size:12px;font-weight:700;color:var(--t2);margin-bottom:8px}
@@ -929,6 +930,23 @@ function renderDetailView(idx) {
     </tr>`).join('');
   }
 
+  // Month-on-month campaign trends (from this month's AI recommendations output)
+  const momData = (D.aiRecommendations?.[m]?.monthOnMonth) || [];
+  const momFiltered = activePlatform === 'all' ? momData : momData.filter(x => (x.platform || '') === activePlatform);
+  const momFlagCls = fl => { const s = (fl || '').toUpperCase(); if (s.includes('ALARM')) return 'bad'; if (s.includes('SCALE')) return 'ok'; return 'na'; };
+  const momSection = momFiltered.length ? `
+    <div class="sec-div" style="margin-top:20px"><span class="sec-badge paid">📈 Month-on-Month Campaign Trends — ${m}</span><div class="sec-line"></div></div>
+    <div class="mom-note">Trajectory of key campaigns across recent months (spend / ROAS / CTR). <strong style="color:var(--red)">ALARMING</strong> = ROAS falling while clicks hold (listing issue) · <strong style="color:var(--green)">SCALE-UP</strong> = reach and efficiency both rising.</div>
+    <div class="ai-mom">${momFiltered.map(x => `
+      <div class="ai-mom-item">
+        <div class="ai-mom-head">
+          ${platIcon(x.platform)} <span class="ai-mom-name">${x.campaign || ''}</span>
+          ${x.basis ? `<span class="ai-mom-basis">${x.basis}</span>` : ''}
+          ${x.flag ? `<span class="ai-mom-flag ${momFlagCls(x.flag)}">${x.flag}</span>` : ''}
+        </div>
+        <div class="ai-mom-trend">${x.trend || ''}</div>
+      </div>`).join('')}</div>` : '';
+
   document.getElementById('detailContent').innerHTML = `
     ${filterBar}
     ${bucketCards}
@@ -999,7 +1017,7 @@ function renderDetailView(idx) {
       ${tops ? `<div class="tcard" style="margin-bottom:0">
         <div class="thd"><div>
           <div class="ctitle">⭐ Top Performers</div>
-          <div class="csub">By ROAS · Min spend ₹5,000 · Actual campaign names from raw exports</div>
+          <div class="csub">By ROAS · Min spend ₹25,000 · Actual campaign names from raw exports</div>
         </div></div>
         <table class="ptable">
           <thead><tr><th></th><th>Campaign</th><th>Bucket</th><th class="r">Spend</th><th class="r">ROAS</th><th class="r">ACOS</th></tr></thead>
@@ -1017,6 +1035,8 @@ function renderDetailView(idx) {
         </table>
       </div>` : ''}
     </div>` : ''}
+
+    ${momSection}
 
     <div class="sec-div" style="margin-top:20px"><span class="sec-badge pending">Google Ads — Pending</span><div class="sec-line"></div></div>
     <div class="pending-block">
@@ -1220,30 +1240,6 @@ function renderAIView(idx) {
          </div>`).join('')}</div>`
     : '';
 
-  // Month-on-month campaign trends
-  const momCls = fl => {
-    const s = (fl || '').toUpperCase();
-    if (s.includes('ALARM')) return 'bad';
-    if (s.includes('SCALE')) return 'ok';
-    return 'na';
-  };
-  const mom = (recs.monthOnMonth && recs.monthOnMonth.length)
-    ? `<div class="ai-sec">
-        <span class="ai-sec-label">Month-on-month campaign trends</span>
-        <div class="ai-sec-line"></div>
-       </div>
-       <div class="ai-mom">${recs.monthOnMonth.map(x => `
-         <div class="ai-mom-item">
-           <div class="ai-mom-head">
-             ${platPill(x.platform)}
-             <span class="ai-mom-name">${x.campaign || ''}</span>
-             ${x.basis ? `<span class="ai-mom-basis">${x.basis}</span>` : ''}
-             ${x.flag ? `<span class="ai-mom-flag ${momCls(x.flag)}">${x.flag}</span>` : ''}
-           </div>
-           <div class="ai-mom-trend">${x.trend || ''}</div>
-         </div>`).join('')}</div>`
-    : '';
-
   // Glossary
   const glossary = (recs.glossary && recs.glossary.length)
     ? `<div class="ai-gloss">
@@ -1266,7 +1262,6 @@ function renderAIView(idx) {
     <div class="ai-count-strip">${countCards}</div>
     ${followUp}
     ${sections}
-    ${mom}
     ${flags}
     ${gap}
     ${glossary}`;
