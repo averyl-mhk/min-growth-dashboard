@@ -174,8 +174,8 @@
       }
     },
     "May '26": {
-      "spend": 2484322.25,
-      "attRev": 7249059.27,
+      "spend": 2229524.36,
+      "attRev": 6606265.77,
       "pos": {
         "Shopify": 930040.0,
         "Amazon": 8467475.0,
@@ -196,8 +196,8 @@
           "pending": false
         },
         "Google Ads": {
-          "spend": 509595.77,
-          "attRev": 1285587.0,
+          "spend": 254797.88,
+          "attRev": 642793.5,
           "acos": null,
           "pending": false
         },
@@ -1908,20 +1908,20 @@
         },
         {
           "platform": "Google Ads",
-          "adType": "Shopping",
-          "adSubType": "Non Branded",
+          "adType": "Performance Max",
+          "adSubType": "Prospecting",
           "targeting": null,
-          "campaignGroup": "Shopping + Non Branded",
-          "spend": 66903.84,
-          "attRev": 26415.56,
-          "roas": 0.39,
+          "campaignGroup": "Performance Max + Prospecting",
+          "spend": 196593.58,
+          "attRev": 478374.21,
+          "roas": 2.43,
           "acos": null,
-          "impressions": 1096344,
-          "clicks": 17982,
-          "ctr": 0.0164,
-          "ctrDisplay": "1.64%",
+          "impressions": 2503553,
+          "clicks": 192733,
+          "ctr": 0.077,
+          "ctrDisplay": "7.70%",
           "ctrStatus": "na",
-          "ctrCvr": "1.64%",
+          "ctrCvr": "7.70%",
           "source": "Google Ads May.xlsx"
         },
         {
@@ -1941,6 +1941,24 @@
           "ctrStatus": "na",
           "ctrCvr": "1.32%",
           "source": "Meta May.xlsx"
+        },
+        {
+          "platform": "Google Ads",
+          "adType": "Shopping",
+          "adSubType": "Non Branded",
+          "targeting": null,
+          "campaignGroup": "Shopping + Non Branded",
+          "spend": 33451.92,
+          "attRev": 13207.78,
+          "roas": 0.39,
+          "acos": null,
+          "impressions": 548172,
+          "clicks": 8991,
+          "ctr": 0.0164,
+          "ctrDisplay": "1.64%",
+          "ctrStatus": "na",
+          "ctrCvr": "1.64%",
+          "source": "Google Ads May.xlsx"
         },
         {
           "platform": "Meta",
@@ -1979,24 +1997,6 @@
           "source": "Meta May.xlsx"
         },
         {
-          "platform": "Google Ads",
-          "adType": "Search",
-          "adSubType": "Branded",
-          "targeting": null,
-          "campaignGroup": "Search + Branded",
-          "spend": 19119.52,
-          "attRev": 302423.02,
-          "roas": 15.82,
-          "acos": null,
-          "impressions": 19420,
-          "clicks": 2848,
-          "ctr": 0.1467,
-          "ctrDisplay": "14.67%",
-          "ctrStatus": "na",
-          "ctrCvr": "14.67%",
-          "source": "Google Ads May.xlsx"
-        },
-        {
           "platform": "Meta",
           "adType": "Instream",
           "adSubType": "Prospecting",
@@ -2013,42 +2013,6 @@
           "ctrStatus": "na",
           "ctrCvr": "0.09%",
           "source": "Meta May.xlsx"
-        },
-        {
-          "platform": "Google Ads",
-          "adType": "Shopping",
-          "adSubType": "Display",
-          "targeting": null,
-          "campaignGroup": "Shopping + Display",
-          "spend": 15192.62,
-          "attRev": 0.0,
-          "roas": 0.0,
-          "acos": null,
-          "impressions": 293306,
-          "clicks": 25489,
-          "ctr": 0.0869,
-          "ctrDisplay": "8.69%",
-          "ctrStatus": "na",
-          "ctrCvr": "8.69%",
-          "source": "Google Ads May.xlsx"
-        },
-        {
-          "platform": "Google Ads",
-          "adType": "Display",
-          "adSubType": "Display",
-          "targeting": null,
-          "campaignGroup": "Display + Display",
-          "spend": 15192.62,
-          "attRev": 0.0,
-          "roas": 0.0,
-          "acos": null,
-          "impressions": 293306,
-          "clicks": 25489,
-          "ctr": 0.0869,
-          "ctrDisplay": "8.69%",
-          "ctrStatus": "na",
-          "ctrCvr": "8.69%",
-          "source": "Google Ads May.xlsx"
         }
       ],
       "coreSales": [
@@ -2161,24 +2125,6 @@
           "source": "Amazon_Campaign May Dashboard.csv"
         },
         {
-          "platform": "Google Ads",
-          "adType": "Performance Max",
-          "adSubType": "Prospecting",
-          "targeting": null,
-          "campaignGroup": "Performance Max + Prospecting",
-          "spend": 393187.17,
-          "attRev": 956748.42,
-          "roas": 2.43,
-          "acos": null,
-          "impressions": 5007106,
-          "clicks": 385466,
-          "ctr": 0.077,
-          "ctrDisplay": "7.70%",
-          "ctrStatus": "na",
-          "ctrCvr": "7.70%",
-          "source": "Google Ads May.xlsx"
-        },
-        {
           "platform": "Flipkart",
           "adType": "PLA",
           "adSubType": null,
@@ -2195,6 +2141,24 @@
           "ctrStatus": "na",
           "ctrCvr": "1.17%",
           "source": "Flipkart May Dashboard.csv"
+        },
+        {
+          "platform": "Google Ads",
+          "adType": "Search",
+          "adSubType": "Branded",
+          "targeting": null,
+          "campaignGroup": "Search + Branded",
+          "spend": 9559.76,
+          "attRev": 151211.51,
+          "roas": 15.82,
+          "acos": null,
+          "impressions": 9710,
+          "clicks": 1424,
+          "ctr": 0.1467,
+          "ctrDisplay": "14.67%",
+          "ctrStatus": "na",
+          "ctrCvr": "14.67%",
+          "source": "Google Ads May.xlsx"
         }
       ],
       "retargeting": [
@@ -2251,27 +2215,45 @@
           "ctrStatus": "na",
           "ctrCvr": "7.05%",
           "source": "Meta May.xlsx"
+        },
+        {
+          "platform": "Google Ads",
+          "adType": "Shopping",
+          "adSubType": "Display",
+          "targeting": null,
+          "campaignGroup": "Shopping + Display",
+          "spend": 15192.62,
+          "attRev": 0.0,
+          "roas": 0.0,
+          "acos": null,
+          "impressions": 293306,
+          "clicks": 25489,
+          "ctr": 0.0869,
+          "ctrDisplay": "8.69%",
+          "ctrStatus": "na",
+          "ctrCvr": "8.69%",
+          "source": "Google Ads May.xlsx"
         }
       ],
       "awarenessSubtotal": {
-        "spend": 488382.3,
-        "attRev": 988767.8,
-        "roas": 2.02,
-        "acos": 0.4939,
+        "spend": 602019.2,
+        "attRev": 1151511.21,
+        "roas": 1.91,
+        "acos": 0.5228,
         "note": ""
       },
       "coreSalesSubtotal": {
-        "spend": 1871306.05,
-        "attRev": 6174490.65,
-        "roas": 3.3,
-        "acos": 0.3031,
+        "spend": 1487678.64,
+        "attRev": 5368953.74,
+        "roas": 3.61,
+        "acos": 0.2771,
         "note": ""
       },
       "retargetingSubtotal": {
-        "spend": 124633.9,
+        "spend": 139826.52,
         "attRev": 85800.82,
-        "roas": 0.69,
-        "acos": 1.4526,
+        "roas": 0.61,
+        "acos": 1.6297,
         "note": ""
       }
     }
@@ -2508,57 +2490,57 @@
     "May '26": [
       {
         "rank": 1,
-        "platform": "Google Ads",
-        "campaignName": "PnP Main",
-        "campaignFull": "PnP Main",
-        "bucket": "Awareness",
-        "spend": 5703.28,
-        "roas": 19.58,
-        "acos": null,
-        "source": "Google Ads May.xlsx"
+        "platform": "Amazon",
+        "campaignName": "SP |Amazon  Recommended ASIN | KT",
+        "campaignFull": "SP |Amazon  Recommended ASIN | KT",
+        "bucket": "Core Sales",
+        "spend": 26134.23,
+        "roas": 6.0,
+        "acos": 0.0017,
+        "source": "Amazon_Campaign May Dashboard.csv"
       },
       {
         "rank": 2,
-        "platform": "Google Ads",
-        "campaignName": "Search | Branded",
-        "campaignFull": "Search | Branded",
-        "bucket": "Awareness",
-        "spend": 9559.76,
-        "roas": 15.82,
-        "acos": null,
-        "source": "Google Ads May.xlsx"
+        "platform": "Amazon",
+        "campaignName": "SP | cast iron tawa | Auto",
+        "campaignFull": "SP | cast iron tawa | Auto",
+        "bucket": "Core Sales",
+        "spend": 36307.2,
+        "roas": 4.8,
+        "acos": 0.0021,
+        "source": "Amazon_Campaign May Dashboard.csv"
       },
       {
         "rank": 3,
         "platform": "Amazon",
-        "campaignName": "SP | Accent All | KT",
-        "campaignFull": "SP | Accent All | KT",
+        "campaignName": "SP | Cast Iron Tawa | KT",
+        "campaignFull": "SP | Cast Iron Tawa | KT",
         "bucket": "Core Sales",
-        "spend": 6026.14,
-        "roas": 12.59,
-        "acos": 0.0008,
+        "spend": 41520.28,
+        "roas": 4.15,
+        "acos": 0.0024,
         "source": "Amazon_Campaign May Dashboard.csv"
       },
       {
         "rank": 4,
         "platform": "Amazon",
-        "campaignName": "SP | Over Stock | Own Pt",
-        "campaignFull": "SP | Over Stock | Own Pt",
+        "campaignName": "SP | cast iron frypan Skillit | KT",
+        "campaignFull": "SP | cast iron frypan Skillit | KT",
         "bucket": "Core Sales",
-        "spend": 6004.41,
-        "roas": 11.41,
-        "acos": 0.0009,
+        "spend": 158370.45,
+        "roas": 4.04,
+        "acos": 0.0025,
         "source": "Amazon_Campaign May Dashboard.csv"
       },
       {
         "rank": 5,
         "platform": "Amazon",
-        "campaignName": "SP | Select Range | Auto",
-        "campaignFull": "SP | Select Range | Auto",
+        "campaignName": "SP | High Rating ASINs - GIF | Auto",
+        "campaignFull": "SP | High Rating ASINs - GIF | Auto",
         "bucket": "Core Sales",
-        "spend": 5062.43,
-        "roas": 10.47,
-        "acos": 0.001,
+        "spend": 71571.85,
+        "roas": 4.04,
+        "acos": 0.0025,
         "source": "Amazon_Campaign May Dashboard.csv"
       }
     ]
@@ -2818,10 +2800,10 @@
       {
         "rank": 3,
         "platform": "Google Ads",
-        "campaignName": "PC launch - traffic-Performance Max-3",
-        "campaignFull": "PC launch - traffic-Performance Max-3",
-        "bucket": "Core Sales",
-        "spend": 44402.73,
+        "campaignName": "Display",
+        "campaignFull": "Display",
+        "bucket": "Retargeting",
+        "spend": 15192.62,
         "roas": 0.0,
         "acos": null,
         "source": "Google Ads May.xlsx"
@@ -3048,50 +3030,50 @@
     },
     "May '26": {
       "awareness": {
-        "totalSpend": 488382.3,
-        "roas": 2.02,
+        "totalSpend": 602019.2,
+        "roas": 1.91,
         "channels": [
           "Amazon SB",
           "Amazon SBV",
-          "Google Branded",
-          "Google Display",
           "Google Non Branded",
+          "Google Prospecting",
           "Meta Prospecting"
         ],
-        "ctrRange": "0.09% – 15.08%",
+        "ctrRange": "0.09% – 12.27%",
         "ctrStatus": "ok",
-        "ctrNote": "Avg 1.76% vs bench 1.5%",
+        "ctrNote": "Avg 2.24% vs bench 1.5%",
         "cvrDisplay": "n/a",
         "cvrRange": "n/a",
         "cvrStatus": "na",
         "cvrNote": "Purchase data not loaded"
       },
       "coreSales": {
-        "totalSpend": 1871306.05,
-        "roas": 3.3,
+        "totalSpend": 1487678.64,
+        "roas": 3.61,
         "channels": [
           "Amazon SP",
           "Flipkart PLA",
-          "Google Prospecting"
+          "Google Branded"
         ],
-        "ctrRange": "0.08% – 12.27%",
+        "ctrRange": "0.08% – 15.08%",
         "ctrStatus": "fail",
-        "ctrNote": "Avg 1.44% vs bench 1.5%",
+        "ctrNote": "Avg 0.47% vs bench 1.5%",
         "cvrDisplay": "n/a",
         "cvrRange": "n/a",
         "cvrStatus": "na",
         "cvrNote": "Purchase data not loaded"
       },
       "retargeting": {
-        "totalSpend": 124633.9,
-        "roas": 0.69,
+        "totalSpend": 139826.52,
+        "roas": 0.61,
         "channels": [
           "Amazon SD",
+          "Google Display",
           "Meta Remarketing"
         ],
-        "ctrRange": "0.04% – 7.05%",
+        "ctrRange": "0.04% – 8.69%",
         "ctrStatus": "fail",
-        "ctrNote": "Avg 1.19% vs bench 2.0%",
+        "ctrNote": "Avg 1.71% vs bench 2.0%",
         "cvrDisplay": "n/a",
         "cvrRange": "n/a",
         "cvrStatus": "na",
@@ -4015,6 +3997,510 @@
         "Two Meta 'Media Mix Sales Traffic' ad sets ('New Cookware Offer', 'Cookware Offer') are listed with Rs 0 spend, 0 impressions, 0 clicks. Confirm they are intentionally paused vs. setup errors that never went live."
       ],
       "strategicGap": "Three things are not visible in this month's data but are implied by the trends. (1) Google Ads is still pending. With branded search defense unfunded on Google, competitors can bid on 'Meyer cookware' with no defense, leaking the branded organic intent that Meyer's SBVs (Rs 1.95L/mo) are paying to create. Activate at least branded-defense Google Search by end of May — it should run as low-spend insurance, not a growth lever (Principle 3). (2) May 2026 contains the wedding/Akshay Tritiya gifting window (Akshay Tritiya was Apr 29, 2026; wedding peak runs through May), and there is no visible seasonality lift in the April spend pacing — no specific 'gift cookware' creative concept, no Cast Iron Tawa Collection or Anyday SKU 'gift edition' angle being tested across Meta or SBV. May spend should pace 15-20% higher than April with explicit gifting creative. (3) Most importantly: the Shopify slip (10.4% to 5.7%) coupled with no visible CRM/email program in the portfolio means Meyer.in is not yet building a repeat-customer base — every Amazon order is one-and-done. The single highest-leverage missing initiative is a post-purchase capture sequence: warranty registration QR code in every Amazon pack, redirecting to a Meyer.in account creation, then a 6-touch email program (warranty confirm + care guide + cross-sell). This is how the 35-40% organic-revenue goal gets built from owned demand rather than cohort-by-cohort paid acquisition. Without this layer, even a perfect Amazon ads optimization will hit a ceiling on MER."
+    },
+    "May '26": {
+      "generatedDate": "2026-07-08",
+      "month": "May '26",
+      "summary": "May POS rose to Rs 97.8L (+9.1% AttRev) but MER slipped 4.65x to 4.39x as spend grew faster (+11.0%), dragged by Meta's Rs 1,61,245 at zero attributed revenue for a second straight month and a diluting retargeting bucket at 0.61x. The single best signal is Shopify recovering hard from 5.7% to 9.5% of POS - April's highest-margin channel is back and must be protected. Branded spend rose to 24.1% of Amazon keyword spend despite April's cap instruction, while competition stayed flat at 6.1% - the mix is still tilted toward defending demand rather than building it.",
+      "counts": {
+        "critical": 1,
+        "warnings": 4,
+        "opportunities": 5,
+        "insights": 1
+      },
+      "followUp": [
+        {
+          "priorTitle": "[1] Shopify share fell to 5.7% - run a Meyer.in audit; recover to >=8%",
+          "actioned": "Can't confirm which fix landed, but the outcome moved sharply: Shopify % of POS jumped 5.7% -> 9.5% (+3.8pp).",
+          "didItWork": "Predicted recovery to >=8% by May 31; actual 9.5%, beating the target. Shopify revenue Rs 9,30,040.",
+          "verdict": "Worked"
+        },
+        {
+          "priorTitle": "[2] Meta spent Rs 1,52,714 at zero attributed revenue - fix pixel/destination",
+          "actioned": "No. Meta spent Rs 1,61,245 across 7 ad sets in May, all still showing Rs 0 attributed revenue.",
+          "didItWork": "Predicted >=Rs 50,000 attributed revenue once pixel fixed; actual Rs 0. Pixel/destination still broken or every ad still lands on Amazon.",
+          "verdict": "Did not work"
+        },
+        {
+          "priorTitle": "[3] Pause 'SP | Top 10 ASIN | Ads Autopilot | KT' (Rs 45,705, 1.45x); rebuild as manual",
+          "actioned": "Yes - 'autopilot' is gone from the name ('SP | Top 10 ASIN | KT') and spend was cut from Rs 45,705 to Rs 3,329, matching the rebuild-and-shrink instruction.",
+          "didItWork": "Predicted rebuilt campaign >=3.5x (and <2.5x = listing issue); actual 1.62x at Rs 3,329. Below 2.5x, so the ASIN listings look like the real constraint, not bidding.",
+          "verdict": "Partially worked"
+        },
+        {
+          "priorTitle": "[4] Cap branded keyword spend at Rs 3,00,000/month; cut SBV Cast Iron Tawa Collection 30%",
+          "actioned": "Split. The named first action happened - SBV Cast Iron Tawa Collection fell Rs 1,54,370 -> Rs 1,21,129 (-21.5%) - but the overall cap was not honoured.",
+          "didItWork": "Predicted branded landing Rs 2,90,000-3,10,000; actual branded spend rose to Rs 4,02,899 (24.1% of Amazon kw spend). Branded ACOS held tight (~18%, SP Manual Branded 20.9%), so the money is efficient but the cap was ignored.",
+          "verdict": "Partially worked"
+        },
+        {
+          "priorTitle": "[5] SD retargeting underperforming - pause two campaigns, scale Four_Star, hit >=2.5x",
+          "actioned": "No. 'SD | ANYDAY | OWN PT' (Rs 2,398, 0.00x) and 'SD | Range | Own PT & Remarketing | CVR' (Rs 1,468, 0.51x) are both still spending in May.",
+          "didItWork": "Predicted SD overall >=2.5x; actual Amazon SD retargeting is 1.09x (91.3% ACOS). No visible 'Four_Star' scale-up. Target missed.",
+          "verdict": "Not actioned"
+        },
+        {
+          "priorTitle": "[6] 'SP | Cookware Set | KT' at 0.09x - pause, add negatives, relaunch after listing audit",
+          "actioned": "Partly. Spend on 'SP | Cookware Set | KT' fell Rs 4,361 -> Rs 1,226, but it is still live; 'SP | Pressure Cooker   | KT' still spent Rs 5,294 at Rs 0 revenue.",
+          "didItWork": "Predicted 2.0x on relaunch; both still return Rs 0 (0.00x). Spend was trimmed, not stopped, and the zero-conversion problem persists.",
+          "verdict": "Partially worked"
+        },
+        {
+          "priorTitle": "[7] Increase competition keyword spend to Rs 1,50,000 (from Rs 1,00,961)",
+          "actioned": "No. Competition keyword spend is Rs 1,01,915 in May - essentially flat vs Rs 1,00,961, still 6.1% of Amazon kw spend, not the 8-9% targeted.",
+          "didItWork": "Predicted share rise to 8-9%; actual 6.1%. The conquest expansion did not happen.",
+          "verdict": "Not actioned"
+        },
+        {
+          "priorTitle": "[8] Fund 'SBV Manual Generic' +25% (to ~Rs 2,45,000); push Cast Iron Tawa Collection to Rs 1,90,000",
+          "actioned": "Partly. SBV Manual Generic rose Rs 1,95,822 -> Rs 2,12,455 (+8.5%), well short of +25%; Cast Iron Tawa Collection was cut to Rs 1,21,129 (Rec 4 direction) rather than pushed to Rs 1,90,000.",
+          "didItWork": "SBV Generic ROAS 2.08x, in the expected awareness range. But the funding fell far short of target and the concentrate-on-Tawa action was reversed.",
+          "verdict": "Partially worked"
+        },
+        {
+          "priorTitle": "[9] Meta In-stream prospecting at 0.14% CTR - pause, redirect Rs 25K to Catalogue + Media Mix",
+          "actioned": "No. In-stream prospecting is still live at Rs 15,499 with CTR now 0.09% (worse than the 0.14% flagged).",
+          "didItWork": "Predicted blended Meta prospecting CTR >=3%; In-stream is still dragging it. Not redistributed.",
+          "verdict": "Not actioned"
+        },
+        {
+          "priorTitle": "[10] Clean 100+ zero-spend legacy campaigns; get active count <80",
+          "actioned": "Can't confirm from data - active count is not derivable, but legacy names persist ('AD_READY: Bxxxx', 'Campaign with presets - B0F93M5H8R - 22/5/2026', '[Pilot] Campaign - 08/04/2025', 'SPA Low ASP Products | May'26').",
+          "didItWork": "No evidence the naming convention or archive rule was applied; multiple non-conforming and zero-revenue campaigns still appear in May.",
+          "verdict": "Can't confirm"
+        }
+      ],
+      "recommendations": [
+        {
+          "n": 1,
+          "priority": "critical",
+          "title": "Meta: Rs 1,61,245 spent, Rs 0 attributed revenue - second month, escalate to engineering now",
+          "platform": "Meta",
+          "bucket": "Awareness",
+          "whatDataShows": "All 7 Meta ad sets show Rs 0 attributed revenue on Rs 1,61,245 spend (Carousel Prospecting Rs 50,184; Catalogue Remarketing Rs 30,864; Catalogue Prospecting Rs 27,711), repeating April's Rs 1,52,714-at-zero pattern.",
+          "whyItMatters": "Two months of un-attributed Meta spend means every Meta budget call is being made blind, and the Shopify margin advantage is lost if these clicks are closing on Amazon instead of Meyer.in.",
+          "exactAction": "Escalate to engineering as a blocker this week: verify the Meta Pixel + Conversions API fire on the Meyer.in /thank-you page by running a Rs 500 Remarketing test to a Shopify-only SKU. In parallel, audit every ad set's destination URL and pause any pointing to amazon.in, rerouting to meyer.in. Do not change any Meta budgets until one ad set reports non-zero revenue.",
+          "watchNextMonth": "At least one Meta ad set should report >Rs 40,000 attributed revenue in June. If still Rs 0, the problem is destination (ads closing on Amazon), not measurement.",
+          "keyMetrics": [
+            {
+              "label": "Meta spend",
+              "value": "Rs 1,61,245"
+            },
+            {
+              "label": "Meta attributed revenue",
+              "value": "Rs 0"
+            },
+            {
+              "label": "Months at zero",
+              "value": "2"
+            },
+            {
+              "label": "Ad sets affected",
+              "value": "7"
+            }
+          ],
+          "estimatedImpact": "Rs 1,61,245/mo currently unmeasurable"
+        },
+        {
+          "n": 2,
+          "priority": "warning",
+          "title": "Amazon SD retargeting at 0.61x / 91.3% ACOS - fix targeting on the two 0.49x campaigns or cut them",
+          "platform": "Amazon",
+          "bucket": "Retargeting",
+          "whatDataShows": "The retargeting bucket returns 0.61x (91.3% ACOS). 'SD | Cast Iron Tawa | OWN PT' (Rs 13,985, 0.49x) and 'SD | Cast Iron Frypan | Own & Comp PT' (Rs 11,235, 0.49x) are the worst; 'SD | Range | Remarketing' is Rs 23,877 at 1.11x.",
+          "whyItMatters": "Retargeting should clear 3x - it is warm demand you already paid to create; at 0.49x this is pure margin leakage, and cutting it is legitimate here because (unlike awareness) retargeting has no 60-90 day lag defence.",
+          "exactAction": "This week, cut daily budgets on 'SD | Cast Iron Tawa | OWN PT' and 'SD | Cast Iron Frypan | Own & Comp PT' by 60% and narrow both audiences to 7-day product-page viewers with a 3-second product-in-action creative. Hold 'SD | Range | Remarketing' one more month. Reallocate the ~Rs 15K freed into Flipkart PLAs (Rec 6).",
+          "watchNextMonth": "SD retargeting bucket ROAS should move from 0.61x toward >=1.5x. If the two campaigns are still <1.0x after the audience narrowing, pause them outright.",
+          "keyMetrics": [
+            {
+              "label": "SD retargeting ROAS",
+              "value": "0.61x"
+            },
+            {
+              "label": "SD retargeting ACOS",
+              "value": "91.3%"
+            },
+            {
+              "label": "Two worst SD campaigns",
+              "value": "0.49x"
+            },
+            {
+              "label": "Combined spend",
+              "value": "Rs 25,220"
+            }
+          ],
+          "estimatedImpact": "Est. Rs 12-15K/mo recoverable"
+        },
+        {
+          "n": 3,
+          "priority": "warning",
+          "title": "Add 7 negative keywords - 'b005mmton0', 'kitchen', 'indus valley cooker' are the priority junk terms",
+          "platform": "Amazon",
+          "bucket": "Core Sales",
+          "whatDataShows": "97 search terms spent >=Rs 500 at zero sales. Highest-priority irrelevant spend: 'b005mmton0' Rs 3,247 (raw ASIN string, on 'SP | Pressure Cooker | CT'), 'kitchen' Rs 1,904 (too broad, on 'Category Wise All ASIN'), 'indus valley cooker' Rs 1,780 (competitor, on 'SP | Pressure Cooker | KT'), plus 'rice pot with strainer lid' Rs 3,819, 'pressure cooker' Rs 3,270, 'glass kettle for gas stove' Rs 2,175, 'tea kettle' Rs 1,859.",
+          "whyItMatters": "This spend converts nothing and cannot build recall - it is dead weight dragging generic-campaign efficiency and masking the true performance of the categories it sits in.",
+          "exactAction": "Add as exact/phrase negatives this week: 'b005mmton0', 'kitchen' and 'indus valley cooker' first (clearly off-target), then 'rice pot with strainer lid', 'glass kettle for gas stove', 'tea kettle', 'pressure cooker' to the specific campaigns listed. Then work down the remaining 90 zero-sale terms in the mining sheet.",
+          "watchNextMonth": "Generic-campaign blended ACOS should tighten by 1-2pp and the ~Rs 17K on these 7 terms should redeploy to converting queries. Zero-sale term count should fall below 80.",
+          "keyMetrics": [
+            {
+              "label": "Zero-sale terms >=Rs 500",
+              "value": "97"
+            },
+            {
+              "label": "Top-7 wasted spend",
+              "value": "~Rs 17,054"
+            },
+            {
+              "label": "Worst single term",
+              "value": "Rs 3,819"
+            }
+          ],
+          "estimatedImpact": "Est. Rs 15-20K/mo redeployable"
+        },
+        {
+          "n": 4,
+          "priority": "opportunity",
+          "title": "Scale 4 proven generic terms - 'anyday microwave cookware' at 15.3x is under-funded at Rs 1,914",
+          "platform": "Amazon",
+          "bucket": "Core Sales",
+          "whatDataShows": "High-ROAS, low-spend generic terms: 'anyday microwave cookware' 15.3x (Rs 1,914), 'cast-iron kadai' 9.2x (Rs 1,525), 'stainless steel kadai for cooking' 8.0x (Rs 1,121), 'milk boiling pot' 7.8x (Rs 1,109), 'dosa pan' 6.8x (Rs 5,138).",
+          "whyItMatters": "Generic terms are the brand-equity engine - a shopper converting on 'cast-iron kadai' today searches 'Meyer kadai' next month, so funding proven generic demand compounds organic and branded volume downstream.",
+          "exactAction": "Add these as exact-match keywords with dedicated bids and raise daily caps on their host campaigns by 50%: 'anyday microwave cookware' into 'SP | Anyday | KT', 'cast-iron kadai' into 'SP | SPA GIF'25', 'stainless steel kadai for cooking' into 'SP | KadhaI | Phrase KWT', 'milk boiling pot' into 'SP | TOPE & TOPE SET | Auto'. Start with the 15.3x and 9.2x terms.",
+          "watchNextMonth": "Combined spend on these terms should roughly double while blended ROAS stays >5x; watch for downstream growth in branded searches for the same product types in Brand Analytics.",
+          "keyMetrics": [
+            {
+              "label": "Top scale term ROAS",
+              "value": "15.3x"
+            },
+            {
+              "label": "Its current spend",
+              "value": "Rs 1,914"
+            },
+            {
+              "label": "Scale candidates (all)",
+              "value": "55"
+            },
+            {
+              "label": "Generic bucket ROAS",
+              "value": "2.73x"
+            }
+          ],
+          "estimatedImpact": "Est. Rs 40-60K incremental revenue"
+        },
+        {
+          "n": 5,
+          "priority": "opportunity",
+          "title": "Competition spend flat at 6.1% - April's conquest expansion never happened, fund it to 9%",
+          "platform": "Amazon",
+          "bucket": "Core Sales",
+          "whatDataShows": "Competition keyword spend is Rs 1,01,915 (6.1% of Amazon kw spend), essentially unchanged from April's Rs 1,00,961. SP Auto Competition runs 2.54x and SP Manual Competition 2.73x - both healthy for conquest.",
+          "whyItMatters": "A conquest sale on a Wonderchef/Stahl/Bergner term is near-100% incremental market share; at 6.1% Meyer is under-investing in the exact battle its positioning demands, and this directly grows category share rather than harvesting existing demand.",
+          "exactAction": "Raise competition keyword spend to Rs 1,50,000 in June. Scale SP Auto Competition (2.54x) and SP Manual Competition (2.73x) daily caps by 40%, and add SP Manual KT campaigns on the top Wonderchef and Stahl kadai/tawa SKU terms at Rs 800/day each. Fund from the branded redeployment in Rec 8. Leave SBV Competition (1.36x, 73.7% ACOS) flat - it is near the 80% cut threshold.",
+          "watchNextMonth": "Competition share of Amazon kw spend should rise to 8-9%; blended competition ROAS may dip to ~2.2x as new campaigns ramp, which is acceptable for conquest.",
+          "keyMetrics": [
+            {
+              "label": "Competition share",
+              "value": "6.1%"
+            },
+            {
+              "label": "Competition spend",
+              "value": "Rs 1,01,915"
+            },
+            {
+              "label": "SP Manual Comp ROAS",
+              "value": "2.73x"
+            },
+            {
+              "label": "Target share",
+              "value": "8-9%"
+            }
+          ],
+          "estimatedImpact": "~Rs 48K reallocation from branded"
+        },
+        {
+          "n": 6,
+          "priority": "opportunity",
+          "title": "Flipkart at 3.59x beats Amazon AMS (3.28x) but gets only 2.9% of spend - scale the 7.30x and 6.08x PLAs",
+          "platform": "Flipkart",
+          "bucket": "Core Sales",
+          "whatDataShows": "Flipkart returns 3.59x on just Rs 63,675 (2.9% of total spend). 'Boost_Sales_CookingAndCookware' runs 7.30x (Rs 7,156), 'Pressure Cooker KT' 6.08x (Rs 3,147), 'PLA_Campaign-2026-05-07' 5.23x (Rs 6,552) - all well above Amazon generic's 2.87x.",
+          "whyItMatters": "Flipkart is structurally more efficient this month than Amazon paid, and concentrating spend where MER is highest is the fastest way to arrest the 4.65x -> 4.39x MER slide without cutting brand-building spend.",
+          "exactAction": "Double daily budgets on 'Boost_Sales_CookingAndCookware' (7.30x) and 'Pressure Cooker KT' (6.08x), and raise 'PLA_Campaign-2026-05-07' (5.23x) by 50%. Fund with the ~Rs 15K freed in Rec 2. Pause 'Recommended FSN_PLA_KT_S1' (Rs 550, 0.00x).",
+          "watchNextMonth": "Flipkart spend should rise to ~Rs 1,00,000 while blended Flipkart ROAS holds >=3.2x. If it holds, Flipkart earns a larger structural budget share next quarter.",
+          "keyMetrics": [
+            {
+              "label": "Flipkart ROAS",
+              "value": "3.59x"
+            },
+            {
+              "label": "Flipkart spend share",
+              "value": "2.9%"
+            },
+            {
+              "label": "Best PLA ROAS",
+              "value": "7.30x"
+            },
+            {
+              "label": "Amazon AMS ROAS",
+              "value": "3.28x"
+            }
+          ],
+          "estimatedImpact": "Est. Rs 1.2-1.5L incremental revenue"
+        },
+        {
+          "n": 7,
+          "priority": "opportunity",
+          "title": "Google PMax 'Smart Shopping' works at 3.13x - scale it and kill the Rs 44,403 zero-revenue 'PC launch' PMax",
+          "platform": "Google Ads",
+          "bucket": "Awareness",
+          "whatDataShows": "'PMax: Smart Shopping Campaign' delivered 3.13x on Rs 1,21,730 in its first live month. But 'PC launch - traffic-Performance Max-3' spent Rs 44,403 for Rs 0 revenue on 1,26,007 clicks (12.27% CTR), and 'Shopping ads' (Non-Branded) returned 0.39x on Rs 33,452.",
+          "whyItMatters": "Google is a brand-new channel and PMax is already funding top-of-funnel efficiently; the 'PC launch' campaign is a traffic-objective build sending 126K clicks nowhere useful - that is a destination/objective error, not awareness lag, so cutting it does not violate the awareness rule.",
+          "exactAction": "Raise 'PMax: Smart Shopping Campaign' budget by 30%. Pause 'PC launch - traffic-Performance Max-3' this week and rebuild it with a sales (not traffic) objective pointing to Meyer.in PDPs. Audit 'Shopping ads' feed titles/prices before adding budget - 0.39x with 1.64% CTR points to price/listing, not targeting. Do not run MoM judgements on Google yet (only May data exists).",
+          "watchNextMonth": "Smart Shopping PMax should hold >=3x at higher spend; the rebuilt PC-launch campaign should report non-zero revenue. Track blended Google ROAS moving above 2.52x.",
+          "keyMetrics": [
+            {
+              "label": "Smart Shopping PMax ROAS",
+              "value": "3.13x"
+            },
+            {
+              "label": "'PC launch' PMax revenue",
+              "value": "Rs 0"
+            },
+            {
+              "label": "'PC launch' clicks",
+              "value": "1,26,007"
+            },
+            {
+              "label": "Google blended ROAS",
+              "value": "2.52x"
+            }
+          ],
+          "estimatedImpact": "Est. Rs 44K/mo redeployable"
+        },
+        {
+          "n": 8,
+          "priority": "warning",
+          "title": "Branded rose to 24.1% of Amazon kw spend (Rs 4,02,899) despite April's cap - redeploy Rs 50K to generic + competition",
+          "platform": "Amazon",
+          "bucket": "Core Sales",
+          "whatDataShows": "Branded keyword spend is Rs 4,02,899 (24.1% of Amazon kw spend, 5.52x ROAS), up from April's Rs 3,55,350 even after a cap was set. SP Auto Branded alone is 20.17x on Rs 14,771 - clear evidence this is harvesting demand already created.",
+          "whyItMatters": "Branded is defensive, not growth - incrementality is only 15-30%, so most of this revenue would occur without the ad; every rupee over the defensive ceiling is a rupee not building recall via generic or stealing share via competition, which is what moves MER over 3-6 months.",
+          "exactAction": "Cap total branded keyword spend at Rs 3,50,000 in June (down ~Rs 53K). Trim the lowest-incrementality branded lines (SP Manual Branded, Rs 3,66,504 at 4.79x) by ~15% and hold SP Auto Branded. Redeploy the freed ~Rs 50K into competition (Rec 5) and generic scale terms (Rec 4). Do not add branded budget under any circumstance.",
+          "watchNextMonth": "Branded should land Rs 3,40,000-3,60,000 and branded ACOS stay <20%. Branded organic (non-ad) orders should hold flat or grow - if they do, the cut was safely incremental.",
+          "keyMetrics": [
+            {
+              "label": "Branded spend",
+              "value": "Rs 4,02,899"
+            },
+            {
+              "label": "Branded share of kw spend",
+              "value": "24.1%"
+            },
+            {
+              "label": "Branded ROAS",
+              "value": "5.52x"
+            },
+            {
+              "label": "SP Auto Branded ROAS",
+              "value": "20.17x"
+            }
+          ],
+          "estimatedImpact": "~Rs 50K redeployed to growth"
+        },
+        {
+          "n": 9,
+          "priority": "warning",
+          "title": "Cooker/Kettle cluster decaying - Circulon Kettle Auto fell 3.8x to 1.2x and two cooker terms return Rs 0",
+          "platform": "Amazon",
+          "bucket": "Core Sales",
+          "whatDataShows": "'SP | Circulon Kettle | Auto' declined Feb 3.8x -> May 1.16x with CTR also falling 0.71% -> 0.26%; 'SP | Pressure Cooker | CT' fell to 1.37x (ROAS -2.7x MoM); 'SP | Pressure Cooker   | KT' spent Rs 5,294 at Rs 0 and 'SP | Cookware Set | KT' Rs 1,226 at Rs 0.",
+          "whyItMatters": "This is Meyer's structurally weak category (cookers/kettles vs cast-iron strength); because CTR is falling alongside ROAS, the problem is demand/targeting fit, not just the listing - throwing bids at it will not fix it.",
+          "exactAction": "Pause the two zero-revenue lines ('SP | Pressure Cooker   | KT', 'SP | Cookware Set | KT') this week. Cut 'SP | Circulon Kettle | Auto' daily cap by 40% and 'SP | Pressure Cooker | CT' by 30% pending a listing-and-price audit against Prestige/Hawkins on those SKUs. Do not relaunch until review count and price ladder are verified competitive.",
+          "watchNextMonth": "Cooker/kettle wasted spend (currently ~Rs 6,520 at Rs 0) should hit zero; Circulon Kettle Auto ROAS should recover toward 2x only after the listing audit - if not, this is a product-market-fit issue, not advertising.",
+          "keyMetrics": [
+            {
+              "label": "Circulon Kettle Auto ROAS",
+              "value": "1.16x (was 3.8x)"
+            },
+            {
+              "label": "Pressure Cooker CT ROAS",
+              "value": "1.37x"
+            },
+            {
+              "label": "Zero-revenue cooker spend",
+              "value": "Rs 6,520"
+            }
+          ],
+          "estimatedImpact": "Est. Rs 6-8K/mo waste stopped"
+        },
+        {
+          "n": 10,
+          "priority": "opportunity",
+          "title": "Protect the Shopify recovery - route fixed Meta + Google Display traffic to Meyer.in, not Amazon",
+          "platform": "All",
+          "bucket": "Retargeting",
+          "whatDataShows": "Shopify jumped from 5.7% to 9.5% of POS (Rs 9,30,040), the strongest positive signal this month, while Meta (Rs 1,61,245) and Google Display (Rs 15,193) both attribute Rs 0 - likely because their clicks are closing on Amazon.",
+          "whyItMatters": "A Shopify sale carries ~15% more margin and builds an owned customer relationship (email, LTV, retargeting) - this is the highest-value outcome and the direct path to the 35-40% organic goal, so the recovery must be defended, not treated as a one-off.",
+          "exactAction": "Once the Rec 1 pixel fix lands, point 100% of Meta Remarketing and Google Display destination URLs at Meyer.in product pages, not Amazon. Match the top 5 May Shopify SKUs on the Meyer.in homepage and confirm they are in stock. Hold all Shopify-driving Meta budget until attribution is restored.",
+          "watchNextMonth": "Shopify % of POS should hold >=9% or grow; if it slips below 8% while Meta/Google send traffic to Amazon, the recovery was demand-led, not channel-led, and needs a dedicated DTC promo.",
+          "keyMetrics": [
+            {
+              "label": "Shopify % of POS",
+              "value": "9.5%"
+            },
+            {
+              "label": "MoM change",
+              "value": "+3.8pp"
+            },
+            {
+              "label": "Shopify revenue",
+              "value": "Rs 9,30,040"
+            },
+            {
+              "label": "Organic goal",
+              "value": "35-40%"
+            }
+          ],
+          "estimatedImpact": "~15% margin uplift per shifted sale"
+        },
+        {
+          "n": 11,
+          "priority": "insight",
+          "title": "No SP Auto on high-value manual-only categories - add Auto to Stainless Kadhai and SS Tools to mine keywords",
+          "platform": "Amazon",
+          "bucket": "Core Sales",
+          "whatDataShows": "'SP | Stainless kadhai | KT' spends Rs 60,659 (2.59x) with no matching SP Auto campaign visible, and 'stainless steel kadai for cooking' already converts at 8.0x organically in the mining data - a signal of untapped keyword demand.",
+          "whyItMatters": "Auto campaigns surface new converting search terms cheaply and feed the generic recall engine; leaving high-spend manual categories without an Auto companion means Meyer is blind to the exact new queries that build downstream branded demand.",
+          "exactAction": "Launch 'SP | Stainless Kadhai | Auto' and 'SP | SS Tools | Auto' companions at Rs 500/day each in June, harvest converting terms weekly into the existing Manual KT campaigns, and add the losers as negatives. Start with Stainless Kadhai given its Rs 60K manual spend.",
+          "watchNextMonth": "The new Auto campaigns should surface 5-10 new converting generic terms to promote into Manual; watch Stainless category blended ROAS moving above 2.6x as good terms get isolated.",
+          "keyMetrics": [
+            {
+              "label": "Stainless Kadhai Manual spend",
+              "value": "Rs 60,659"
+            },
+            {
+              "label": "Its ROAS",
+              "value": "2.59x"
+            },
+            {
+              "label": "Related generic term ROAS",
+              "value": "8.0x"
+            }
+          ],
+          "estimatedImpact": "Cheap keyword discovery, ~Rs 1K/day"
+        }
+      ],
+      "monthOnMonth": [
+        {
+          "campaign": "SP | cast iron frypan Skillit | KT",
+          "platform": "Amazon",
+          "basis": "top-spend",
+          "trend": "Feb Rs 75,072/3.3x/0.54% -> Mar Rs 1,01,123/4.0x/0.46% -> Apr Rs 55,261/5.7x/0.48% -> May Rs 1,58,370/4.0x/0.46%. Spend nearly tripled MoM and ROAS fell from 5.7x to 4.0x while CTR held flat.",
+          "flag": "STEADY - ROAS dip is diminishing returns from a 3x spend increase, not a listing problem; still well above 4x, keep funding but watch for further ROAS erosion if spend climbs again."
+        },
+        {
+          "campaign": "SP | Category Wise All ASIN | Auto",
+          "platform": "Amazon",
+          "basis": "top-spend",
+          "trend": "Feb Rs 59,315/4.5x/0.54% -> Mar Rs 1,61,578/2.5x/0.57% -> Apr Rs 1,34,440/2.9x/0.59% -> May Rs 1,25,149/3.5x/0.57%. ROAS recovering (2.5x -> 3.5x) as spend eases, CTR stable.",
+          "flag": "SCALE-UP - ROAS rising while CTR holds and spend is controlled; this Auto workhorse has room for a modest budget increase."
+        },
+        {
+          "campaign": "SB | Cast Iron Tawa Collection | Page Visit",
+          "platform": "Amazon",
+          "basis": "top-spend",
+          "trend": "Feb Rs 66,184/2.5x/0.32% -> Mar Rs 1,27,582/2.4x/0.14% -> Apr Rs 1,54,370/2.9x/0.21% -> May Rs 1,21,129/3.1x/0.32%. ROAS and CTR both improved as spend was trimmed 21.5% (April Rec 4).",
+          "flag": "SCALE-UP - ROAS and CTR both rising MoM; the April trim improved efficiency, so this SBV recall driver has earned incremental budget again."
+        },
+        {
+          "campaign": "SP | All ASIN | Auto",
+          "platform": "Amazon",
+          "basis": "top-spend",
+          "trend": "Feb Rs 1,57,827/2.5x/0.36% -> Mar Rs 2,64,375/2.8x/0.32% -> Apr Rs 1,53,020/4.0x/0.45% -> May Rs 1,21,098/2.8x/0.48%. ROAS gave back April's gain (4.0x -> 2.8x) but CTR rose to 0.48%.",
+          "flag": "ALARMING - ROAS fell from 4.0x to 2.8x while CTR ROSE 0.45% -> 0.48%; clicks are up but converting worse, which points to product-page factors (price, reviews, images), not targeting."
+        },
+        {
+          "campaign": "PMax: Smart Shopping Campaign",
+          "platform": "Google Ads",
+          "basis": "top-spend",
+          "trend": "May Rs 1,21,730/3.1x/4.96% (first live month; no prior data).",
+          "flag": "STEADY - strong debut but no MoM basis yet; do not judge trajectory until a second live month exists."
+        },
+        {
+          "campaign": "SP |Amazon Recommended ASIN | KT",
+          "platform": "Amazon",
+          "basis": "roas-movement",
+          "trend": "Feb Rs 630/0.0x/0.66% -> Mar Rs 25,537/3.7x/0.80% -> Apr Rs 20,953/5.6x/0.67% -> May Rs 26,134/6.0x/0.55% (delta ROAS +2.3x over history).",
+          "flag": "SCALE-UP - ROAS climbed steadily to 6.0x at healthy spend; top ROAS mover on the account, give it more budget."
+        },
+        {
+          "campaign": "SP | Deal_4 Star_Keyword | KT",
+          "platform": "Amazon",
+          "basis": "roas-movement",
+          "trend": "Feb Rs 29,339/2.2x/0.50% -> Mar Rs 2,744/0.0x/0.51% -> Apr Rs 3,189/8.0x/0.68% -> May Rs 10,804/4.4x/0.50% (delta ROAS +2.2x).",
+          "flag": "SCALE-UP - re-funded to Rs 10,804 and holding 4.4x; a rebounding performer worth a further controlled increase."
+        },
+        {
+          "campaign": "SP | Pressure Cooker | CT",
+          "platform": "Amazon",
+          "basis": "roas-movement",
+          "trend": "Feb Rs 6,213/4.1x/0.54% -> Mar Rs 10,853/2.5x/0.28% -> Apr Rs 427/0.0x/0.23% -> May Rs 10,964/1.4x/0.32% (delta ROAS -2.7x).",
+          "flag": "ALARMING - biggest ROAS decline on the account (4.1x -> 1.4x); CTR also collapsed 0.54% -> 0.32%, so this is a weak-category demand/targeting problem - see Rec 9."
+        },
+        {
+          "campaign": "SP | Circulon Kettle | Auto",
+          "platform": "Amazon",
+          "basis": "roas-movement",
+          "trend": "Feb Rs 18,360/3.8x/0.66% -> Mar - -> Apr Rs 29/0.0x/0.71% -> May Rs 14,899/1.2x/0.26% (delta ROAS -2.6x).",
+          "flag": "ALARMING - ROAS fell 3.8x -> 1.2x and CTR fell 0.66% -> 0.26%; falling on both means targeting/demand fit, not just listing - cut per Rec 9."
+        },
+        {
+          "campaign": "SP | Circulon Kettle | KT",
+          "platform": "Amazon",
+          "basis": "roas-movement",
+          "trend": "Mar Rs 9,387/5.1x/0.58% -> Apr Rs 11,309/4.0x/0.61% -> May Rs 11,792/2.8x/0.49% (delta ROAS -2.3x).",
+          "flag": "ALARMING - steady ROAS decline 5.1x -> 2.8x at flat spend with CTR also easing; same kettle-category weakness, audit listing and price before spending more."
+        }
+      ],
+      "dataQualityFlags": [
+        "ACOS column in the 'ALL AMAZON CAMPAIGNS' table is broken: it shows 1/ROAS as a raw decimal, not a percentage (e.g. 'SP | cast iron frypan Skillit | KT' at 4.04x shows ACOS 0.2% when true ACOS is 24.7%). The platform- and bucket-level ACOS figures (30.5%, 28.4%, etc.) look correct - use those, ignore the per-campaign ACOS.",
+        "Meta shows Rs 1,61,245 spend with Rs 0 attributed revenue across all 7 ad sets - an attribution gap, not necessarily failed campaigns. Meta cannot track Amazon purchases and only sees Shopify conversions; combined with April's identical pattern, verify the Pixel/CAPI before treating any Meta ROAS as real (see Rec 1).",
+        "Google 'Display' (Retargeting) Rs 15,193 and 'PC launch - traffic-Performance Max-3' Rs 44,403 both show Rs 0 revenue on very high click volumes (25,489 and 1,26,007 clicks) - consistent with traffic-objective builds or an Amazon-destination attribution gap; confirm objective and landing page before judging.",
+        "Duplicate campaign name on Meta: two ad sets both named 'PC launch' (Media Mix Prospecting, Rs 14,388 and Rs 7,189) - rename to distinguish before making budget calls.",
+        "Legacy/non-conforming Amazon campaign names persist ('AD_READY: Bxxxx', 'Campaign with presets - B0F93M5H8R - 22/5/2026', '[Pilot] Campaign - 08/04/2025', 'SPA Low ASP Products | May'26') - April's cleanup (Rec 10) does not appear applied.",
+        "Several Amazon campaigns show meaningful spend at exactly Rs 0 revenue (e.g. 'SP | Pressure Cooker   | KT' Rs 5,294, 'SP | Trivantage Cookware Set | KT' Rs 4,486, 'SP | Accent All | Auto' Rs 2,822) - verify these are true zero-conversion, not a reporting lag, before adding negatives or pausing."
+      ],
+      "strategicGap": "Google Ads is live and its Branded Search is returning 15-20x ('PnP Main' 19.58x, 'Dynamic Search Ads' 10.25x), which is exceptional but almost entirely non-incremental demand-harvesting - the same defensive dynamic as Amazon branded. The gap the data implies but does not yet show is a deliberate Meyer.in-first funnel: Meta and Google are spending Rs 4L+/month generating clicks that currently attribute to zero because they likely close on Amazon, so Meyer is paying full price for top-of-funnel demand and then handing the higher-margin, owned-customer conversion to Amazon's 15% fee. With Shopify share just recovered to 9.5% and Diwali/festive season 90-120 days out, the move is to build a Meyer.in-destination prospecting-to-retargeting pipeline now (fixed pixel, DTC landing pages, an email/LTV capture) so the awareness spend already running compounds into owned demand ahead of Q3 - otherwise the 35-40% organic goal stays structurally out of reach no matter how efficient the Amazon portfolio gets.",
+      "glossary": [
+        {
+          "term": "MER",
+          "definition": "Total POS sales / total ad spend (overall-account efficiency; the team calls this 'total ROAS'). Distinct from a single campaign's ROAS. May: 4.39x, down from 4.65x in April."
+        },
+        {
+          "term": "Incrementality",
+          "definition": "The share of ad-attributed sales that would NOT have happened without the ad. Branded terms are ~15-30% incremental (most of those buyers would convert anyway); competition/conquest terms are near 100% incremental."
+        },
+        {
+          "term": "Conquest",
+          "definition": "Advertising on competitor brand terms (Wonderchef, Stahl, Bergner) to win a shopper who intended to buy a rival - treated as market-share capture, not ROAS optimisation."
+        },
+        {
+          "term": "Defensive ceiling",
+          "definition": "The point beyond which extra branded-keyword spend stops protecting the brand and just harvests demand you already own. Branded is treated as a fixed cost, capped, never scaled."
+        },
+        {
+          "term": "Awareness lag",
+          "definition": "Top-of-funnel spend (Meta Prospecting, Amazon SB, Google PMax) closes sales 60-90 days later, so its in-month ROAS understates its true contribution; it is judged on reach/frequency, not ROAS."
+        },
+        {
+          "term": "PLA / PCA (Flipkart)",
+          "definition": "PLA = Product Listing Ads (core sales); PCA = Product Contextual Ads (retargeting). May Flipkart spend was entirely PLA."
+        },
+        {
+          "term": "PMax",
+          "definition": "Google Performance Max - an automated cross-inventory campaign type; here bucketed as Awareness/Prospecting."
+        }
+      ]
     }
   }
 }

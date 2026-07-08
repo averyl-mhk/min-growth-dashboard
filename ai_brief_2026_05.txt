@@ -1,0 +1,596 @@
+MIN GROWTH MARKETING DASHBOARD — AI ANALYSIS BRIEF
+Month:     May '26
+Generated: 2026-07-08
+Files:     Sponsored_Products_Search_term_report (3).xlsx, Sponsored_Brands_Search_term_report (1).xlsx, Sponsored_Display_Targeting_report (1).xlsx, Amazon_Campaign May Dashboard.csv, Meta May.xlsx, Google Ads May.xlsx, Flipkart May Dashboard.csv, POS_May.xlsx
+
+The system context (brand background, guiding principles, benchmarks)
+is saved in this Project's instructions — do not re-paste it.
+Analyse the data below and return recommendations as JSON (format at end).
+
+============================================================
+  POS — ACTUAL PLATFORM SALES
+============================================================
+  Shopify                ₹     930,040
+  Amazon                 ₹   8,467,475
+  Flipkart               ₹     384,000
+  TOTAL                  ₹   9,781,515
+
+============================================================
+  MARKETING EFFICIENCY RATIO (MER = Total POS ÷ Total Spend)
+============================================================
+  Total POS:    ₹   9,781,515
+  Total Spend:  ₹   2,229,524
+  MER:          4.39×
+  Prior MER (Apr '26): 4.65×  (Δ -0.26×)
+  Shopify % of POS: 9.5%
+  Prior (Apr '26) Shopify %: 5.7%  (Δ +3.8pp)
+
+============================================================
+  PLATFORM SUMMARY
+============================================================
+  Platform               Spend       AttRev     ROAS     ACOS
+  --------------- ------------ ------------ -------- --------
+  Amazon AMS      ₹ 1,749,807 ₹ 5,734,866    3.28×    30.5%
+  Meta            ₹   161,245 ₹         0    0.00×        —
+  Google Ads      ₹   254,798 ₹   642,794    2.52×        —
+  Flipkart        ₹    63,675 ₹   228,606    3.59×        —
+  --------------- ------------ ------------ -------- --------
+  TOTAL           ₹ 2,229,524 ₹ 6,606,266    2.96×
+
+  MoM vs Apr '26:
+    Spend:  ₹ 2,009,406 → ₹ 2,229,524  (+11.0%)
+    AttRev: ₹ 6,056,807 → ₹ 6,606,266  (+9.1%)
+    ROAS:   3.01× → 2.96×  (Δ -0.05×)
+
+============================================================
+  BUCKET SUMMARY
+============================================================
+  Bucket                Spend       AttRev     ROAS   AmazonACOS  Channels
+  -------------- ------------ ------------ -------- ------------  ------------------------------
+  Awareness      ₹   602,019 ₹ 1,151,511    1.91×        38.9%  Amazon, Google Ads, Meta
+  Core Sales     ₹ 1,487,679 ₹ 5,368,954    3.61×        28.4%  Amazon, Flipkart, Google Ads
+  Retargeting    ₹   139,827 ₹    85,801    0.61×        91.3%  Amazon, Google Ads, Meta
+
+============================================================
+  AMAZON KEYWORD TYPE BREAKDOWN (from search term data)
+============================================================
+  KwType         AdTypes           Spend       AttRev     ROAS   Spend%
+  -------------- ---------- ------------ ------------ -------- --------
+  Branded        SB,SBV,SP  ₹   402,899 ₹ 2,222,786    5.52×    24.1%
+  Competition    SB,SBV,SP  ₹   101,915 ₹   245,931    2.41×     6.1%
+  Generic        SB,SBV,SP  ₹ 1,166,635 ₹ 3,180,348    2.73×    69.8%
+
+============================================================
+  CHANNEL DETAIL — ALL CAMPAIGN GROUPS
+============================================================
+  Platform   AdType Sub      KwType              Spend     AttRev    ROAS     ACOS  Impressions   Clicks     CTR
+  ---------- ------ -------- -------------- ---------- ---------- ------- -------- ------------ -------- -------
+
+  [AWARENESS]
+  Amazon     SB     Manual   Branded        ₹   9,373 ₹  62,998   6.72×    14.9%      225,634    1,008   0.45%
+  Amazon     SB     Manual   Competition    ₹     891 ₹       0   0.00×        —       21,440       95   0.45%
+  Amazon     SB     Manual   Generic        ₹   4,879 ₹  23,702   4.86×    20.6%      117,466      524   0.45%
+  Amazon     SBV    Manual   Branded        ₹  12,252 ₹ 108,133   8.83×    11.3%      347,983    1,196   0.34%
+  Amazon     SBV    Manual   Competition    ₹  17,155 ₹  23,280   1.36×    73.7%      570,722    1,716   0.30%
+  Amazon     SBV    Manual   Generic        ₹ 212,455 ₹ 441,816   2.08×    48.1%    4,889,423   18,969   0.39%
+  Google Ads Performance Max Prospecting —              ₹ 196,594 ₹ 478,374   2.43×        —    2,503,553  192,733   7.70%
+  Meta       Carousel Prospecting —              ₹  50,184 ₹       0   0.00×        —    6,468,605   85,329   1.32%
+  Google Ads Shopping Non Branded —              ₹  33,452 ₹  13,208   0.39×        —      548,172    8,991   1.64%
+  Meta       Catalogue Prospecting —              ₹  27,711 ₹       0   0.00×        —    3,231,410  138,907   4.30%
+  Meta       Media Mix Prospecting —              ₹  21,576 ₹       0   0.00×        —      639,297   42,339   6.62%
+  Meta       Instream Prospecting —              ₹  15,499 ₹       0   0.00×        —    2,518,162    2,204   0.09%
+
+  [CORE SALES]
+  Amazon     SP     Auto     Branded        ₹  14,771 ₹ 297,912  20.17×     5.0%      373,366    1,594   0.43%
+  Amazon     SP     Auto     Competition    ₹  32,782 ₹  83,356   2.54×    39.3%      962,294    3,569   0.37%
+  Amazon     SP     Auto     Generic        ₹ 552,099 ₹1,576,435   2.86×    35.0%   14,220,785   61,226   0.43%
+  Amazon     SP     Manual   Branded        ₹ 366,504 ₹1,753,743   4.79×    20.9%    6,213,762   25,725   0.41%
+  Amazon     SP     Manual   Competition    ₹  51,087 ₹ 139,295   2.73×    36.7%      980,694    3,954   0.40%
+  Amazon     SP     Manual   Generic        ₹ 397,201 ₹1,138,396   2.87×    34.9%    7,340,154   30,996   0.42%
+  Flipkart   PLA    —        —              ₹  63,675 ₹ 228,606   3.59×        —    2,001,606   23,372   1.17%
+  Google Ads Search Branded  —              ₹   9,560 ₹ 151,212  15.82×        —        9,710    1,424  14.67%
+
+  [RETARGETING]
+  Amazon     SD     Manual   —              ₹  78,358 ₹  85,801   1.09×    91.3%    3,388,756    9,481   0.28%
+  Meta       Catalogue Remarketing —              ₹  30,864 ₹       0   0.00×        —       79,316    4,975   6.27%
+  Meta       Media Mix Remarketing —              ₹  15,411 ₹       0   0.00×        —      459,426   32,372   7.05%
+  Google Ads Shopping Display  —              ₹  15,193 ₹       0   0.00×        —      293,306   25,489   8.69%
+
+============================================================
+  TOP PERFORMERS (min ₹25,000 spend, ROAS descending)
+============================================================
+  #1 [Amazon] [Core Sales] ROAS 6.00× | ACOS 0.2% | Spend ₹26,134
+     SP |Amazon  Recommended ASIN | KT
+  #2 [Amazon] [Core Sales] ROAS 4.80× | ACOS 0.2% | Spend ₹36,307
+     SP | cast iron tawa | Auto
+  #3 [Amazon] [Core Sales] ROAS 4.15× | ACOS 0.2% | Spend ₹41,520
+     SP | Cast Iron Tawa | KT
+  #4 [Amazon] [Core Sales] ROAS 4.04× | ACOS 0.2% | Spend ₹158,370
+     SP | cast iron frypan Skillit | KT
+  #5 [Amazon] [Core Sales] ROAS 4.04× | ACOS 0.2% | Spend ₹71,572
+     SP | High Rating ASINs - GIF | Auto
+
+============================================================
+  NEEDS ATTENTION (min ₹10,000 spend, non-Awareness, ROAS ascending)
+============================================================
+  #1 [Meta] [Retargeting] ROAS 0.00× | ACOS — | Spend ₹30,864
+     Catalog Sales April
+  #2 [Meta] [Retargeting] ROAS 0.00× | ACOS — | Spend ₹15,411
+     MOF Video Viewers
+  #3 [Google Ads] [Retargeting] ROAS 0.00× | ACOS — | Spend ₹15,193
+     Display
+  #4 [Amazon] [Retargeting] ROAS 0.49× | ACOS 2.1% | Spend ₹13,985
+     SD | Cast Iron Tawa | OWN PT
+  #5 [Amazon] [Retargeting] ROAS 0.49× | ACOS 2.0% | Spend ₹11,235
+     SD | Cast Iron Frypan | Own & Comp PT
+
+============================================================
+  ALL AMAZON CAMPAIGNS (spend > ₹0, sorted by spend desc)
+============================================================
+  AdType Sub           Spend     AttRev    ROAS     ACOS       Impr  Clicks     CTR
+  ------ -------- ---------- ---------- ------- -------- ---------- ------- -------
+  SP     Manual   ₹ 158,370 ₹ 640,478   4.04×     0.2%  2,110,526   9,770   0.46%
+     SP | cast iron frypan Skillit | KT
+  SP     Auto     ₹ 125,149 ₹ 443,903   3.55×     0.3%  2,081,946  11,933   0.57%
+     SP | Category Wise All ASIN | Auto
+  SBV    Manual   ₹ 121,129 ₹ 375,270   3.10×     0.3%  3,997,981  12,759   0.32%
+     SB | Cast Iron Tawa Collection | Page Visit
+  SP     Auto     ₹ 121,098 ₹ 337,216   2.78×     0.4%  3,705,169  17,959   0.48%
+     SP | All ASIN | Auto
+  SP     Manual   ₹  84,874 ₹ 333,088   3.92×     0.3%  1,191,583   5,886   0.49%
+     SP_Deal_rating-4.6-5_Keyword targeting 4043a2
+  SBV    Manual   ₹  78,377 ₹ 124,994   1.59×     0.6%    439,931   4,234   0.96%
+     SBV | Cast Iron tawa |  KT
+  SP     Auto     ₹  71,572 ₹ 289,381   4.04×     0.2%  1,547,203   5,367   0.35%
+     SP | High Rating ASINs - GIF | Auto
+  SP     Manual   ₹  60,659 ₹ 157,084   2.59×     0.4%    734,029   3,208   0.44%
+     SP | Stainless kadhai | KT
+  SP     Manual   ₹  59,543 ₹ 129,693   2.18×     0.5%    959,505   3,881   0.40%
+     SP | Cast Iron Frypan Skillit | Cross PT
+  SP     Auto     ₹  56,778 ₹ 173,028   3.05×     0.3%  1,035,067   6,512   0.63%
+     SP | SPA GIF'25 - Top Selling ASINs-ASIN WISE  | Auto
+  SP     Manual   ₹  41,520 ₹ 172,477   4.15×     0.2%    735,071   2,484   0.34%
+     SP | Cast Iron Tawa | KT
+  SP     Manual   ₹  40,854 ₹ 145,347   3.56×     0.3%  1,264,372   3,272   0.26%
+     SP | Bakeware | KT
+  SP     Auto     ₹  36,307 ₹ 174,412   4.80×     0.2%    846,229   3,420   0.40%
+     SP | cast iron tawa | Auto
+  SP     Auto     ₹  36,253 ₹ 107,026   2.95×     0.3%  1,177,548   3,477   0.30%
+     SP | TOPE & TOPE SET  | Auto
+  SP     Manual   ₹  33,792 ₹ 129,821   3.84×     0.3%    378,705   2,593   0.68%
+     SP | Deals_Diwali_Ratings 4-4.5 | KT
+  SP     Manual   ₹  33,427 ₹ 124,595   3.73×     0.3%    604,795   2,170   0.36%
+     SP | High Converting ASINs - GIF | KWT
+  SP     Manual   ₹  29,899 ₹  82,287   2.75×     0.4%    614,252   2,684   0.44%
+     SP | SS Tools  | KT
+  SP     Auto     ₹  29,732 ₹  80,292   2.70×     0.4%    853,348   2,050   0.24%
+     SP | Spoon & Fork | Auto
+  SP     Auto     ₹  29,637 ₹  82,627   2.79×     0.4%    862,282   4,027   0.47%
+     SP | Bakeware | Auto
+  SP     Manual   ₹  26,134 ₹ 156,791   6.00×     0.2%    421,855   2,339   0.55%
+     SP |Amazon  Recommended ASIN | KT
+  SP     Manual   ₹  25,605 ₹  72,869   2.85×     0.4%    486,896   2,064   0.42%
+     SP | FryPan | KT
+  SP     Manual   ₹  24,380 ₹  66,853   2.74×     0.4%    415,127   1,707   0.41%
+     SP | Spoon & Fork | KT
+  SD     Manual   ₹  23,877 ₹  26,496   1.11×     0.9%  1,174,566   3,381   0.29%
+     SD | Range | Remarketing
+  SBV    Manual   ₹  19,985 ₹  44,147   2.21×     0.5%    152,509   1,795   1.18%
+     SBV | Cast Iron Skillet | Page Visit | KT
+  SP     Manual   ₹  17,691 ₹ 107,184   6.06×     0.2%    534,667   1,184   0.22%
+     SP | KadhaI | Phrase  KWT
+  SP     Manual   ₹  17,320 ₹  95,682   5.52×     0.2%    310,958   2,000   0.64%
+     SP | Anyday | KT
+  SP     Auto     ₹  17,121 ₹  18,152   1.06×     0.9%    527,090   1,446   0.27%
+     SP | Pressure Cooker and Cooker Set  | Auto
+  SB     Manual   ₹  15,143 ₹  86,700   5.73×     0.2%    364,542   1,629   0.45%
+     SB | Cast Iron Kadhai | KT
+  SP     Auto     ₹  14,899 ₹  17,325   1.16×     0.9%    685,872   1,802   0.26%
+     SP | Circulon Kettle | Auto
+  SD     Manual   ₹  13,985 ₹   6,787   0.49×     2.1%    321,466     971   0.30%
+     SD | Cast Iron Tawa | OWN PT
+  SP     Manual   ₹  13,286 ₹  66,710   5.02×     0.2%    246,122     906   0.37%
+     SP | Anzen Frypan | KT
+  SP     Auto     ₹  11,916 ₹  42,617   3.58×     0.3%    312,833   1,154   0.37%
+     SP | Anzen | Auto
+  SP     Manual   ₹  11,792 ₹  33,345   2.83×     0.4%    363,173   1,792   0.49%
+     SP | Circulon Kettle | KT
+  SD     Manual   ₹  11,235 ₹   5,545   0.49×     2.0%    266,939     656   0.25%
+     SD | Cast Iron Frypan | Own & Comp PT
+  SP     Manual   ₹  10,964 ₹  15,029   1.37×     0.7%    122,692     397   0.32%
+     SP | Pressure Cooker | CT
+  SP     Manual   ₹  10,804 ₹  47,406   4.39×     0.2%    232,953   1,154   0.50%
+     SP |Deal_4 Star_Keyword | KT
+  SP     Manual   ₹   9,818 ₹  34,217   3.49×     0.3%    166,280   1,138   0.68%
+     SP | Cast Iron Kadhai With Lid | KT
+  SP     Manual   ₹   9,776 ₹  26,239   2.68×     0.4%    360,855   1,181   0.33%
+     SP | Knife | KWT
+  SP     Manual   ₹   8,797 ₹  52,544   5.97×     0.2%    107,282     599   0.56%
+     SP | Anzen All | KT
+  SP     Auto     ₹   8,600 ₹  24,308   2.83×     0.4%    260,601     861   0.33%
+     SP | Cast Iron Frypan Skillit | Auto
+  SP     Manual   ₹   8,370 ₹  39,594   4.73×     0.2%    220,863     535   0.24%
+     AD_READY: B07XD9YL47 | Anzen kadhai
+  SP     Manual   ₹   7,304 ₹  26,521   3.63×     0.3%    135,816     733   0.54%
+     SP | TOPE & TOPE Set  | KT
+  SD     Manual   ₹   7,147 ₹   8,570   1.20×     0.8%    497,021   1,353   0.27%
+     SD | Tope & Set  | Own Pt
+  SP     Manual   ₹   7,100 ₹  11,245   1.58×     0.6%    270,506     904   0.33%
+     [Pilot] Campaign - 08/04/2025 17:32:47.261
+  SP     Manual   ₹   6,988 ₹  12,241   1.75×     0.6%    107,181     565   0.53%
+     SP | Tasla | KT
+  SBV    Manual   ₹   6,645 ₹   6,264   0.94×     1.1%    903,329   1,301   0.14%
+     SB | Pressure Cooker | Page Visit | KT
+  SP     Auto     ₹   6,487 ₹  15,979   2.46×     0.4%    171,492   1,171   0.68%
+     SP | Cast iron All | Auto
+  SP     Auto     ₹   6,227 ₹  26,369   4.23×     0.2%    291,786     677   0.23%
+     SP  | Silicon Tool | Auto
+  SBV    Manual   ₹   6,072 ₹   1,621   0.27×     3.7%     31,941     424   1.33%
+     SBV | Appam Pan | Page Visit | KT
+  SP     Manual   ₹   6,026 ₹  75,857  12.59×     0.1%    278,664   1,055   0.38%
+     SP | Accent All | KT
+  SP     Manual   ₹   6,004 ₹  68,495  11.41×     0.1%     43,941     496   1.13%
+     SP | Over Stock | Own Pt
+  SP     Manual   ₹   5,635 ₹  25,696   4.56×     0.2%    107,136     295   0.28%
+     PotsandPans India_SPKeyword_Drona-AAM_21/03/2026 04:50:05_Amazon Readiness.0.9
+  SP     Auto     ₹   5,584 ₹   9,690   1.74×     0.6%    204,623     784   0.38%
+     SP | knife | Auto
+  SP     Manual   ₹   5,294 ₹       0   0.00×     0.0%     66,819     224   0.34%
+     SP | Pressure Cooker   | KT
+  SP     Auto     ₹   5,175 ₹  23,943   4.63×     0.2%    138,236     762   0.55%
+     SP | SS Tools | Auto
+  SP     Auto     ₹   5,062 ₹  52,991  10.47×     0.1%    277,278   1,160   0.42%
+     SP | Select Range | Auto
+  SP     Manual   ₹   4,728 ₹  31,631   6.69×     0.1%     61,982     384   0.62%
+     SP | 47610 | KT
+  SP     Manual   ₹   4,488 ₹   6,667   1.49×     0.7%     52,975     258   0.49%
+     SP | Manual | KT | Milkpan 0630f9
+  SP     Manual   ₹   4,486 ₹       0   0.00×     0.0%    206,325     347   0.17%
+     SP | Trivantage Cookware Set | KT
+  SBV    Manual   ₹   4,399 ₹   6,761   1.54×     0.7%    216,694     830   0.38%
+     SBV | Pressure Cooker | Page Visit | KT
+  SD     Manual   ₹   3,753 ₹   3,619   0.96×     1.0%    265,820     982   0.37%
+     SD | Pressure Cooker | Remarketing
+  SP     Manual   ₹   3,329 ₹   5,401   1.62×     0.6%     84,620     474   0.56%
+     SP | Top 10 ASIN | KT
+  SBV    Manual   ₹   3,288 ₹       0   0.00×     0.0%     35,275     256   0.73%
+     SBV | TOPE | KT
+  SD     Manual   ₹   2,881 ₹  11,288   3.92×     0.3%    181,150     707   0.39%
+     SD_Remarketing_highly_rated_Diwali2023-09-25 73ba88
+  SP     Auto     ₹   2,822 ₹       0   0.00×     0.0%    152,974     657   0.43%
+     SP | Accent All | Auto
+  SP     Auto     ₹   2,408 ₹  15,057   6.25×     0.2%     86,325     519   0.60%
+     SP | ANYDAY | Auto
+  SD     Manual   ₹   2,398 ₹       0   0.00×     0.0%    100,096     154   0.15%
+     SD | ANYDAY | OWN PT
+  SD     Manual   ₹   2,216 ₹       0   0.00×     0.0%     84,221     155   0.18%
+     SD | SS Tools | Own PT
+  SP     Manual   ₹   2,094 ₹  13,373   6.39×     0.2%     61,898     174   0.28%
+     SP | Silicone Tool  | KT
+  SD     Manual   ₹   1,963 ₹   4,739   2.41×     0.4%     66,606      67   0.10%
+     SD | SS Accessories | Reach | Own PT
+  SP     Auto     ₹   1,785 ₹   4,491   2.52×     0.4%     44,880     320   0.71%
+     SP |  Cast Iron Kadhai | Auto
+  SP     Manual   ₹   1,683 ₹   1,592   0.95×     1.1%    105,453     318   0.30%
+     SP | Dicer  | KT
+  SP     Manual   ₹   1,676 ₹   2,910   1.74×     0.6%     23,673     196   0.83%
+     SP | Tope | CT & Comp PT
+  SP     Auto     ₹   1,639 ₹       0   0.00×     0.0%     14,450      49   0.34%
+     SPA Low ASP Products | May'26 ART 270254
+  SD     Manual   ₹   1,549 ₹   7,947   5.13×     0.2%     89,918     182   0.20%
+     SD | Appam Pan | Own and Comp PT
+  SP     Auto     ₹   1,536 ₹   1,683   1.10×     0.9%    119,930      92   0.08%
+     SP | Merlot  | Auto
+  SP     Manual   ₹   1,481 ₹       0   0.00×     0.0%     59,863     113   0.19%
+     SP | Anyday | KT Hybrid
+  SD     Manual   ₹   1,476 ₹       0   0.00×     0.0%    108,486     202   0.19%
+     SD | Pressure Cooker | OWN PT | CVR
+  SD     Manual   ₹   1,468 ₹     754   0.51×     1.9%     63,828     259   0.41%
+     SD | Range |  Own PT & Remarketing  | CVR
+  SD     Manual   ₹   1,346 ₹   5,813   4.32×     0.2%     42,171      82   0.19%
+     SD | Range | Own PT
+  SP     Manual   ₹   1,302 ₹   6,607   5.08×     0.2%     67,227     191   0.28%
+     SP | Bauhaus | KT
+  SD     Manual   ₹   1,297 ₹       0   0.00×     0.0%     33,156      58   0.17%
+     Cast Iron Product Trageting 59c77a
+  SP     Manual   ₹   1,226 ₹       0   0.00×     0.0%     41,353     113   0.27%
+     SP | Cookware Set | KT
+  SP     Manual   ₹   1,150 ₹       0   0.00×     0.0%     19,226     166   0.86%
+     SP | Cast Iron Dutch Oven | KT
+  SP     Manual   ₹     828 ₹   8,494  10.26×     0.1%     26,177     133   0.51%
+     SP | Cast Iron Tawa | CT -Tawa 2K to 3K
+  SP     Auto     ₹     815 ₹       0   0.00×     0.0%     12,550      37   0.29%
+     SP |  Cookware Set | Auto
+  SP     Manual   ₹     805 ₹       0   0.00×     0.0%     19,107     102   0.53%
+     SP | Cast Iron Set | KT
+  SP     Manual   ₹     797 ₹       0   0.00×     0.0%     17,717      63   0.36%
+     AD_READY: B0BCFCD9SW
+  SP     Manual   ₹     737 ₹       0   0.00×     0.0%     41,659     195   0.47%
+     Campaign with presets - B0F93M5H8R - 22/5/2026 16:49:32.335
+  SBV    Manual   ₹     668 ₹       0   0.00×     0.0%      9,610      52   0.54%
+     SBV | Cast iron | kadhai
+  SP     Manual   ₹     625 ₹     647   1.03×     1.0%     18,370      75   0.41%
+     SP | All Asin's Selected Keywords | KT
+  SD     Manual   ₹     602 ₹       0   0.00×     0.0%     37,626      83   0.22%
+     SD | Merlot | CT and Remarketing | CVR
+  SBV    Manual   ₹     587 ₹       0   0.00×     0.0%      7,133      57   0.80%
+     SBV | Cast Iron Casserole-Dutch Oven | KT
+  SP     Auto     ₹     549 ₹     318   0.58×     1.7%     73,342      62   0.08%
+     SP | Select Kadhai | Auto
+  SBV    Manual   ₹     526 ₹  14,172  26.93×     0.0%      6,374     151   2.37%
+     SB | Tea Kettle | Brand Store -Impression Share | KT | VCPM
+  SP     Manual   ₹     454 ₹       0   0.00×     0.0%      9,326      42   0.45%
+     SP | Cast Iron Appam  | KT
+  SP     Auto     ₹     433 ₹  16,897  39.04×     0.0%     68,574      73   0.11%
+     SP | Induction & Non Inducition Orange  Tawa | Auto
+  SP     Manual   ₹     363 ₹   4,719  13.02×     0.1%      6,889      69   1.00%
+     SP | Cast Iron Kadhai Without Lid | Branded KT
+  SP     Manual   ₹     333 ₹       0   0.00×     0.0%     12,087      30   0.25%
+     AD_READY: B0B5LQ6DG3
+  SD     Manual   ₹     248 ₹       0   0.00×     0.0%     11,194      34   0.30%
+     SD VRM | Choked ASINs | May'26 ART a66de0
+  SD     Manual   ₹     216 ₹     805   3.73×     0.3%      2,753      12   0.44%
+     SD | Silicon Tool | OWN PT | CVR
+  SBV    Manual   ₹     185 ₹       0   0.00×     0.0%      7,353      24   0.33%
+     SBV | - Circulon A1 Series | KT
+  SD     Manual   ₹     179 ₹       0   0.00×     0.0%      5,134      11   0.21%
+     SD | Pressure Cooker | OWN  PT | Reach
+  SD     Manual   ₹     167 ₹       0   0.00×     0.0%     10,227      62   0.61%
+     SD | Select | Remarketing & CT
+  SP     Manual   ₹      96 ₹       0   0.00×     0.0%      5,511      10   0.18%
+     AD_READY: B082NZW436
+  SP     Manual   ₹      84 ₹       0   0.00×     0.0%        549       7   1.28%
+     SP | Cast Iron Tawa | Own & Comp  PT
+  SD     Manual   ₹      82 ₹   3,438  42.06×     0.0%      2,229       1   0.04%
+     SD | Anzen | OWN PT
+  SD     Manual   ₹      74 ₹       0   0.00×     0.0%      5,825      19   0.33%
+     SD | Entire Catalog Summer Sale - 2024 | VR 11211e
+  SP     Auto     ₹      67 ₹       0   0.00×     0.0%      4,819      19   0.39%
+     SP | Anzen | AUTO
+  SD     Manual   ₹      62 ₹       0   0.00×     0.0%     11,915      28   0.23%
+     SD | Merlot Own and Comp PT | CVR
+  SD     Manual   ₹      59 ₹       0   0.00×     0.0%        683       6   0.88%
+     SD_PAT_Highly_rated_Nov23_2023-10-30 b6ef68
+  SD     Manual   ₹      38 ₹       0   0.00×     0.0%      3,278      12   0.37%
+     SD | Circulon-kettle  | Remarketing
+  SD     Manual   ₹      23 ₹       0   0.00×     0.0%      2,213       3   0.14%
+     SD. | Cast Iron | CT
+  SD     Manual   ₹      17 ₹       0   0.00×     0.0%        235       1   0.43%
+     SD | Cutlery | CVR | Own PT
+
+============================================================
+  ALL META CAMPAIGNS
+============================================================
+  TargetingType    KeywordType           Spend     AttRev    ROAS       Impr  Clicks     CTR
+  ---------------- ---------------- ---------- ---------- ------- ---------- ------- -------
+  Carousel         Prospecting      ₹  50,184 ₹       0   0.00×  6,468,605  85,329   1.32%
+     New Traffic Campaign 5-12-22
+  Catalogue        Remarketing      ₹  30,864 ₹       0   0.00×     79,316   4,975   6.27%
+     Catalog Sales April
+  Catalogue        Prospecting      ₹  27,711 ₹       0   0.00×  3,231,410 138,907   4.30%
+     New Customers – Copy
+  Instream         Prospecting      ₹  15,499 ₹       0   0.00×  2,518,162   2,204   0.09%
+     In-stream
+  Media Mix        Remarketing      ₹  15,411 ₹       0   0.00×    459,426  32,372   7.05%
+     MOF Video Viewers
+  Media Mix        Prospecting      ₹  14,388 ₹       0   0.00×    276,885  25,437   9.19%
+     PC launch
+  Media Mix        Prospecting      ₹   7,189 ₹       0   0.00×    362,412  16,902   4.66%
+     PC launch
+
+============================================================
+  ALL GOOGLE ADS CAMPAIGNS
+============================================================
+  TargetingType    KeywordType    Bucket            Spend     AttRev    ROAS       Impr  Clicks     CTR
+  ---------------- -------------- ------------ ---------- ---------- ------- ---------- ------- -------
+  Performance Max  Prospecting    Awareness    ₹ 121,730 ₹ 381,572   3.13×  1,289,521  63,979   4.96%
+     PMax: Smart Shopping Campaign
+  Performance Max  Prospecting    Awareness    ₹  44,403 ₹       0   0.00×  1,026,757 126,007  12.27%
+     PC launch - traffic-Performance Max-3
+  Shopping         Non Branded    Awareness    ₹  33,452 ₹  13,208   0.39×    548,172   8,991   1.64%
+     Shopping ads
+  Performance Max  Prospecting    Awareness    ₹  30,461 ₹  96,802   3.18×    187,275   2,747   1.47%
+     Shopping-Performance Max-4
+  Shopping         Display        Retargeting  ₹  15,193 ₹       0   0.00×    293,306  25,489   8.69%
+     Display
+  Search           Branded        Core Sales   ₹   5,703 ₹ 111,689  19.58×      5,033     759  15.08%
+     PnP Main
+  Search           Branded        Core Sales   ₹   3,856 ₹  39,522  10.25×      4,677     665  14.22%
+     Dynamic Search Ads
+
+============================================================
+  ALL FLIPKART CAMPAIGNS
+============================================================
+  Type         Bucket              Spend     AttRev    ROAS       Impr  Clicks     CTR
+  ------------ -------------- ---------- ---------- ------- ---------- ------- -------
+  PLA          Core Sales     ₹  29,864 ₹  72,666   2.43×    618,805   7,730   1.25%
+     PLA_Segmentation_FMoving_CPC_KT
+  PLA          Core Sales     ₹  12,980 ₹  42,482   3.27×    453,357   4,845   1.07%
+     TOP FSN_CPC_KT
+  PLA          Core Sales     ₹   7,156 ₹  52,221   7.30×    455,047   4,986   1.10%
+     Boost_Sales_CookingAndCookware 18-03-2026
+  PLA          Core Sales     ₹   6,552 ₹  34,286   5.23×    187,644   2,575   1.37%
+     PLA_Campaign-2026-05-07
+  PLA          Core Sales     ₹   3,425 ₹   7,802   2.28×    141,134   1,750   1.24%
+     PLA_Campaign_PotentialBest Sellers_KT
+  PLA          Core Sales     ₹   3,147 ₹  19,149   6.08×    110,683   1,151   1.04%
+     Pressure Cooker KT
+  PLA          Core Sales     ₹     550 ₹       0   0.00×     34,936     335   0.96%
+     Recommended FSN_PLA_KT_S1
+
+============================================================
+  LAST MONTH'S RECOMMENDATIONS — SCORE THESE FIRST (STEP 0)
+============================================================
+  From Apr '26. For each: was it actioned (evidence in THIS month's data), and did the prediction hold?
+
+  [1] (critical) Shopify share fell from 10.4% to 5.7% of POS — the highest-margin channel just halved
+      Action told:  Run a 5-day Meyer.in audit this week. (1) Verify Meta and Google pixels (and Conversions API) fire on the /thank-you page. (2) Identify any Amazon-exclusive Apr offer that Shopify did not match — that is the most likely cause and the easiest fix. (3) Pull the top 5 Apr Shopify SKUs and confirm they're in stock and featured on the Meyer.in homepage. Until cause is found, do not reallocate any budget away from Shopify-driving Meta retargeting ad sets.
+      Predicted:    Shopify % of POS should recover to >=8% in May. If still <7% by May 31, the channel is structurally drifting, not a one-month blip — escalate.
+
+  [2] (critical) Meta spent Rs 1,52,714 with zero attributed revenue across all 9 ad sets — pixel/destination audit blocks every Meta budget call
+      Action told:  Have engineering verify the Meta pixel + Conversions API on Meyer.in this week — spot-test by running a Rs 500 retargeting ad to a Shopify-only SKU. In parallel, audit each ad set's destination URL: any Meta ad pointing to amazon.in must be paused immediately and rerouted to meyer.in. Paying for Meta clicks that close on Amazon kills both attribution and the Shopify margin advantage.
+      Predicted:    Meta should show >=Rs 50,000 attributed revenue in May once pixel is fixed (assumes ~half of click value lands on Meyer.in). If still zero, the issue is destination, not measurement.
+
+  [3] (warning) Pause 'SP | Top 10 ASIN | Ads Autopilot | KT' — Rs 45,705 at 1.45x ROAS, the autopilot tool is not learning
+      Action told:  Pause this campaign by Friday. Rebuild it as a manually-managed SP Manual KT campaign with the same 10 ASINs, a Rs 1,500/day budget cap, and bids on only the top 20 search terms from the Apr SP search-term report that converted. Reinvest the Rs 45K saved into 'SP | cast iron frypan Skillit | KT' (5.70x) by raising its daily cap by 50%.
+      Predicted:    Rebuilt campaign should hit >=3.5x ROAS at the same spend level. If still <2.5x in May, the ASINs themselves have a listing or pricing issue that bid management cannot fix.
+
+  [4] (warning) Cap branded keyword spend at Rs 3,00,000/month — 17.7% of total spend on defending Meyer is past defensive ceiling
+      Action told:  Cap total branded spend at Rs 3,00,000/month (down ~Rs 55K from Rs 3,55,350). First action: reduce daily budget on 'SBV | Cast Iron Tawa Collection | Page Visit' (Rs 1,54,370 spend, 2.90x — partly branded targeting) by 30%. Hold all SP Auto Branded and SP Manual Branded high-ROAS campaigns at current cap. Redeploy the Rs 55K freed into SP Auto Competition (currently at 2.58x) per Rec 7.
+      Predicted:    Branded spend should land at Rs 2,90,000-3,10,000 in May. Branded ACOS may rise slightly to 18-20% (acceptable, still inside target). If branded organic orders (SKU-level orders not ad-attributed) hold flat or grow, the cut was safely incremental.
+
+  [5] (warning) SD retargeting underperforming — overall 1.98x ROAS, two campaigns below 1.5x
+      Action told:  Pause 'SD | ANYDAY | OWN PT' (0.76x) and 'SD | Range | Own PT & Remarketing | CVR' (Rs 0 revenue) immediately. For 'SD | Tope | …' (1.42x), narrow the audience to 7-day page-viewers and refresh the creative to a 3-second product-in-action video. Scale 'Four_Star_SD_Retargeting' (2.95x) by 50% to Rs 25K. Aim for SD overall ROAS >=2.5x by end of May.
+      Predicted:    SD overall ROAS should clear 2.5x in May. Pause + reallocate frees ~Rs 12K of clear waste; Four_Star scale-up should add ~Rs 25K of incremental revenue.
+
+  [6] (warning) 'SP | Cookware Set | KT' returned Rs 412 on Rs 4,361 spend (0.09x ROAS) — match type is bringing irrelevant traffic
+      Action told:  Pause both campaigns immediately. Pull the Apr SP search-term report and identify which non-Meyer queries (e.g. 'non-stick cookware set under 2000', 'pigeon pressure cooker set') triggered them. Add those as exact-match negatives across the Cookware Set and Pressure Cooker Set portfolios. Relaunch only after listings are audited for price competitiveness and review count >50.
+      Predicted:    When relaunched, target 2.0x ROAS at start. If a relaunch within 60 days still shows <1.5x, the issue is product-market fit on the bundles (price ladder vs Wonderchef sets), not advertising.
+
+  [7] (opportunity) Competition keyword spend at Rs 1,00,961 (5.8% of Amazon kw spend) is undersized for a brand explicitly competing with Wonderchef and Stahl
+      Action told:  Increase competition keyword spend to Rs 1,50,000 in May (from Rs 1,00,961). Scale SP Auto Competition (2.58x) by 50%. Add new SP Manual KT campaigns targeting the 5 highest-volume Wonderchef and Stahl SKU search terms (e.g., 'wonderchef nirlon', 'stahl triply kadai 2.5l') at Rs 800/day caps each. Fund this from the Rs 55K freed in Rec 4 plus Rs 12K freed in Rec 5.
+      Predicted:    Competition share of Amazon kw spend should rise to 8-9%. ROAS may dip to 2.0-2.2x temporarily as new keyword campaigns ramp — that is acceptable for conquest. Watch competitor brand search velocity in Brand Analytics for downstream spillover.
+
+  [8] (opportunity) 'SBV Manual Generic' delivered 9.1M impressions at 2.14x — the recall engine is working, fund it +25%
+      Action told:  Increase SBV Manual Generic budget by 25% (from Rs 1,95,822 to ~Rs 2,45,000) in May. Concentrate the increase on 'SBV | Cast Iron Tawa Collection' (already 2.90x) — push it to Rs 1,90,000. Verify these SBVs point to the Meyer brand store, not individual PDPs, so each impression builds brand association rather than a single-PDP transaction.
+      Predicted:    Branded search volume in Brand Analytics should grow >=10% MoM. If branded organic orders rise without branded ad spend rising, the SBV investment is doing exactly the job Principle 4 describes. SBV ROAS may dip slightly to 1.9-2.0x as scale takes incremental impressions — that is acceptable for awareness.
+
+  [9] (opportunity) Meta In-stream prospecting at 0.14% CTR — format is failing, redirect Rs 25K into Catalogue + Media Mix
+      Action told:  Pause the In-stream prospecting ad set this week. Move the Rs 25,417 monthly budget into Catalogue Prospecting (3.93% CTR — Rs 15K) and Media Mix Prospecting (4.99% CTR — Rs 10K). Do not cut total Meta prospecting spend — this is a redistribution, not a cut.
+      Predicted:    Meta blended prospecting CTR should land >=3% in May (currently dragged by In-stream's 0.14%). Watch frequency on the receiving ad sets — if it climbs past 4, refresh creative before adding more budget.
+
+  [10] (insight) 100+ zero-spend Amazon campaigns (many '-migrated', 'Campaign with presets', 2022-2023 names) — clean the portfolio before May reviews
+      Action told:  This week, archive every Amazon campaign with Rs 0 spend in BOTH Mar and Apr 2026 AND created before Jan 2025. Keep an archive sheet (name, ID, last budget, last positive-spend month) in case any need restoration. Rename anything still labelled 'Campaign with presets - …' or 'AD_READY: Bxxxx' to match the SP|SB|SBV|SD | [Category] | [Targeting] convention. Anything that cannot be assigned a category gets archived.
+      Predicted:    Active campaign count should drop to <80. Decision-making time on the May review should fall — that is the actual KPI. Set a recurring 'campaigns with zero spend for 2 consecutive months' archive rule to keep the portfolio clean going forward.
+
+============================================================
+  SEARCH-TERM MINING (SP + SB) — NEGATIVE & SCALE CANDIDATES
+============================================================
+  NEGATIVE-KEYWORD CANDIDATES (spend ≥ ₹500, zero attributed sales) — 97 qualify, top 15:
+      Spend  Type        Search term                              Top campaign
+  ₹  3,819  Generic     rice pot with strainer lid               SP | Deals_Diwali_Ratings 4-4.
+  ₹  3,270  Generic     pressure cooker                          SP | Pressure Cooker and Cooke
+  ₹  3,247  Generic     b005mmton0                               SP | Pressure Cooker | CT
+  ₹  2,822  Generic     pre seasoned cast iron dosa tawa         SBV | Cast Iron tawa |  KT
+  ₹  2,690  Generic     cast iron tawa for dosa and chilla       SBV | Cast Iron tawa |  KT
+  ₹  2,175  Generic     glass kettle for gas stove               SP | Circulon Kettle | KT
+  ₹  2,010  Branded     meyer triply stainless steel cooker      SP | Stainless kadhai | KT
+  ₹  1,904  Generic     kitchen                                  SP | Category Wise All ASIN | 
+  ₹  1,863  Branded     meyer frying pan with lid                SP | FryPan | KT
+  ₹  1,859  Generic     tea kettle                               SP | All ASIN | Auto
+  ₹  1,780  Competition indus valley cooker                      SP | Pressure Cooker   | KT
+  ₹  1,650  Generic     cast iron roti tawa                      SB | Cast Iron Tawa Collection
+  ₹  1,629  Generic     stainless steel cooker                   SP | Pressure Cooker and Cooke
+  ₹  1,528  Generic     iron kadai                               SP | SPA GIF'25 - Top Selling 
+  ₹  1,507  Branded     meyer stainless steel cooker             SP | Stainless kadhai | KT
+
+  SCALE CANDIDATES (spend ≥ ₹1,000, ROAS ≥ 4× — proven demand, possibly under-funded) — 55 qualify, top 15:
+    ROAS     Spend      Sales  Type        Search term                        Top campaign
+   18.5x ₹  2,224 ₹  41,190  Branded     mayers cookware                    SP | Deals_Diwali_Ratings 
+   15.3x ₹  1,914 ₹  29,196  Generic     anyday microwave cookware          SP | Anyday | KT
+   14.0x ₹  1,001 ₹  14,038  Branded     meyer sauce pan                    SP | Stainless kadhai | KT
+   12.3x ₹  1,727 ₹  21,208  Branded     meyer kadai stainless steel        SP |Amazon  Recommended AS
+   10.1x ₹  4,534 ₹  45,948  Branded     meyer cast iron frying pan         SP | cast iron frypan Skil
+   10.0x ₹  1,698 ₹  16,992  Branded     meyer pan                          SP | FryPan | KT
+    9.2x ₹  1,525 ₹  14,090  Generic     cast-iron kadai                    SP | SPA GIF'25 - Top Sell
+    8.1x ₹  7,349 ₹  59,706  Branded     meyer cast iron                    SP | cast iron frypan Skil
+    8.1x ₹  1,148 ₹   9,277  Branded     meyer ceramic frying pan           SP | Stainless kadhai | KT
+    8.0x ₹  1,121 ₹   8,970  Generic     stainless steel kadai for cooking  SP | KadhaI | Phrase  KWT
+    7.8x ₹  1,109 ₹   8,640  Generic     milk boiling pot                   SP | TOPE & TOPE SET  | Au
+    7.2x ₹  3,228 ₹  23,221  Branded     meyer pressure cooker              SP |Amazon  Recommended AS
+    7.1x ₹  1,373 ₹   9,818  Branded     meyer cast iron grill pan          SP | cast iron frypan Skil
+    7.0x ₹  2,274 ₹  15,926  Branded     meyer non stick pan                SP | Anzen Frypan | KT
+    6.8x ₹  5,138 ₹  34,799  Generic     dosa pan                           SB | Cast Iron Tawa Collec
+
+  (Branded terms are shown for context only — per Principle 3, do NOT scale branded. Prioritise Generic/Competition scale candidates and non-cookware negatives.)
+
+============================================================
+  MONTH-ON-MONTH CAMPAIGN TRENDS (spend ≥ ₹10,000 this month)
+============================================================
+  Trajectory shown as: Month ₹spend / ROAS / CTR.  Months: Feb Mar Apr May
+
+  TOP 5 BY SPEND (this month):
+  [Amazon] SP | cast iron frypan Skillit | KT
+      Feb ₹75,072/3.3x/0.54%  |  Mar ₹101,123/4.0x/0.46%  |  Apr ₹55,261/5.7x/0.48%  |  May ₹158,370/4.0x/0.46%
+  [Amazon] SP | Category Wise All ASIN | Auto
+      Feb ₹59,315/4.5x/0.54%  |  Mar ₹161,578/2.5x/0.57%  |  Apr ₹134,440/2.9x/0.59%  |  May ₹125,149/3.5x/0.57%
+  [Google Ads] PMax: Smart Shopping Campaign
+      Feb —  |  Mar —  |  Apr —  |  May ₹121,730/3.1x/4.96%
+  [Amazon] SB | Cast Iron Tawa Collection | Page Vi
+      Feb ₹66,184/2.5x/0.32%  |  Mar ₹127,582/2.4x/0.14%  |  Apr ₹154,370/2.9x/0.21%  |  May ₹121,129/3.1x/0.32%
+  [Amazon] SP | All ASIN | Auto
+      Feb ₹157,827/2.5x/0.36%  |  Mar ₹264,375/2.8x/0.32%  |  Apr ₹153,020/4.0x/0.45%  |  May ₹121,098/2.8x/0.48%
+
+  TOP 5 BY ROAS MOVEMENT (first→latest month of history):
+  [Amazon] SP | Pressure Cooker | CT
+      Feb ₹6,213/4.1x/0.54%  |  Mar ₹10,853/2.5x/0.28%  |  Apr ₹427/0.0x/0.23%  |  May ₹10,964/1.4x/0.32%   (Δ ROAS -2.7x)
+  [Amazon] SP | Circulon Kettle | Auto
+      Feb ₹18,360/3.8x/0.66%  |  Mar —  |  Apr ₹29/0.0x/0.71%  |  May ₹14,899/1.2x/0.26%   (Δ ROAS -2.6x)
+  [Amazon] SP |Amazon  Recommended ASIN | KT
+      Feb ₹630/0.0x/0.66%  |  Mar ₹25,537/3.7x/0.80%  |  Apr ₹20,953/5.6x/0.67%  |  May ₹26,134/6.0x/0.55%   (Δ ROAS +2.3x)
+  [Amazon] SP | Circulon Kettle | KT
+      Feb —  |  Mar ₹9,387/5.1x/0.58%  |  Apr ₹11,309/4.0x/0.61%  |  May ₹11,792/2.8x/0.49%   (Δ ROAS -2.3x)
+  [Amazon] SP |Deal_4 Star_Keyword | KT
+      Feb ₹29,339/2.2x/0.50%  |  Mar ₹2,744/0.0x/0.51%  |  Apr ₹3,189/8.0x/0.68%  |  May ₹10,804/4.4x/0.50%   (Δ ROAS +2.2x)
+
+============================================================
+  YOUR OUTPUT — JSON ONLY, NO PROSE BEFORE OR AFTER
+============================================================
+
+Return ONLY a valid JSON object matching this schema exactly.
+
+{
+  "generatedDate": "YYYY-MM-DD",
+  "month": "<month label, e.g. Mar '26>",
+  "summary": "<2-3 sentences: what happened, overall health, most important signal>",
+  "counts": {
+    "critical": <int>,
+    "warnings": <int>,
+    "opportunities": <int>,
+    "insights": <int>
+  },
+  "followUp": [
+    {
+      "priorTitle": "<the prior recommendation being scored>",
+      "actioned": "<Yes | No | Can't confirm from data — with the one data point that tells you>",
+      "didItWork": "<predicted number vs actual number, and whether it moved as expected>",
+      "verdict": "<Worked | Partially worked | Did not work | Not actioned | Can't confirm>"
+    }
+  ],
+  "recommendations": [
+    {
+      "n": <int 1-12>,
+      "priority": "<critical | warning | opportunity | insight>",
+      "title": "<one-line title naming the specific campaign or issue>",
+      "platform": "<Amazon | Meta | Google Ads | Flipkart | All>",
+      "bucket": "<Core Sales | Awareness | Retargeting | null>",
+      "whatDataShows": "<specific numbers from the data - cite exact campaign name and figures>",
+      "whyItMatters": "<brand equity / MER / organic share frame - not just this month's ROAS>",
+      "exactAction": "<direct instruction: which campaign, what change, by how much, what to do first>",
+      "watchNextMonth": "<what number should move, in which direction, by roughly how much>",
+      "keyMetrics": [
+        {"label": "<metric name>", "value": "<formatted value e.g. 84% or 0.6x or Rs 41,200>"}
+      ],
+      "estimatedImpact": "<optional one-liner e.g. Est. savings Rs 12-15K/mo - omit if not quantifiable>"
+    }
+  ],
+  "monthOnMonth": [
+    {
+      "campaign": "<campaign name>",
+      "platform": "<Amazon | Meta | Flipkart>",
+      "basis": "<top-spend | roas-movement>",
+      "trend": "<the spend/ROAS/CTR trajectory across months, with the numbers>",
+      "flag": "<ALARMING | SCALE-UP | STEADY — and one clause on why>"
+    }
+  ],
+  "dataQualityFlags": [
+    "<any reporting artefact, zero-revenue anomaly, column mismatch, or attribution gap>"
+  ],
+  "strategicGap": "<one paragraph: the thing not visible in this month's data but implied by trends>",
+  "glossary": [
+    {"term": "MER", "definition": "Total POS sales / total ad spend (overall-account efficiency; the team calls this 'total ROAS'). Distinct from a single campaign's ROAS."}
+  ]
+}
+
+After generating, save Claude's response to a .json file (e.g. recs_2026_03.json),
+then run: python ingest_recs.py --month 2026_03 --file recs_2026_03.json

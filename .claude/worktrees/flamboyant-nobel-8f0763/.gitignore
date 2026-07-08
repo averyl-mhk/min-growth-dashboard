@@ -31,6 +31,3 @@ __pycache__/
 .DS_Store
 Thumbs.db
 desktop.ini
-
-# Claude internal worktrees/artifacts — never publish
-.claude/

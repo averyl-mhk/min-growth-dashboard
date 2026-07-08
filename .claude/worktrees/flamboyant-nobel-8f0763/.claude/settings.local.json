@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import ast; ast.parse\\(open\\('processor.py', encoding='utf-8'\\).read\\(\\)\\); print\\('OK'\\)\")",
+      "Bash(gh pr *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(cp \"/c/Users/rauna/OneDrive/Documents/claude cowork/projects/growth-marketing-dashboard/raw_exports/2026_02/\"* raw_exports/2026_02/)",
+      "Bash(cp \"/c/Users/rauna/OneDrive/Documents/claude cowork/projects/growth-marketing-dashboard/context/GMD_TargetingType_Reference.xlsx\" context/)",
+      "Bash(git push *)",
+      "Bash(curl -s \"https://averyl-mhk.github.io/min-growth-dashboard/data.json?t=$\\(date +%s\\)\")",
+      "Bash(python -c ' *)",
+      "Bash(git fetch *)",
+      "Bash(python dump_excel.py)",
+      "Bash(cp dump_excel.py /tmp/dump_excel.py)",
+      "Bash(git reset *)",
+      "Bash(cp /tmp/dump_excel.py dump_excel.py)",
+      "Bash(rm -f data*.xlsx)",
+      "Bash(python dump_excel.py --month \"Feb '26\")",
+      "Bash(cp dump_excel.py /tmp/dump_excel_v2.py)",
+      "Bash(cp .gitignore /tmp/gitignore_v2)",
+      "Bash(cp /tmp/dump_excel_v2.py dump_excel.py)",
+      "Bash(cp /tmp/gitignore_v2 .gitignore)"
+    ]
+  }
+}

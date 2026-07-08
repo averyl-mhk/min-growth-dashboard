@@ -1,0 +1,818 @@
+MIN GROWTH MARKETING DASHBOARD — AI ANALYSIS BRIEF
+Month:     Apr '26
+Generated: 2026-05-08
+Files:     Sponsored_Products_Search_term_report (3).xlsx, Sponsored_Brands_Search_term_report (3).xlsx, Sponsored_Display_Targeting_report (3).xlsx, Campaign April Amazon (1).csv, Meta April.xlsx, Flipkart April Ads (1).csv, POS_Apr.xlsx
+
+The system context (brand background, guiding principles, benchmarks)
+is saved in this Project's instructions — do not re-paste it.
+Analyse the data below and return recommendations as JSON (format at end).
+
+============================================================
+  POS — ACTUAL PLATFORM SALES
+============================================================
+  Shopify                ₹     532,942
+  Amazon                 ₹   8,558,206
+  Flipkart               ₹     256,909
+  TOTAL                  ₹   9,348,057
+
+============================================================
+  MARKETING EFFICIENCY RATIO (MER = Total POS ÷ Total Spend)
+============================================================
+  Total POS:    ₹   9,348,057
+  Total Spend:  ₹   2,009,406
+  MER:          4.65×
+  Prior MER (Mar '26): 4.50×  (Δ +0.16×)
+  Shopify % of POS: 5.7%
+  Prior (Mar '26) Shopify %: 10.4%  (Δ -4.7pp)
+
+============================================================
+  PLATFORM SUMMARY
+============================================================
+  Platform               Spend       AttRev     ROAS     ACOS
+  --------------- ------------ ------------ -------- --------
+  Amazon AMS      ₹ 1,819,721 ₹ 5,961,479    3.28×    30.5%
+  Meta            ₹   152,714 ₹         0    0.00×        —
+  Flipkart        ₹    36,971 ₹    95,328    2.58×        —
+  --------------- ------------ ------------ -------- --------
+  TOTAL           ₹ 2,009,406 ₹ 6,056,807    3.01×
+
+  MoM vs Mar '26:
+    Spend:  ₹ 2,189,219 → ₹ 2,009,406  (-8.2%)
+    AttRev: ₹ 5,861,110 → ₹ 6,056,807  (+3.3%)
+    ROAS:   2.68× → 3.01×  (Δ +0.34×)
+
+============================================================
+  BUCKET SUMMARY
+============================================================
+  Bucket                Spend       AttRev     ROAS   AmazonACOS  Channels
+  -------------- ------------ ------------ -------- ------------  ------------------------------
+  Awareness      ₹   368,493 ₹   723,622    1.96×        34.2%  Amazon, Meta
+  Core Sales     ₹ 1,525,927 ₹ 5,171,743    3.39×        29.4%  Amazon, Flipkart
+  Retargeting    ₹   114,986 ₹   161,442    1.40×        50.4%  Amazon, Flipkart, Meta
+
+============================================================
+  AMAZON KEYWORD TYPE BREAKDOWN (from search term data)
+============================================================
+  KwType         AdTypes           Spend       AttRev     ROAS   Spend%
+  -------------- ---------- ------------ ------------ -------- --------
+  Branded        SB,SBV,SP  ₹   355,350 ₹ 2,068,141    5.82×    20.4%
+  Competition    SB,SBV,SP  ₹   100,961 ₹   236,341    2.34×     5.8%
+  Generic        SB,SBV,SP  ₹ 1,282,007 ₹ 3,495,555    2.73×    73.7%
+
+============================================================
+  CHANNEL DETAIL — ALL CAMPAIGN GROUPS
+============================================================
+  Platform   AdType Sub      KwType              Spend     AttRev    ROAS     ACOS  Impressions   Clicks     CTR
+  ---------- ------ -------- -------------- ---------- ---------- ------- -------- ------------ -------- -------
+
+  [AWARENESS]
+  Amazon     SB     Manual   Branded        ₹   8,263 ₹  96,833  11.72×     8.5%      189,617    1,137   0.60%
+  Amazon     SB     Manual   Competition    ₹   1,153 ₹   6,202   5.38×    18.6%       26,457      158   0.60%
+  Amazon     SB     Manual   Generic        ₹   6,735 ₹  42,446   6.30×    15.9%      154,554      927   0.60%
+  Amazon     SBV    Manual   Branded        ₹  14,719 ₹ 116,229   7.90×    12.7%      575,020    1,848   0.32%
+  Amazon     SBV    Manual   Competition    ₹  20,494 ₹  43,232   2.11×    47.4%    1,017,174    2,535   0.25%
+  Amazon     SBV    Manual   Generic        ₹ 195,822 ₹ 418,681   2.14×    46.8%    9,141,690   23,498   0.26%
+  Meta       Carousel Prospecting —              ₹  48,277 ₹       0   0.00×        —    6,310,035   85,463   1.35%
+  Meta       Catalogue Prospecting —              ₹  26,768 ₹       0   0.00×        —    3,100,028  121,688   3.93%
+  Meta       Instream Prospecting —              ₹  25,417 ₹       0   0.00×        —    4,577,007    6,244   0.14%
+  Meta       Media Mix Prospecting —              ₹  20,844 ₹       0   0.00×        —      957,533   47,742   4.99%
+
+  [CORE SALES]
+  Amazon     SP     Auto     Branded        ₹  21,414 ₹ 361,493  16.88×     5.9%      508,006    2,251   0.44%
+  Amazon     SP     Auto     Competition    ₹  30,310 ₹  78,162   2.58×    38.8%      776,547    3,174   0.41%
+  Amazon     SP     Auto     Generic        ₹ 640,135 ₹1,902,390   2.97×    33.6%   15,182,738   68,900   0.45%
+  Amazon     SP     Manual   Branded        ₹ 310,953 ₹1,493,586   4.80×    20.8%    4,957,199   25,029   0.50%
+  Amazon     SP     Manual   Competition    ₹  49,005 ₹ 108,746   2.22×    45.1%    1,283,075    5,235   0.41%
+  Amazon     SP     Manual   Generic        ₹ 439,315 ₹1,132,039   2.58×    38.8%    9,921,386   41,470   0.42%
+  Flipkart   PLA    —        —              ₹  34,796 ₹  95,328   2.74×        —    1,341,035   15,017   1.12%
+  Meta       Media Mix Sales Traffic —              ₹       0 ₹       0   0.00×        —            0        0       —
+
+  [RETARGETING]
+  Amazon     SD     Manual   —              ₹  81,404 ₹ 161,442   1.98×    50.4%    4,565,859   11,614   0.25%
+  Meta       Catalogue Remarketing —              ₹  16,569 ₹       0   0.00×        —       50,755    3,416   6.73%
+  Meta       Media Mix Remarketing —              ₹  14,839 ₹       0   0.00×        —      508,610   34,277   6.74%
+  Flipkart   SELLER_PCA —        —              ₹   2,175 ₹       0   0.00×        —      197,093    1,460   0.74%
+
+============================================================
+  TOP PERFORMERS (min ₹5,000 spend, ROAS descending)
+============================================================
+  #1 [Amazon] [Awareness] ROAS 9.01× | ACOS 0.1% | Spend ₹16,152
+     SB | Cast Iron  | KT
+  #2 [Amazon] [Core Sales] ROAS 6.80× | ACOS 0.1% | Spend ₹10,929
+     SP | Accent All | KT
+  #3 [Amazon] [Core Sales] ROAS 6.23× | ACOS 0.2% | Spend ₹21,011
+     SP | KadhaI | Phrase  KWT
+  #4 [Amazon] [Core Sales] ROAS 6.14× | ACOS 0.2% | Spend ₹13,090
+     SP | Anyday | KT
+  #5 [Amazon] [Core Sales] ROAS 5.70× | ACOS 0.2% | Spend ₹55,261
+     SP | cast iron frypan Skillit | KT
+
+============================================================
+  NEEDS ATTENTION (min ₹10,000 spend, non-Awareness, ROAS ascending)
+============================================================
+  #1 [Meta] [Retargeting] ROAS 0.00× | ACOS — | Spend ₹16,569
+     Catalog Sales April
+  #2 [Meta] [Retargeting] ROAS 0.00× | ACOS — | Spend ₹14,839
+     MOF Video Viewers
+  #3 [Amazon] [Retargeting] ROAS 1.42× | ACOS 0.7% | Spend ₹16,324
+     SD | Tope  | Own PT | Comp PT | CT | Remarketing | Reach
+  #4 [Amazon] [Core Sales] ROAS 1.45× | ACOS 0.7% | Spend ₹45,705
+     SP | Top 10 ASIN | Ads Autopilot | KT
+  #5 [Amazon] [Core Sales] ROAS 1.45× | ACOS 0.7% | Spend ₹14,428
+     SP | ANYDAY | Auto
+
+============================================================
+  ALL AMAZON CAMPAIGNS (spend > ₹0, sorted by spend desc)
+============================================================
+  AdType Sub           Spend     AttRev    ROAS     ACOS       Impr  Clicks     CTR
+  ------ -------- ---------- ---------- ------- -------- ---------- ------- -------
+  SP     Manual   ₹ 175,216 ₹ 377,223   2.15×     0.5%  3,470,987  11,864   0.34%
+     SP | Cast Iron Frypan Skillit | Cross PT
+  SBV    Manual   ₹ 154,370 ₹ 447,235   2.90×     0.3%  9,851,324  20,226   0.21%
+     SB | Cast Iron Tawa Collection | Page Visit
+  SP     Auto     ₹ 153,020 ₹ 608,831   3.98×     0.3%  4,842,719  21,708   0.45%
+     SP | All ASIN | Auto
+  SP     Auto     ₹ 134,440 ₹ 392,419   2.92×     0.3%  2,035,345  12,092   0.59%
+     SP | Category Wise All ASIN | Auto
+  SP     Auto     ₹ 121,739 ₹ 424,175   3.48×     0.3%  2,488,442   8,919   0.36%
+     SP | High Rating ASINs - GIF | Auto
+  SP     Manual   ₹  99,112 ₹ 393,960   3.97×     0.3%  1,260,119   7,147   0.57%
+     SP_Deal_rating-4.6-5_Keyword targeting 4043a2
+  SP     Auto     ₹  83,829 ₹ 172,851   2.06×     0.5%  1,686,908   7,385   0.44%
+     SP | TOPE & TOPE SET  | Auto
+  SP     Auto     ₹  61,758 ₹ 267,313   4.33×     0.2%  1,581,854   5,454   0.34%
+     SP | cast iron tawa | Auto
+  SP     Manual   ₹  55,261 ₹ 315,036   5.70×     0.2%    830,198   3,965   0.48%
+     SP | cast iron frypan Skillit | KT
+  SP     Auto     ₹  52,572 ₹ 207,680   3.95×     0.3%  1,038,387   6,510   0.63%
+     SP | SPA GIF'25 - Top Selling ASINs-ASIN WISE  | Auto
+  SP     Manual   ₹  45,705 ₹  66,349   1.45×     0.7%  1,005,387   5,847   0.58%
+     SP | Top 10 ASIN | Ads Autopilot | KT
+  SP     Manual   ₹  40,669 ₹  79,528   1.96×     0.5%  1,607,929   5,166   0.32%
+     [Pilot] Campaign - 08/04/2025 17:32:47.261
+  SP     Manual   ₹  35,829 ₹ 155,922   4.35×     0.2%    404,013   2,971   0.74%
+     SP | Deals_Diwali_Ratings 4-4.5 | KT
+  SP     Manual   ₹  33,617 ₹  75,787   2.25×     0.4%    655,817   3,175   0.48%
+     SP | SS Tools | KT
+  SP     Manual   ₹  30,352 ₹ 100,888   3.32×     0.3%    501,610   1,997   0.40%
+     SP | High Converting ASINs - GIF | KWT
+  SP     Manual   ₹  25,457 ₹ 126,023   4.95×     0.2%    630,516   2,280   0.36%
+     SP | Bakeware | KT
+  SP     Manual   ₹  24,656 ₹  50,199   2.04×     0.5%    271,082   1,375   0.51%
+     SP | Manual | KT | Milkpan 0630f9
+  SBV    Manual   ₹  24,442 ₹  46,173   1.89×     0.5%    175,266   2,324   1.33%
+     SBV | Cast Iron Skillet | Page Visit | KT
+  SP     Manual   ₹  21,653 ₹  61,158   2.82×     0.4%    426,280   1,630   0.38%
+     SP | Spoon & Fork | KT
+  SP     Manual   ₹  21,011 ₹ 130,826   6.23×     0.2%    440,133   1,597   0.36%
+     SP | KadhaI | Phrase  KWT
+  SP     Manual   ₹  20,953 ₹ 117,144   5.59×     0.2%    404,911   2,696   0.67%
+     SP |Amazon  Recommended ASIN | KT
+  SBV    Manual   ₹  20,102 ₹  23,122   1.15×     0.9%    128,800   1,630   1.27%
+     SBV | Appam Pan | Page Visit | KT
+  SD     Manual   ₹  16,830 ₹  49,647   2.95×     0.3%  1,135,477   3,596   0.32%
+     Four_Star_SD_Retargeting 2023-05-02 45ce34
+  SD     Manual   ₹  16,324 ₹  23,114   1.42×     0.7%    930,551   2,061   0.22%
+     SD | Tope  | Own PT | Comp PT | CT | Remarketing | Reach
+  SB     Manual   ₹  16,152 ₹ 145,481   9.01×     0.1%    370,629   2,224   0.60%
+     SB | Cast Iron  | KT
+  SBV    Manual   ₹  15,985 ₹  31,224   1.95×     0.5%     75,099     764   1.02%
+     SBV | Cast Iron |  KT
+  SP     Auto     ₹  14,428 ₹  20,947   1.45×     0.7%    498,640   2,059   0.41%
+     SP | ANYDAY | Auto
+  SP     Auto     ₹  14,021 ₹  50,781   3.62×     0.3%    443,565   2,207   0.50%
+     SP | Cast iron All | Auto
+  SP     Manual   ₹  13,808 ₹  72,089   5.22×     0.2%    397,051   1,332   0.34%
+     SP | Cast Iron Tawa | KT | Hybrid | Manual
+  SP     Manual   ₹  13,567 ₹  65,961   4.86×     0.2%    129,621     753   0.58%
+     SP | Anzen | KT
+  SP     Manual   ₹  13,090 ₹  80,406   6.14×     0.2%    170,764   1,308   0.77%
+     SP | Anyday | KT
+  SP     Auto     ₹  11,374 ₹  55,260   4.86×     0.2%    445,910   2,010   0.45%
+     SP | Bakeware | Auto
+  SP     Manual   ₹  11,309 ₹  45,756   4.05×     0.2%    339,298   2,063   0.61%
+     SP | Circulon Kettle | KT
+  SP     Manual   ₹  10,929 ₹  74,315   6.80×     0.1%    593,810   1,877   0.32%
+     SP | Accent All | KT
+  SP     Manual   ₹  10,170 ₹  19,456   1.91×     0.5%    180,239   1,183   0.66%
+     SP | TOPE & TOPE Set  | KT
+  SD     Manual   ₹   9,408 ₹   7,165   0.76×     1.3%    449,115     718   0.16%
+     SD | ANYDAY | OWN PT
+  SD     Manual   ₹   8,772 ₹  22,645   2.58×     0.4%    242,677     883   0.36%
+     SD | Cast Iron Frypan | Own/COM PT/CT
+  SP     Auto     ₹   8,514 ₹  23,389   2.75×     0.4%    119,679     716   0.60%
+     SP | Spoon & Fork | Auto
+  SP     Manual   ₹   8,147 ₹  37,216   4.57×     0.2%    130,685     643   0.49%
+     SP | 47610 | KT
+  SP     Manual   ₹   7,847 ₹  20,835   2.66×     0.4%     98,995     480   0.48%
+     SP | Pressure Cooker & Cooker Set  | KT
+  SP     Auto     ₹   7,454 ₹  12,851   1.72×     0.6%    163,722   1,063   0.65%
+     SP | SS Tools | Auto
+  SBV    Manual   ₹   7,365 ₹   9,123   1.24×     0.8%     97,133     909   0.94%
+     SBV | TOPE | KT
+  SP     Auto     ₹   7,161 ₹  23,706   3.31×     0.3%    148,914     701   0.47%
+     SP  | Sillicon Tool | Auto
+  SP     Manual   ₹   6,654 ₹  25,930   3.90×     0.3%    119,625     757   0.63%
+     SP | Tasla | Generic KT
+  SP     Manual   ₹   6,406 ₹  27,232   4.25×     0.2%    108,573     614   0.57%
+     SP | Manual | KT | Stainless kadhai 785f07
+  SD     Manual   ₹   6,223 ₹  10,800   1.74×     0.6%    144,134     383   0.27%
+     SD | Cast Iron Tawa | OWN PT
+  SBV    Manual   ₹   5,938 ₹  21,265   3.58×     0.3%    346,233   1,633   0.47%
+     SBV | Pressure Cooker | Page Visit | KT
+  SP     Auto     ₹   5,758 ₹  23,685   4.11×     0.2%    229,718     739   0.32%
+     SP | Cast Iron Frypan Skillit | Auto
+  SD     Manual   ₹   5,656 ₹   8,624   1.52×     0.7%    527,771     919   0.17%
+     SD | Pressure Cooker | OWN PT | CVR
+  SP     Manual   ₹   5,504 ₹       0   0.00×     0.0%    271,776   1,122   0.41%
+     SP | Pressure Cooker Set | KT
+  SP     Manual   ₹   5,388 ₹  20,388   3.78×     0.3%     93,428     403   0.43%
+     SP | FryPan | KT
+  SP     Manual   ₹   5,353 ₹  16,354   3.06×     0.3%    205,602     823   0.40%
+     SP | Knife | KWT
+  SP     Auto     ₹   5,142 ₹   7,872   1.53×     0.7%    118,844     608   0.51%
+     SP | Anzen- Frypan | Auto
+  SP     Manual   ₹   4,624 ₹       0   0.00×     0.0%    165,433     738   0.45%
+     SP | Steamer| KT
+  SP     Manual   ₹   4,611 ₹  10,040   2.18×     0.5%     67,129     311   0.46%
+     PotsandPans India_SPKeyword_Drona-AAM_21/03/2026 04:50:05_Amazon Readiness.0.9
+  SP     Manual   ₹   4,473 ₹  42,510   9.50×     0.1%    102,179     439   0.43%
+     SP | Anzen Frypan | KT
+  SP     Manual   ₹   4,361 ₹     412   0.09×    10.6%    205,836     602   0.29%
+     SP | Cookware Set | KT
+  SP     Manual   ₹   3,804 ₹  23,410   6.15×     0.2%     71,568     664   0.93%
+     SP | Cast Iron Dutch Oven | KT
+  SP     Manual   ₹   3,752 ₹   8,128   2.17×     0.5%     75,806     381   0.50%
+     SP | Cast Iron Kadhai With Lid | KT
+  SP     Manual   ₹   3,253 ₹   9,951   3.06×     0.3%    119,280     382   0.32%
+     SP | Trivantage Cookware Set | KT
+  SP     Manual   ₹   3,189 ₹  25,640   8.04×     0.1%     64,272     434   0.68%
+     SP |Deal_4 Star_Keyword | KT
+  SP     Manual   ₹   3,172 ₹   5,848   1.84×     0.5%     59,837     198   0.33%
+     AD_READY: B07XD9YL47
+  SP     Manual   ₹   2,876 ₹  11,073   3.85×     0.3%     58,048     206   0.35%
+     SP | Silicone Accessories  | KT
+  SP     Auto     ₹   2,647 ₹   7,320   2.76×     0.4%     47,065     275   0.58%
+     SP | Over Stock | Auto
+  SD     Manual   ₹   2,597 ₹   2,488   0.96×     1.0%    328,125     577   0.18%
+     SD | Merlot | CT and Remarketing | CVR
+  SBV    Manual   ₹   2,517 ₹       0   0.00×     0.0%     56,078     300   0.53%
+     SB | Anzen - Video | Page Visit
+  SD     Manual   ₹   2,499 ₹   7,175   2.87×     0.3%    108,947     165   0.15%
+     SD | SS Accessories | Reach | Own PT
+  SD     Manual   ₹   2,125 ₹   2,986   1.41×     0.7%    101,769     239   0.23%
+     SD | Appam Pan | Own and Comp PT
+  SD     Manual   ₹   2,076 ₹   4,775   2.30×     0.4%    146,447     560   0.38%
+     SD_Remarketing_highly_rated_Diwali2023-09-25 73ba88
+  SD     Manual   ₹   2,004 ₹       0   0.00×     0.0%    103,509     362   0.35%
+     SD | Range |  Own PT & Remarketing  | CVR
+  SP     Manual   ₹   1,968 ₹   2,342   1.19×     0.8%     48,552     248   0.51%
+     SP | Cast Iron Set | KT
+  SP     Auto     ₹   1,932 ₹   5,108   2.64×     0.4%    110,624     336   0.30%
+     SP | Pressure Cooker and Cooker Set  | Auto
+  SP     Manual   ₹   1,888 ₹  15,093   8.00×     0.1%     14,360     185   1.29%
+     SP | Over Stock | Own Pt
+  SP     Manual   ₹   1,825 ₹   8,460   4.63×     0.2%     27,487     303   1.10%
+     SP | Tope | CT & Comp PT
+  SP     Manual   ₹   1,713 ₹   1,592   0.93×     1.1%     86,986     511   0.59%
+     SP | Top 5 Asin | Ads Autopilot | KT
+  SD     Manual   ₹   1,555 ₹       0   0.00×     0.0%     84,341     200   0.24%
+     SD | Anzen | CT | CVR
+  SP     Manual   ₹   1,422 ₹   2,551   1.79×     0.6%     41,225     243   0.59%
+     SP | Bahaus Frypan | KT
+  SD     Manual   ₹   1,361 ₹       0   0.00×     0.0%     35,887      80   0.22%
+     SD | Pressure Cooker | OWN  PT | Reach
+  SP     Manual   ₹   1,325 ₹   4,594   3.47×     0.3%     32,727     133   0.41%
+     SP | Cast Iron Appam  | KT
+  SP     Auto     ₹   1,275 ₹  19,727  15.47×     0.1%     77,634     543   0.70%
+     SP | Accent All | Auto
+  SP     Auto     ₹   1,181 ₹   3,018   2.56×     0.4%     84,918     345   0.41%
+     SP | Select Range | Auto
+  SD     Manual   ₹   1,077 ₹   4,164   3.87×     0.3%     74,519     279   0.37%
+     SD | Pressure Cooker | Comp PT & CT | Page Visit
+  SP     Manual   ₹   1,050 ₹       0   0.00×     0.0%     33,583     289   0.86%
+     AD_READY: B07XMQQHF1
+  SP     Auto     ₹   1,018 ₹       0   0.00×     0.0%     32,702      77   0.24%
+     SP | Circulon Tawa | Auto
+  SD     Manual   ₹     943 ₹  10,710  11.36×     0.1%     36,114      94   0.26%
+     SD_contextual_PD23_highly_rated_defense_2023-07-08 50c6d7
+  SP     Auto     ₹     787 ₹   5,706   7.25×     0.1%     39,994     204   0.51%
+     SP |  Cast Iron Kadhai | Auto
+  SD     Manual   ₹     625 ₹       0   0.00×     0.0%     36,748     226   0.61%
+     SD | Select | Remarketing & CT
+  SP     Manual   ₹     621 ₹   4,499   7.24×     0.1%     15,939      46   0.29%
+     PotsandPans India_SPProduct_Drona-AAM_21/03/2026 04:53:13
+  SP     Auto     ₹     590 ₹   6,949  11.77×     0.1%     61,235      92   0.15%
+     SP | Select Kadhai | Auto
+  SP     Manual   ₹     541 ₹       0   0.00×     0.0%     25,823      97   0.38%
+     AD_READY: B07M7MXXTQ
+  SP     Auto     ₹     470 ₹     499   1.06×     0.9%     96,133      78   0.08%
+     SP | Induction & Non Inducition Orange  Tawa | Auto
+  SP     Manual   ₹     427 ₹       0   0.00×     0.0%     49,083     114   0.23%
+     SP | Pressure Cooker | CT
+  SD     Manual   ₹     375 ₹   4,362  11.64×     0.1%      6,797      25   0.37%
+     SD | Silicon Accessories | OWN PT | CVR
+  SP     Manual   ₹     353 ₹       0   0.00×     0.0%      8,646      75   0.87%
+     SP | Cast Iron Kadhai Without Lid | Branded KT
+  SD     Manual   ₹     351 ₹   2,788   7.94×     0.1%     17,462      99   0.57%
+     SD | Entire Catalog Summer Sale - 2024 | VR 11211e
+  SBV    Manual   ₹     317 ₹       0   0.00×     0.0%      3,952      97   2.45%
+     SB | Tea Kettle | Brand Store -Impression Share | KT | VCPM
+  SP     Auto     ₹     277 ₹   1,958   7.06×     0.1%     26,313      71   0.27%
+     SP | knife | Auto
+  SP     Auto     ₹     261 ₹       0   0.00×     0.0%     23,966      69   0.29%
+     SP | Anzen | AUTO
+  SD     Manual   ₹     224 ₹       0   0.00×     0.0%     38,873      78   0.20%
+     SD | Merlot Own and Comp PT | CVR
+  SP     Manual   ₹     186 ₹   2,248  12.06×     0.1%     11,384      45   0.40%
+     SP | Cast Iron Tawa | CT -Tawa 2K to 3K
+  SD     Manual   ₹     177 ₹       0   0.00×     0.0%      4,206      13   0.31%
+     SD | Anzen | OWN PT
+  SP     Auto     ₹     148 ₹       0   0.00×     0.0%     18,998      50   0.26%
+     SP | Stainless Steel Cookware | Auto
+  SP     Manual   ₹     143 ₹       0   0.00×     0.0%     23,505      17   0.07%
+     AD_READY: B082NZW436
+  SD     Manual   ₹     107 ₹       0   0.00×     0.0%     10,407      44   0.42%
+     SD | Circulon-kettle  | Remarketing
+  SD     Manual   ₹      96 ₹       0   0.00×     0.0%      1,983      13   0.66%
+     SD_PAT_Highly_rated_Nov23_2023-10-30 b6ef68
+  SP     Manual   ₹      32 ₹       0   0.00×     0.0%      4,524       7   0.15%
+     AD_READY: B082NZGWWN
+  SP     Auto     ₹      30 ₹       0   0.00×     0.0%      3,929       7   0.18%
+     SP | Merlot Frypan+ Kadhai | Auto
+  SP     Auto     ₹      29 ₹       0   0.00×     0.0%      1,134       8   0.71%
+     SP | Circulon Kettle | Auto
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     CI kadai-migrated
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD | Anzen | Page Visit
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD | Cutlery | CVR | Own PT
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Cent_Diwali23_SD_PAT_Highly_rated2023-09-26 104a44
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD VRM | Performing ASINs | Jan'26 ART 113ae2
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B09JSFP9RT - 28/2/2026 11:50:37.202
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     May_ART_Top_rated_asin_SP_Auto-2023-05-02 28f943
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     meyer brand-migrated
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Cast Iron SBV 887adc-migrated
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Top_rated_ASIN_Feb23_SD_Retargeting 2023-02-25 9a5662
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Trivantage Milkpan display video-migrated
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP_Pots&Pans & Molds & Plaques_Keyword targeting 90bb58
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Bakeware Video 3
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SBV | Bakeware Loan Tin | KT-migrated
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B07XJ68KFR - 18/12/2025 22:30:37.087
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B0F5X2Y6GR - 18/12/2025 22:30:36.768
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     AD_READY: B09JS41FDK
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Bakeware Video - 1
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B07JG4WBK2 - 18/1/2026 14:11:32.813
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B09YJ35G9B - 11/12/2025 00:09:06.369
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B07X4G445B - 18/12/2025 22:30:36.876
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     biryani pot
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP | Anzen Kadhai | KT
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD | Saucepan/Milkpan | VR ebef4d
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B079MMNBHQ - 11/2/2025 18:28:59
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Cast Iron Kadai SB  - 11-5-22
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP | Non Selling Flex ASIN | Auto
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD_Remarketing_PD23_custom_lookback_highly_rated 2023-07-07 9b0520
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Visibility campaign non-advertised_Auto 76b9a9
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Jan'23 ART- Deal Unadvertised SD Retargeting2023-01-17 c09fbb
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B09JRR5W6Y - 18/1/2026 14:11:32.810
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Appam Pan MB 11-5-22-migrated
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD Top Selling ASINs 19-mar-2022 9131ff
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     bakeware
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B0CKXXHCCB - 10/2/2026 11:04:24.242
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP | Manual | KT | Tawa 02105c
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     circulon
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP | Anyday | KT Hybrid
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B0F5WFRJHY - 12/7/2025 21:08:46.872
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Jan'23 ART- 4* Unadvertised SD Retargeting2023-01-17 628a35
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Trivantage Milkpan display video
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD_Remarketing_PD23_custom_lookback_highly_rated_2023-07-08 37ddd0
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD Custom Strategy 02-may-2022 60590a
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Highly_Rated_SP_AUTO_Nov23_2023-10-30 41afb8
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Anzen - Video
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP | Clearance ASIN | Auto
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Trivantage MB12-5-22-migrated
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Circulon Kadai Origin
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Cast Iron Kadai SB  - 11-5-22-migrated
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD VRM GIF'25 | Mini Fry Pan | Tawa 8702af
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD_Remarketing_PD23_custom_lookback_highly_rated 2023-07-07 e5a6db
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP| Auto |Cooking Tools e2fac9
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD High Potential ASINs_Product Targeting d80274
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Deal ASINS Auto-2022-10-11 156889
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     cookware sets
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Q1 Priority ASINS_SD_Retargeting 2023-01-28 f18db6
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD | SS Accessories | CVR  | Own PT
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD High Converting ASINs 12-mar-2022 5beded
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B07SW515VF - 10/2/2026 11:04:24.093
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP_Pots & Pans _Molds & Plaques 7ef268
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP | All Asin's Selected Keywords | KT
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     saucepan
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD |  Amazon Recommendation | MIX ASIN- CVR
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Bakeware Video - 2
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP_Deal ASINs_Manual Keywords 349da6
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP | Cast Iron Dutch Oven | Auto
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SB_B0BCFC72HR_DRIVE_PAGE_VISITS_PRODUCT_COLLECTION_20251025
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign - 19/9/2025 23:46:50.222
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD_contextual_PD23_highly_rated_defense_2023-07-07 82481b Copy 2
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP | Preset B07ZT25W9X Mini Frypan | KT
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B08HYSGB96 - 18/12/2025 22:30:36.824
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Jan23 ART Four-Star ASINS Auto-2023-01-13 cfee34
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B0F5WYXXBM - 18/12/2025 22:30:37.215
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD. | Cast Iron | Comp CT
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Cent_Diwali23_SD_Remarketing_highly_rated2023-09-26 9a5874
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     appam pan
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     trivantage video-migrated
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP | Kitchen Hacks Chopper | Reco | KT
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP | Amazon Aud  likely hood to purchase | PT
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP |  B079MN3B41 | Branded |  KT
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SB | Cast Iron | Brand Impression _ Added in Cart | VCPM
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     AD_READY: B07Y1QK98R
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD | PRessure cooker | Comp CT  and OWN CT | Reach
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B09JVQTDHX - 28/2/2026 11:50:37.200
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD_contextual_PD23_highly_rated_defense_2023-07-07 82481b Copy 4
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP | Meyer Disney KT
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Sets SS
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B08KS28JBK - 18/12/2025 22:30:37.297
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP | Cast IRON | Reco-Fatima | KT
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD_contextual_PD23_highly_rated_defense_2023-07-07 82481b Copy 1
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SBV | Cast Iron - Video | Tawa
+  SB     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     meyer brand
+  SB     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SB | Select | KT
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SB | TOPE | Grow brand impression share | VCPM
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign - 11/1/2021 21:55:06
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Cast Iron Casserole - Product-migrated
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Four-Star ASINS Auto-2022-10-11 f42303
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B07KHNXS5T - 10/2/2026 11:04:24.343
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     kitchen hacks
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B07Z7PZH7J - 11/12/2025 00:09:46.060
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Deal ASIN _ View remarketing 19093e
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP Deal AINS-Keywords 471ec3
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     4-Star Cookware utensil eb6a63
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B0F5WWCW78 - 18/1/2026 14:11:32.813
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD | Circulon Saute Pans | VR
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Cast Iron - Video 15 sec
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign - 13/7/2025 10:40:49.466
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     presta
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Q1_Priority_asin_Auto-2023-01-28 1ecbf5
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Appam Pan MB 11-5-22
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     slow moving
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP | SPA GIF'25 | High Converting ASINs -wise | Auto
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SBV | Trivantage Kadai | Page Visit
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD Product
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B0CQK61ZH7 - 1/12/2025 12:39:30.462
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Highly_Rated_SP_AUTO_Oct23_2023-09-25 53292a
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SS cookware set
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD | Tea Kettle | VR 546f3a
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Trivantage MB12-5-22
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B09YJ613JM - 18/1/2026 14:11:32.812
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SBV | - Circulon A1 Series | KT
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD_PAT_Highly_rated_Diwali2023-09-25 0fea47
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP Entire Catalog 31-oct-2023 8fa982
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Jan'23 ART- 4* Unadvertised SD Retargeting2023-01-17 3eb78c
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     4 star Non Advertised ASINs 09-27-2021 0e35
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Trivantage Kadai - 12-5-22
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD_Select product targeting_5f42c7
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Circulon
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SB | TOPE | Page Visit | Hybrid
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SB | Pressure Cooker | Page Visit | KT
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Appam Pan - 11-5-22
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     New_launch_SD_Own_Nov23_2023-10-30 7dd4e3
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     AD_READY: B07DB7FJJZ
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Top Selling ASINs 09-30-2021 6dda
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SBV | Bakeware Loan Tin | KT
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD | Recommended ASIN | CVR
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     non stick kadai
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SPA Performing ASINs | JAn'26 ART 6ca637
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B0F5WWCW78 - 19/1/2026 06:23:51.188
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD_Remarketing_New_Launch_Nov23_2023-10-30 729efc
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Triply Audience
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign - 27/4/2023 16:59:50
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B0F3P6K671 - 18/1/2026 14:11:32.811
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP | Select 26cm Kadai | KT
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP | Cast Iron Tawa | Own PT
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP | Cast Iron  Appam+Grill | Auto
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP | Cast Iron kadhai | KT
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD | SS accessories | CVR | Own PT Copy 1
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Cast Iron Tawa
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     display - 2 SS Kadai
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     trivantage video
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD CT/VRM | High Performing ASINs FS'25 1cf49c
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     4 star_SD(AUT)_Non-advertised bcbd36
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     steamer
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     AD_READY: B07DK9SGF5
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     New_launch_SP_AUTO_Nov23_2023-10-30 54ed90
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B08GFW4FWX - 18/12/2025 22:30:36.689
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     AD_READY: B08KXRB7W5
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B0F5WX1912 - 11/12/2025 00:09:46.504
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SB_B0855V7M9H_DRIVE_PAGE_VISITS_PRODUCT_COLLECTION_20250911
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B09JVQTDHX - 1/3/2026 08:52:40.007
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Bakeware Video - 1-migrated
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     display -3 CI Kadai
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD_Remarketing_PD23_custom_lookback_highly_rated 2023-07-07 35ba42
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     CI kadai
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Bakeware Fluted Mould
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     cast iron set
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Campaign with presets - B09JRR5W6Y - 19/1/2026 06:23:51.186
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD_contextual_PD23_highly_rated_defense_2023-07-07 82481b
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Jan23 ARTDeal ASINS Auto-2023-01-13 90eec9
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD | Page Visit | Recommended
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Select sauteuse display video
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SBV Cast iron frying pan 6c27ce
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD_Remarketing_PD23_custom_lookback_highly_rated 2023-07-07 c9bdf4
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Cast Iron Product Trageting 59c77a
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     ss remarketing
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD | SS accessories | Page Visit | Own PT
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SB | Select | KT-migrated
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     centennial
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD | TOP ASIN | VCPM 40c421
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD | TOPE | Own/Comp PT | Remarketing
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     random
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     meyer select
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     cast iron 26cm kadai
+  SP     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SP | Select kadhai - | KT
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD_contextual_PD23_highly_rated_defense_2023-07-07 82481b Copy 3
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD Non Advertised ASINs_product Targeting 43183b
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Cast Iron SBV 887adc
+  SBV    Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Bakeware Video 3-migrated
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD_Pots&Pans _product targeting 9e4124
+  SD     Manual   ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     SD Non Advertised ASINs 09-mar-2023 dab078
+  SP     Auto     ₹       0 ₹       0   0.00×     0.0%          0       0       —
+     Highly_Rated_SP_AUTO_JAN24_ART_2024-01-08 197fd0
+
+============================================================
+  ALL META CAMPAIGNS
+============================================================
+  TargetingType    KeywordType           Spend     AttRev    ROAS       Impr  Clicks     CTR
+  ---------------- ---------------- ---------- ---------- ------- ---------- ------- -------
+  Carousel         Prospecting      ₹  48,277 ₹       0   0.00×  6,310,035  85,463   1.35%
+     New Traffic Campaign 5-12-22
+  Catalogue        Prospecting      ₹  26,768 ₹       0   0.00×  3,100,028 121,688   3.93%
+     New Customers – Copy
+  Instream         Prospecting      ₹  25,417 ₹       0   0.00×  4,577,007   6,244   0.14%
+     In-stream
+  Catalogue        Remarketing      ₹  16,569 ₹       0   0.00×     50,755   3,416   6.73%
+     Catalog Sales April
+  Media Mix        Remarketing      ₹  14,839 ₹       0   0.00×    508,610  34,277   6.74%
+     MOF Video Viewers
+  Media Mix        Prospecting      ₹  12,017 ₹       0   0.00×    685,112  29,044   4.24%
+     PC launch
+  Media Mix        Prospecting      ₹   8,827 ₹       0   0.00×    272,421  18,698   6.86%
+     PC launch
+  Media Mix        Sales Traffic    ₹       0 ₹       0   0.00×          0       0       —
+     New Cookware Offer
+  Media Mix        Sales Traffic    ₹       0 ₹       0   0.00×          0       0       —
+     Cookware Offer
+
+============================================================
+  ALL FLIPKART CAMPAIGNS
+============================================================
+  Type         Bucket              Spend     AttRev    ROAS       Impr  Clicks     CTR
+  ------------ -------------- ---------- ---------- ------- ---------- ------- -------
+  PLA          Core Sales     ₹  12,653 ₹  29,844   2.36×    306,025   3,416   1.12%
+     PLA_Segmentation_FMoving_CPC_KT
+  PLA          Core Sales     ₹   9,497 ₹  30,736   3.24×    310,290   3,424   1.10%
+     TOP FSN_CPC_KT
+  PLA          Core Sales     ₹   3,830 ₹   6,520   1.70×    185,141   2,084   1.13%
+     PLA_Campaign_PotentialBest Sellers_KT
+  PLA          Core Sales     ₹   3,622 ₹  28,228   7.79×    267,084   3,003   1.12%
+     Boost_Sales_CookingAndCookware 18-03-2026
+  PLA          Core Sales     ₹   2,300 ₹       0   0.00×    129,643   1,482   1.14%
+     PLA_CAST IRON_KT
+  SELLER_PCA   Retargeting    ₹   2,175 ₹       0   0.00×    197,093   1,460   0.74%
+     PCA Tawa  21 Jan
+  PLA          Core Sales     ₹   1,409 ₹       0   0.00×     73,064     906   1.24%
+     QuickCampaign 25-11-2025 01_11
+  PLA          Core Sales     ₹   1,012 ₹       0   0.00×     37,396     409   1.09%
+     Pressure Cooker KT
+  PLA          Core Sales     ₹     473 ₹       0   0.00×     32,392     293   0.90%
+     Recommended FSN_PLA_KT_S1
+
+============================================================
+  YOUR OUTPUT — JSON ONLY, NO PROSE BEFORE OR AFTER
+============================================================
+
+Return ONLY a valid JSON object matching this schema exactly.
+
+{
+  "generatedDate": "YYYY-MM-DD",
+  "month": "<month label, e.g. Mar '26>",
+  "summary": "<2-3 sentences: what happened, overall health, most important signal>",
+  "counts": {
+    "critical": <int>,
+    "warnings": <int>,
+    "opportunities": <int>,
+    "insights": <int>
+  },
+  "recommendations": [
+    {
+      "n": <int 1–12>,
+      "priority": "<critical | warning | opportunity | insight>",
+      "title": "<one-line title naming the specific campaign or issue>",
+      "platform": "<Amazon | Meta | Flipkart | All>",
+      "bucket": "<Core Sales | Awareness | Retargeting | null>",
+      "whatDataShows": "<specific numbers from the data — cite exact campaign name and figures>",
+      "whyItMatters": "<brand equity / MER / organic share frame — not just this month's ROAS>",
+      "exactAction": "<direct instruction: which campaign, what change, by how much, what to do first>",
+      "watchNextMonth": "<what number should move, in which direction, by roughly how much>",
+      "keyMetrics": [
+        {"label": "<metric name>", "value": "<formatted value e.g. 84% or 0.6x or Rs 41,200>"}
+      ],
+      "estimatedImpact": "<optional one-liner e.g. Est. savings Rs 12-15K/mo — omit if not quantifiable>"
+    }
+  ],
+  "dataQualityFlags": [
+    "<any reporting artefact, zero-revenue anomaly, column mismatch, or attribution gap>"
+  ],
+  "strategicGap": "<one paragraph: the thing not visible in this month's data but implied by trends>"
+}
+
+After generating, save Claude's response to a .json file (e.g. recs_2026_03.json),
+then run: python ingest_recs.py --month 2026_03 --file recs_2026_03.json

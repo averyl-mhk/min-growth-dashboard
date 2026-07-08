@@ -50,13 +50,17 @@ SP_AUTO_TARGETS = {"loose-match", "close-match", "complements", "substitutes"}
 
 META_BUCKETS = {"Prospecting": "Awareness", "Remarketing": "Retargeting", "Sales Traffic": "Core Sales"}
 FLIPKART_BUCKETS = {"PLA": "Core Sales", "SP": "Core Sales", "SELLER_PCA": "Retargeting", "PCA": "Retargeting"}
-# Google Ads keyword types differ from Meta's. Mapping confirmed with the marketing team:
-# Prospecting → Core Sales, Branded/Non Branded/Display → Awareness.
+# Google Ads keyword types differ from Meta's. Mapping confirmed with MIN on the
+# 2026-06-10 call (Avery + Akash/Rajiv) and reconfirmed 2026-07-08:
+#   Prospecting  → Awareness   (Performance Max, top-funnel demand generation)
+#   Non Branded  → Awareness   (generic Shopping, capturing untargeted demand)
+#   Branded      → Core Sales  (brand searchers = high intent, ready to buy)
+#   Display      → Retargeting (remarketing/display, mirrors Amazon SD bucketing)
 GOOGLE_BUCKETS = {
-    "Prospecting": "Core Sales",
-    "Branded": "Awareness",
+    "Prospecting": "Awareness",
     "Non Branded": "Awareness",
-    "Display": "Awareness",
+    "Branded": "Core Sales",
+    "Display": "Retargeting",
 }
 
 BUCKET_KEYS = {"Awareness": "awareness", "Core Sales": "coreSales", "Retargeting": "retargeting"}
@@ -501,6 +505,12 @@ def load_google_ads(path: Path):
     rows = []
     unknown = Counter()
     for _, r in df.iterrows():
+        # Google appends subtotal rows ("Total: Performance Max", "Total: Display", …) after
+        # the real campaigns. They carry a real Keyword Type but duplicate campaign spend/revenue,
+        # so they must be skipped or every Google metric doubles.
+        status = str(r.get("Campaign status", "") or "").strip().lower()
+        if status.startswith("total"):
+            continue
         kw_type = str(r.get("Keyword Type", "") or "").strip()
         bucket = GOOGLE_BUCKETS.get(kw_type)
         if not bucket:
@@ -742,7 +752,11 @@ def agg_top_bottom(rows, n=5):
     def roas_of(r):
         return r["att_rev"] / r["spend"] if r["spend"] > 0 else 0
 
-    top_pool = [r for r in rows if r["spend"] >= 5000 and r["att_rev"] > 0]
+    # Top-performer floor raised 5,000 → 25,000 (MIN request, 2026-06-10 call): low-spend
+    # campaigns produced inflated ROAS (e.g. a ~₹16k campaign showing 9.1×) that crowded out
+    # genuinely scaled winners. ₹25k keeps ~21 Amazon campaigns (~74% of spend) in the pool.
+    TOP_PERFORMER_MIN_SPEND = 25000
+    top_pool = [r for r in rows if r["spend"] >= TOP_PERFORMER_MIN_SPEND and r["att_rev"] > 0]
     top_pool.sort(key=roas_of, reverse=True)
 
     bottom_pool = [r for r in rows if r["spend"] >= 10000 and r["bucket"] != "Awareness"]
@@ -1000,7 +1014,8 @@ def process_month(month_str: str, export_brief_flag: bool = False):
     _print_pos_dtc_check(pos, total_spend)
 
     if export_brief_flag:
-        export_brief(month_str, month_label, data, all_rows, detail_rows, pos, missing, source_files, top, bottom)
+        export_brief(month_str, month_label, data, all_rows, detail_rows, pos, missing, source_files, top, bottom,
+                     sp_df=sp_df, sb_df=sb_df, ref=ref)
 
 
 def _print_reconciliation(campaign_rows, detail_rows, fallback_campaigns):
@@ -1114,10 +1129,150 @@ def _print_pos_dtc_check(pos, total_spend):
 
 # ─── AI brief export ──────────────────────────────────────────────────────────
 
-def export_brief(month_str, month_label, data, all_rows, detail_rows, pos, missing, source_files, top, bottom):
+def _month_campaign_rows(month_str):
+    """Campaign-level rows for a month, no side effects. Used for month-on-month trends.
+    Loads only campaign reports (not the heavy search-term files), so it stays fast."""
+    folder = RAW_EXPORTS / month_str
+    if not folder.exists():
+        return []
+    rows = []
+    for finder, loader in (
+        (find_amazon_campaigns, load_amazon_campaigns),
+        (find_meta, load_meta),
+        (find_google_ads, load_google_ads),
+        (find_flipkart, load_flipkart),
+    ):
+        try:
+            p = finder(folder)
+            if p:
+                rows.extend(loader(p))
+        except Exception as e:
+            print(f"  MoM: load failed for {month_str} ({loader.__name__}): {e}")
+    return rows
+
+
+def _recent_month_strs(month_str, n=4):
+    """The current month plus the n-1 months before it, oldest first, as YYYY_MM strings."""
+    y, mo = int(month_str[:4]), int(month_str[5:7])
+    out = []
+    for _ in range(n):
+        out.append(f"{y:04d}_{mo:02d}")
+        mo -= 1
+        if mo == 0:
+            mo, y = 12, y - 1
+    return list(reversed(out))
+
+
+def _build_mom_lines(month_str, current_rows, lookback=4, min_spend=10000):
+    """Return ready-to-append text lines for the month-on-month campaign trend section, or None.
+
+    Top 5 campaigns by current spend and top 5 by ROAS movement (min ₹10k this month),
+    each shown as spend/ROAS/CTR across the available months. Google is excluded from
+    the movement list (only one live month)."""
+    month_strs = [m for m in _recent_month_strs(month_str, lookback) if (RAW_EXPORTS / m).exists()]
+    per_month = {}
+    for m in month_strs:
+        rows = current_rows if m == month_str else _month_campaign_rows(m)
+        agg = {}
+        for r in rows:
+            key = (r["platform"], r["campaign_name"].strip())
+            a = agg.setdefault(key, {"s": 0.0, "r": 0.0, "i": 0.0, "c": 0.0})
+            a["s"] += r["spend"]; a["r"] += r["att_rev"]; a["i"] += r["impressions"]; a["c"] += r["clicks"]
+        per_month[m] = agg
+
+    labels = {m: datetime(int(m[:4]), int(m[5:7]), 1).strftime("%b") for m in month_strs}
+    cur = per_month.get(month_str, {})
+    big = {k: v for k, v in cur.items() if v["s"] >= min_spend}
+    if not big:
+        return None
+
+    def roas(a):
+        return a["r"] / a["s"] if a["s"] > 0 else 0.0
+
+    def hist(k):
+        # Only months with meaningful spend (≥₹5,000) count toward movement, so a fluke
+        # low-spend month can't anchor a fake ROAS swing.
+        return [per_month[m][k] for m in month_strs if k in per_month[m] and per_month[m][k]["s"] >= 5000]
+
+    def movement(k):
+        h_ = hist(k)
+        return (roas(h_[-1]) - roas(h_[0])) if len(h_) >= 2 else 0.0
+
+    def fmt(k):
+        plat, name = k
+        parts = []
+        for m in month_strs:
+            a = per_month[m].get(k)
+            if a and a["s"] > 0:
+                ctr = a["c"] / a["i"] if a["i"] > 0 else 0
+                parts.append(f"{labels[m]} ₹{a['s']:,.0f}/{roas(a):.1f}x/{ctr * 100:.2f}%")
+            else:
+                parts.append(f"{labels[m]} —")
+        return f"  [{plat}] {name[:40]}\n      " + "  |  ".join(parts)
+
+    out = [f"  Trajectory shown as: Month ₹spend / ROAS / CTR.  Months: {' '.join(labels[m] for m in month_strs)}"]
+    out.append("\n  TOP 5 BY SPEND (this month):")
+    for k, _ in sorted(big.items(), key=lambda kv: -kv[1]["s"])[:5]:
+        out.append(fmt(k))
+    movers = [(k, v) for k, v in big.items() if len(hist(k)) >= 2 and k[0] != "Google Ads"]
+    if movers:
+        out.append("\n  TOP 5 BY ROAS MOVEMENT (first→latest month of history):")
+        for k, _ in sorted(movers, key=lambda kv: -abs(movement(kv[0])))[:5]:
+            out.append(fmt(k) + f"   (Δ ROAS {movement(k):+.1f}x)")
+    return out
+
+
+def _build_search_term_lines(sp_df, sb_df, ref):
+    """Return ready-to-append text lines for the search-term mining section, or None.
+
+    Negative candidates: spend ≥ ₹500 with zero attributed sales.
+    Scale candidates: spend ≥ ₹1,000 with ROAS ≥ 4× (proven, possibly under-funded)."""
+    frames = []
+    for df, sales_col in ((sp_df, "7 Day Total Sales (₹)"), (sb_df, "14 Day Total Sales (₹)")):
+        if df is None or df.empty:
+            continue
+        if not {"Campaign Name", "Customer Search Term", "Spend"}.issubset(df.columns):
+            continue
+        frames.append(pd.DataFrame({
+            "campaign": df["Campaign Name"].astype(str).str.strip(),
+            "term": df["Customer Search Term"].astype(str).str.strip(),
+            "spend": pd.to_numeric(df["Spend"], errors="coerce").fillna(0),
+            "sales": pd.to_numeric(df[sales_col], errors="coerce").fillna(0) if sales_col in df.columns else 0,
+        }))
+    if not frames:
+        return None
+
+    allt = pd.concat(frames, ignore_index=True)
+    allt = allt[allt["term"].str.lower() != "nan"]
+    grp = allt.groupby("term").agg(spend=("spend", "sum"), sales=("sales", "sum")).reset_index()
+    grp["roas"] = grp.apply(lambda r: (r["sales"] / r["spend"]) if r["spend"] > 0 else 0, axis=1)
+    grp["kw"] = grp["term"].apply(lambda t: classify_search_term(t, ref))
+    dom = (allt.groupby(["term", "campaign"])["spend"].sum().reset_index()
+           .sort_values("spend", ascending=False).drop_duplicates("term"))
+    dom = dict(zip(dom["term"], dom["campaign"]))
+
+    negs = grp[(grp["spend"] >= 500) & (grp["sales"] <= 0)].sort_values("spend", ascending=False).head(15)
+    scales = grp[(grp["spend"] >= 1000) & (grp["roas"] >= 4)].sort_values("roas", ascending=False).head(15)
+
+    out = [f"  NEGATIVE-KEYWORD CANDIDATES (spend ≥ ₹500, zero attributed sales) — {len(grp[(grp['spend'] >= 500) & (grp['sales'] <= 0)])} qualify, top 15:"]
+    out.append(f"  {'Spend':>9}  {'Type':<11} {'Search term':<40} Top campaign")
+    for _, r in negs.iterrows():
+        out.append(f"  ₹{r['spend']:>7,.0f}  {r['kw']:<11} {r['term'][:40]:<40} {dom.get(r['term'], '')[:30]}")
+    out.append(f"\n  SCALE CANDIDATES (spend ≥ ₹1,000, ROAS ≥ 4× — proven demand, possibly under-funded) — {len(grp[(grp['spend'] >= 1000) & (grp['roas'] >= 4)])} qualify, top 15:")
+    out.append(f"  {'ROAS':>6} {'Spend':>9} {'Sales':>10}  {'Type':<11} {'Search term':<34} Top campaign")
+    for _, r in scales.iterrows():
+        out.append(f"  {r['roas']:>5.1f}x ₹{r['spend']:>7,.0f} ₹{r['sales']:>8,.0f}  {r['kw']:<11} {r['term'][:34]:<34} {dom.get(r['term'], '')[:26]}")
+    out.append("\n  (Branded terms are shown for context only — per Principle 3, do NOT scale branded. Prioritise Generic/Competition scale candidates and non-cookware negatives.)")
+    return out
+
+
+def export_brief(month_str, month_label, data, all_rows, detail_rows, pos, missing, source_files, top, bottom,
+                 sp_df=None, sb_df=None, ref=None):
     """Write a formatted text brief to ai_brief_YYYY_MM.txt for pasting into Claude.
 
-    Covers Amazon, Meta, Google Ads, and Flipkart across all sections.
+    Covers Amazon, Meta, Google Ads, and Flipkart across all sections. Also includes the
+    prior-month recommendations (for the STEP 0 follow-up scorecard), search-term mining
+    (negative/scale candidates), and month-on-month campaign trends.
     """
 
     lines = []
@@ -1308,7 +1463,7 @@ def export_brief(month_str, month_label, data, all_rows, detail_rows, pos, missi
             )
 
     # ── Top performers ──────────────────────────────────────────────────────────
-    h("TOP PERFORMERS (min ₹5,000 spend, ROAS descending)")
+    h("TOP PERFORMERS (min ₹25,000 spend, ROAS descending)")
     if top:
         for r in top:
             acos_str = f"{r['acos']*100:.1f}%" if r.get("acos") is not None else "—"
@@ -1400,6 +1555,36 @@ def export_brief(month_str, month_label, data, all_rows, detail_rows, pos, missi
             )
             lines.append(f"     {r['campaign_name']}")
 
+    # ── STEP 0: prior-month recommendations (for the follow-up scorecard) ─────────
+    h("LAST MONTH'S RECOMMENDATIONS — SCORE THESE FIRST (STEP 0)")
+    prior_recs_block = data.get("aiRecommendations", {}).get(prior_label) if prior_label else None
+    if prior_recs_block and prior_recs_block.get("recommendations"):
+        lines.append(f"  From {prior_label}. For each: was it actioned (evidence in THIS month's data), and did the prediction hold?")
+        for r in prior_recs_block["recommendations"]:
+            lines.append(f"\n  [{r.get('n', '?')}] ({r.get('priority', '')}) {r.get('title', '')}")
+            if r.get("exactAction"):
+                lines.append(f"      Action told:  {r['exactAction']}")
+            if r.get("watchNextMonth"):
+                lines.append(f"      Predicted:    {r['watchNextMonth']}")
+    else:
+        lines.append(f"  No stored recommendations for the prior month ({prior_label or 'n/a'}). Skip the follow-up scorecard this month.")
+
+    # ── Search-term mining ────────────────────────────────────────────────────────
+    h("SEARCH-TERM MINING (SP + SB) — NEGATIVE & SCALE CANDIDATES")
+    st_lines = _build_search_term_lines(sp_df, sb_df, ref) if ref is not None else None
+    if st_lines:
+        lines.extend(st_lines)
+    else:
+        lines.append("  Search term reports not available this month — no term-level mining possible.")
+
+    # ── Month-on-month campaign trends ────────────────────────────────────────────
+    h("MONTH-ON-MONTH CAMPAIGN TRENDS (spend ≥ ₹10,000 this month)")
+    mom_lines = _build_mom_lines(month_str, all_rows)
+    if mom_lines:
+        lines.extend(mom_lines)
+    else:
+        lines.append("  No campaigns cleared ₹10,000 this month, or no prior-month data available.")
+
     # ── Output format instructions ──────────────────────────────────────────────
     h("YOUR OUTPUT — JSON ONLY, NO PROSE BEFORE OR AFTER")
     lines.append("""
@@ -1415,6 +1600,14 @@ Return ONLY a valid JSON object matching this schema exactly.
     "opportunities": <int>,
     "insights": <int>
   },
+  "followUp": [
+    {
+      "priorTitle": "<the prior recommendation being scored>",
+      "actioned": "<Yes | No | Can't confirm from data — with the one data point that tells you>",
+      "didItWork": "<predicted number vs actual number, and whether it moved as expected>",
+      "verdict": "<Worked | Partially worked | Did not work | Not actioned | Can't confirm>"
+    }
+  ],
   "recommendations": [
     {
       "n": <int 1-12>,
@@ -1432,10 +1625,22 @@ Return ONLY a valid JSON object matching this schema exactly.
       "estimatedImpact": "<optional one-liner e.g. Est. savings Rs 12-15K/mo - omit if not quantifiable>"
     }
   ],
+  "monthOnMonth": [
+    {
+      "campaign": "<campaign name>",
+      "platform": "<Amazon | Meta | Flipkart>",
+      "basis": "<top-spend | roas-movement>",
+      "trend": "<the spend/ROAS/CTR trajectory across months, with the numbers>",
+      "flag": "<ALARMING | SCALE-UP | STEADY — and one clause on why>"
+    }
+  ],
   "dataQualityFlags": [
     "<any reporting artefact, zero-revenue anomaly, column mismatch, or attribution gap>"
   ],
-  "strategicGap": "<one paragraph: the thing not visible in this month's data but implied by trends>"
+  "strategicGap": "<one paragraph: the thing not visible in this month's data but implied by trends>",
+  "glossary": [
+    {"term": "MER", "definition": "Total POS sales / total ad spend (overall-account efficiency; the team calls this 'total ROAS'). Distinct from a single campaign's ROAS."}
+  ]
 }
 
 After generating, save Claude's response to a .json file (e.g. recs_2026_03.json),
@@ -1464,3 +1669,4 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     process_month(args.month, export_brief_flag=args.export_brief)
+# end of processor.py
