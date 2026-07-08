@@ -1559,7 +1559,7 @@ def export_brief(month_str, month_label, data, all_rows, detail_rows, pos, missi
     h("LAST MONTH'S RECOMMENDATIONS — SCORE THESE FIRST (STEP 0)")
     prior_recs_block = data.get("aiRecommendations", {}).get(prior_label) if prior_label else None
     if prior_recs_block and prior_recs_block.get("recommendations"):
-        lines.append(f"  From {prior_label}. For each: was it actioned (evidence in THIS month's data), and did the prediction hold?")
+        lines.append(f"  From {prior_label}. Score the 5 most important (by impact / spend at stake): was each actioned (evidence in THIS month's data), and did the prediction hold?")
         for r in prior_recs_block["recommendations"]:
             lines.append(f"\n  [{r.get('n', '?')}] ({r.get('priority', '')}) {r.get('title', '')}")
             if r.get("exactAction"):

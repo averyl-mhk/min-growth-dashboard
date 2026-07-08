@@ -1238,7 +1238,7 @@ function renderAIView(idx) {
         <span class="ai-sec-badge" style="background:var(--purple-bg);color:var(--purple);border:1px solid var(--purple-border)">Scorecard</span>
         <div class="ai-sec-line"></div>
        </div>
-       <div class="ai-fu">${recs.followUp.map(f => `
+       <div class="ai-fu">${recs.followUp.slice(0, 5).map(f => `
          <div class="ai-fu-item">
            <div class="ai-fu-head">
              <span class="ai-fu-title">${f.priorTitle || ''}</span>
